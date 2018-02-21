@@ -3,7 +3,6 @@
 /Users/chaolee/VisualStudio/KtvSolution/VodManageSystem/bin/Debug/netcoreapp2.0/VodManageSystem.runtimeconfig.dev.json
 /Users/chaolee/VisualStudio/KtvSolution/VodManageSystem/bin/Debug/netcoreapp2.0/VodManageSystem.dll
 /Users/chaolee/VisualStudio/KtvSolution/VodManageSystem/bin/Debug/netcoreapp2.0/VodManageSystem.pdb
-/Users/chaolee/VisualStudio/KtvSolution/VodManageSystem/obj/Debug/netcoreapp2.0/VodManageSystem.csprojResolveAssemblyReference.cache
 /Users/chaolee/VisualStudio/KtvSolution/VodManageSystem/obj/Debug/netcoreapp2.0/VodManageSystem.csproj.CoreCompileInputs.cache
 /Users/chaolee/VisualStudio/KtvSolution/VodManageSystem/obj/Debug/netcoreapp2.0/VodManageSystem.AssemblyInfoInputs.cache
 /Users/chaolee/VisualStudio/KtvSolution/VodManageSystem/obj/Debug/netcoreapp2.0/VodManageSystem.AssemblyInfo.cs

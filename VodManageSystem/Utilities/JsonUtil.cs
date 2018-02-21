@@ -28,7 +28,7 @@ namespace VodManageSystem.Utilities
             }
             else
             {
-                // return a new object of SongStateOfRequest
+                // return a new object of SongStateOfRequest or others
                 if (createYn)
                 {
                     // create a new instance
