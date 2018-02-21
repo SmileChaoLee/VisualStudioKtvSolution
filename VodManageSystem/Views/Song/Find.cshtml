@@ -1,0 +1,161 @@
+﻿@{
+    ViewData["Title"] = "Find Songs";
+}
+
+<h3 style="color:green;">@ViewData["Title"]</h3>
+
+@section Scripts
+{
+	<script type="text/javascript">
+	    $( document ).ready(function() { 
+            $('.table form input, .table select').attr('disabled', true);
+            $('input[name="search_type"]:radio').change(function(){
+                $('.table form input, .table select').attr('disabled', true);
+                $(this).parent().find('form').find('input, select').attr('disabled', false);
+                $(this).parent().find('form input, form select').first().focus();
+            });
+               
+            $('input[name="search_type"]:radio').first().prop('checked',true);
+            $('input[name="search_type"]:radio').first().trigger('change');
+            
+            $('form').keydown(function(e) {
+                if (e.keyCode === 13) {
+                    toSubmit("Submit");
+                }
+            });
+               
+	    });
+            
+	    function toSubmit(type) {
+            var $checkRadio =  $('input[name="search_type"]:checked');
+            if ($checkRadio.val() === undefined){
+                if (type.toUpperCase()==="CANCEL") {
+                    $checkRadio = $('input[name="search_type"]:first');
+                }
+            }
+            // $checkRadio.parent().find('form').attr("action","Find");
+            $checkRadio.parent().find('form').append("<input type='hidden' name='search_type' value='"+$checkRadio.val()+"'>");
+            $checkRadio.parent().find('form').append("<input type='hidden' name='submitbutton' value='"+type+ "'>");
+            $checkRadio.parent().find('form').append('<input type="hidden" name="song_state", value="@ViewBag.SongState" />');
+            $checkRadio.parent().find('form').submit();
+	    }
+	</script>
+}
+	
+<style>
+    body
+	{
+        font-family:"New Roman";
+        background-color:#d0e4fe;
+    }
+    table {
+        width:100%;
+        border-collapse: collapse;
+    }
+    table.findTable {
+        font-size:16px;
+        border: 2px solid #000000;
+        margin-left: auto;margin-right: auto;
+    }
+    td,th {
+        padding-left: 10px;padding-top: 5px;padding-right: 10px;padding-bottom: 5px;
+        border: 1px solid #000000;
+    }
+    .findTable label {
+        display: inline-block;
+        font-weight: lighter;
+        color:black;
+    }
+    .findTable label.radio {
+        font-weight: bold;
+        color:black;
+    }
+    .findTable select {
+    }
+    input {
+        font-size:20px;
+    }
+    button {
+        font-weight:bold;
+        font-size:20px;width:200px;
+        text-align:center;
+        color:darkred;background-color: lightgrey;
+    }
+</style>      
+	        
+<table class="findTable">
+    <tr>
+        <td>            
+            <input type="radio" name="search_type" value='song_no'/>
+            <label class="radio">Song No.</label>
+            <form asp-area="" asp-controller="Song" asp-action="Find" method="POST" data-search='song_no'>
+                <label>Song No:
+                    <input name="song_no" type="text" maxlength="6" style='width:120px;' value=""/>
+                </label>
+            </form>
+        </td>
+        <td>
+            <input type="radio" name="search_type" value='vod_no'/>
+            <label class="radio">Vod No.</label>
+            <form asp-area="" asp-controller="Song" asp-action="Find" method="POST" data-search='vod_no'>
+                <label>Vod No:
+                    <input name="vod_no" type="text" maxlength="6" style='width:120px;' value=""/>
+                </label>
+            </form>                   
+        </td>
+    </tr>
+    <tr>
+        <td>
+            <input type="radio" name="search_type" value='song_na'/>
+            <label class="radio">Song Name</label>
+            <form asp-area="" asp-controller="Song" asp-action="Find" method="POST" data-search='song_na'>
+                <label>Song Name:
+                    <input name="song_na" type="text" maxlength="36" style='width:260px;' value=""/>
+                </label>
+            </form>
+        </td>
+        <td>
+            <input type="radio" name="search_type" value='lang_songna'/>
+            <label class="radio">Language+Song Name</label>
+            <form asp-area="" asp-controller="Song" asp-action="Find" method="POST" data-search='lang_songna'>
+                <label >Language:
+                    <select name='lang_no'>
+                        <option value='1'>1</option>
+                        <option value='2'>2</option>
+                        <option value='7'>7</option>
+                    </select>
+                </label>
+                <label>Song Name:
+                    <input name="song_na" type="text" maxlength="36" style='width:260px;' value=""/>
+                </label>
+            </form>
+        </td>
+    </tr>
+    <tr>
+        <td>
+            <input type="radio" name="search_type" value='singer1_na'/>
+            <label class="radio">Singer1 Name</label>
+            <form asp-area="" asp-controller="Song" asp-action="Find" method="POST" data-search='singer1_na'>
+                <label>Singer1 Name:
+                    <input name="sing_na1" type="text" maxlength="30" style='width:200px;' value=""/>
+                </label>
+            </form>
+        </td>            
+        <td>
+            <input type="radio" name="search_type" value='singer2_na'/>
+            <label class="radio">Singer2 Name</label>
+            <form asp-area="" asp-controller="Song" asp-action="Find" method="POST" data-search='singer2_na'>
+                <label>Singer2 Name:
+                    <input name="sing_na2" type="text" maxlength="30" style='width:200px;' value=""/>
+                </label>
+            </form>
+        </td>             
+    </tr>        
+</table>
+
+<br />
+    
+<div style='margin:auto;text-align:center'>
+    <button type="submit" onclick='toSubmit("Submit")'>Submit</button>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
+    <button type='submit' onclick='toSubmit("Cancel")'>Cancel</button>
+</div>

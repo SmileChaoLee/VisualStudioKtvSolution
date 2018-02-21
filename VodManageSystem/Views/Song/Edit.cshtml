@@ -1,0 +1,15 @@
+@model VodManageSystem.Models.DataModels.Song
+
+@{
+    ViewData["Title"] = "Edit Song";
+    ViewBag.Action = "Edit";
+}
+
+<h3 style="color:green;">@ViewData["Title"]</h3>
+
+@section Scripts {
+    @{
+        await Html.RenderPartialAsync("~/Views/Song/_SongValidationScriptsPartial.cshtml");
+    }
+}
+@await Html.PartialAsync("_SongOneRecordForm.cshtml")

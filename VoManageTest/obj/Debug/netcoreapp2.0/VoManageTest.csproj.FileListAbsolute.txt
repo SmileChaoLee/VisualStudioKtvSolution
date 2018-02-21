@@ -1,0 +1,16 @@
+/Users/chaolee/VisualStudio/KtvSolution/VoManageTest/bin/Debug/netcoreapp2.0/xunit.runner.visualstudio.dotnetcore.testadapter.dll
+/Users/chaolee/VisualStudio/KtvSolution/VoManageTest/bin/Debug/netcoreapp2.0/xunit.runner.reporters.netcoreapp10.dll
+/Users/chaolee/VisualStudio/KtvSolution/VoManageTest/bin/Debug/netcoreapp2.0/xunit.runner.utility.netcoreapp10.dll
+/Users/chaolee/VisualStudio/KtvSolution/VoManageTest/bin/Debug/netcoreapp2.0/VoManageTest.deps.json
+/Users/chaolee/VisualStudio/KtvSolution/VoManageTest/bin/Debug/netcoreapp2.0/VoManageTest.runtimeconfig.json
+/Users/chaolee/VisualStudio/KtvSolution/VoManageTest/bin/Debug/netcoreapp2.0/VoManageTest.runtimeconfig.dev.json
+/Users/chaolee/VisualStudio/KtvSolution/VoManageTest/bin/Debug/netcoreapp2.0/VoManageTest.dll
+/Users/chaolee/VisualStudio/KtvSolution/VoManageTest/bin/Debug/netcoreapp2.0/VoManageTest.pdb
+/Users/chaolee/VisualStudio/KtvSolution/VoManageTest/bin/Debug/netcoreapp2.0/VodManageSystem.dll
+/Users/chaolee/VisualStudio/KtvSolution/VoManageTest/bin/Debug/netcoreapp2.0/VodManageSystem.pdb
+/Users/chaolee/VisualStudio/KtvSolution/VoManageTest/obj/Debug/netcoreapp2.0/VoManageTest.csprojResolveAssemblyReference.cache
+/Users/chaolee/VisualStudio/KtvSolution/VoManageTest/obj/Debug/netcoreapp2.0/VoManageTest.csproj.CoreCompileInputs.cache
+/Users/chaolee/VisualStudio/KtvSolution/VoManageTest/obj/Debug/netcoreapp2.0/VoManageTest.AssemblyInfoInputs.cache
+/Users/chaolee/VisualStudio/KtvSolution/VoManageTest/obj/Debug/netcoreapp2.0/VoManageTest.AssemblyInfo.cs
+/Users/chaolee/VisualStudio/KtvSolution/VoManageTest/obj/Debug/netcoreapp2.0/VoManageTest.dll
+/Users/chaolee/VisualStudio/KtvSolution/VoManageTest/obj/Debug/netcoreapp2.0/VoManageTest.pdb

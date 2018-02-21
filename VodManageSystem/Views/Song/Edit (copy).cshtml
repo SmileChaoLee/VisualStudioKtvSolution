@@ -1,0 +1,119 @@
+@model VodManageSystem.Models.DataModels.Song
+
+@{
+    ViewData["Title"] = "Edit";
+}
+
+<h2>Edit</h2>
+
+<h4>Song</h4>
+<hr />
+<div class="row">
+    <div class="col-md-4">
+        <form asp-action="Edit">
+            <div asp-validation-summary="ModelOnly" class="text-danger"></div>
+            <input type="hidden" asp-for="SongNo" />
+            <div class="form-group">
+                <label asp-for="SongNa" class="control-label"></label>
+                <input asp-for="SongNa" class="form-control" />
+                <span asp-validation-for="SongNa" class="text-danger"></span>
+            </div>
+            <div class="form-group">
+                <label asp-for="LanguageId" class="control-label"></label>
+                <input asp-for="LanguageId" class="form-control" />
+                <span asp-validation-for="LanguageId" class="text-danger"></span>
+            </div>
+            <div class="form-group">
+                <label asp-for="SNumWord" class="control-label"></label>
+                <input asp-for="SNumWord" class="form-control" />
+                <span asp-validation-for="SNumWord" class="text-danger"></span>
+            </div>
+            <div class="form-group">
+                <label asp-for="NumFw" class="control-label"></label>
+                <input asp-for="NumFw" class="form-control" />
+                <span asp-validation-for="NumFw" class="text-danger"></span>
+            </div>
+            <div class="form-group">
+                <label asp-for="NumPw" class="control-label"></label>
+                <input asp-for="NumPw" class="form-control" />
+                <span asp-validation-for="NumPw" class="text-danger"></span>
+            </div>
+            <div class="form-group">
+                <label asp-for="Singer1Id" class="control-label"></label>
+                <input asp-for="Singer1Id" class="form-control" />
+                <span asp-validation-for="Singer1Id" class="text-danger"></span>
+            </div>
+            <div class="form-group">
+                <label asp-for="Singer2Id" class="control-label"></label>
+                <input asp-for="Singer2Id" class="form-control" />
+                <span asp-validation-for="Singer2Id" class="text-danger"></span>
+            </div>
+            <div class="form-group">
+                <label asp-for="SeleTf" class="control-label"></label>
+                <input asp-for="SeleTf" class="form-control" />
+                <span asp-validation-for="SeleTf" class="text-danger"></span>
+            </div>
+            <div class="form-group">
+                <label asp-for="Chor" class="control-label"></label>
+                <input asp-for="Chor" class="form-control" />
+                <span asp-validation-for="Chor" class="text-danger"></span>
+            </div>
+            <div class="form-group">
+                <label asp-for="NMpeg" class="control-label"></label>
+                <input asp-for="NMpeg" class="form-control" />
+                <span asp-validation-for="NMpeg" class="text-danger"></span>
+            </div>
+            <div class="form-group">
+                <label asp-for="MMpeg" class="control-label"></label>
+                <input asp-for="MMpeg" class="form-control" />
+                <span asp-validation-for="MMpeg" class="text-danger"></span>
+            </div>
+            <div class="form-group">
+                <label asp-for="VodYn" class="control-label"></label>
+                <input asp-for="VodYn" class="form-control" />
+                <span asp-validation-for="VodYn" class="text-danger"></span>
+            </div>
+            <div class="form-group">
+                <label asp-for="VodNo" class="control-label"></label>
+                <input asp-for="VodNo" class="form-control" />
+                <span asp-validation-for="VodNo" class="text-danger"></span>
+            </div>
+            <div class="form-group">
+                <label asp-for="Pathname" class="control-label"></label>
+                <input asp-for="Pathname" class="form-control" />
+                <span asp-validation-for="Pathname" class="text-danger"></span>
+            </div>
+            <div class="form-group">
+                <label asp-for="OrdNo" class="control-label"></label>
+                <input asp-for="OrdNo" class="form-control" />
+                <span asp-validation-for="OrdNo" class="text-danger"></span>
+            </div>
+            <div class="form-group">
+                <label asp-for="OrderNum" class="control-label"></label>
+                <input asp-for="OrderNum" class="form-control" />
+                <span asp-validation-for="OrderNum" class="text-danger"></span>
+            </div>
+            <div class="form-group">
+                <label asp-for="OrdOldN" class="control-label"></label>
+                <input asp-for="OrdOldN" class="form-control" />
+                <span asp-validation-for="OrdOldN" class="text-danger"></span>
+            </div>
+            <div class="form-group">
+                <label asp-for="InDate" class="control-label"></label>
+                <input asp-for="InDate" class="form-control" />
+                <span asp-validation-for="InDate" class="text-danger"></span>
+            </div>
+            <div class="form-group">
+                <input type="submit" value="Save" class="btn btn-default" />
+            </div>
+        </form>
+    </div>
+</div>
+
+<div>
+    <a asp-action="Index">Back to List</a>
+</div>
+
+@section Scripts {
+    @{await Html.RenderPartialAsync("_ValidationScriptsPartial");}
+}
