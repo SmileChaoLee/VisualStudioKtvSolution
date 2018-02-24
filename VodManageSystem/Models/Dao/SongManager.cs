@@ -148,12 +148,17 @@ namespace VodManageSystem.Models.Dao
             return result;
         }
 
+        // end of private methods
+
+
+        // public methods
+
         /// <summary>
         /// Gets the dictionary of songs.
         /// </summary>
         /// <returns>The dictionary of songs.</returns>
         /// <param name="songState">Song state.</param>
-        private async Task<SortedDictionary<int,Song>> GetDictionaryOfSongs(SongStateOfRequest songState)
+        public async Task<SortedDictionary<int,Song>> GetDictionaryOfSongs(SongStateOfRequest songState)
         {
             if (songState == null)
             {
@@ -284,7 +289,7 @@ namespace VodManageSystem.Models.Dao
 
             return songs;
         }
-        public async Task<List<Song>> FindOnePageOfSongsForOneSong(SongStateOfRequest songState, Song song)
+        public async Task<List<Song>> FindOnePageOfSongsForOneSong(SongStateOfRequest songState, Song song, int id)
         {
             if ( (songState == null) || (song == null) )
             {
@@ -300,10 +305,10 @@ namespace VodManageSystem.Models.Dao
 
             SortedDictionary<int, Song> songsDictionary = await GetDictionaryOfSongs(songState);
 
-            if (songState.OrgId != 0)
+            if (id > 0)
             {
                 // There was a selected song
-                songWithIndex = songsDictionary.Where(x=>x.Value.Id == songState.OrgId).SingleOrDefault();
+                songWithIndex = songsDictionary.Where(x=>x.Value.Id == id).SingleOrDefault();
             }
             else
             {

@@ -12,4 +12,6 @@
         await Html.RenderPartialAsync("~/Views/Song/_SongValidationScriptsPartial.cshtml");
     }
 }
-@await Html.PartialAsync("_SongOneRecordForm.cshtml")
+@await Html.PartialAsync("_SongOneRecordForm.cshtml", Model)
+
+@* or await Html.PartialAsync("_SongOneRecordForm.cshtml", Model) *@

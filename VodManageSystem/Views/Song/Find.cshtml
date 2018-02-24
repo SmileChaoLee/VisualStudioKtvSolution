@@ -1,4 +1,5 @@
-﻿@{
+﻿
+@{
     ViewData["Title"] = "Find Songs";
 }
 
@@ -119,11 +120,17 @@
             <label class="radio">Language+Song Name</label>
             <form asp-area="" asp-controller="Song" asp-action="Find" method="POST" data-search='lang_songna'>
                 <label >Language:
-                    <select name='lang_no'>
-                        <option value='1'>1</option>
-                        <option value='2'>2</option>
-                        <option value='7'>7</option>
-                    </select>
+                    
+                    <select name='lang_no' asp-items='@ViewBag.LanguageList'></select>
+
+                    @*
+                    if use one of the following two then @model VodManageSystem.Models.DataModels.Language
+                    must be included on the top of this file (Find.cshtml)
+                    <select asp-for='LangNo' asp-items='@ViewBag.LanguageList'></select>
+
+                    <!-- here ViewBag.LanguageList2 is a list of model Language -->
+                    <select asp-for='LangNo' asp-items='@(new SelectList(@ViewBag.LanguageList2, "LangNo", "LangNa"))'></select>
+                    *@
                 </label>
                 <label>Song Name:
                     <input name="song_na" type="text" maxlength="36" style='width:260px;' value=""/>

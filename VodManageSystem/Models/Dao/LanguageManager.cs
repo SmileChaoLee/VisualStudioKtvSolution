@@ -2,6 +2,7 @@
 using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
+using Microsoft.AspNetCore.Mvc.Rendering;
 using Microsoft.EntityFrameworkCore;
 using VodManageSystem.Models.DataModels;
 
@@ -21,7 +22,17 @@ namespace VodManageSystem.Models.Dao
         }
 
         // private methods
-        private async Task<SortedDictionary<int, Language>> GetDictionaryOfLanguages(LanguageStateOfRequest languageState)
+
+        // end of private methods
+
+        // public methods
+
+        /// <summary>
+        /// Gets the dictionary of languages.
+        /// </summary>
+        /// <returns>The dictionary of languages.</returns>
+        /// <param name="languageState">Language state.</param>
+        public async Task<SortedDictionary<int, Language>> GetDictionaryOfLanguages(LanguageStateOfRequest languageState)
         {
             if (languageState == null)
             {
@@ -53,6 +64,25 @@ namespace VodManageSystem.Models.Dao
             return new SortedDictionary<int, Language>(languagesDictionary);
         }
 
+        /// <summary>
+        /// Gets the select list from a SortedDictionary of languages.
+        /// </summary>
+        /// <returns>The select list of languages.</returns>
+        /// <param name="languageState">Language state.</param>
+        public async Task<List<SelectListItem>> GetSelectListOfLanguages(LanguageStateOfRequest languageState)
+        {
+            List<SelectListItem> selectList = new List<SelectListItem>();
+            SortedDictionary<int, Language> languageDict = await GetDictionaryOfLanguages(languageState);
+            foreach (Language lang in languageDict.Values)
+            {
+                selectList.Add(new SelectListItem
+                {
+                    Text = lang.LangNa,
+                    Value = lang.LangNo
+                });
+            }
+            return selectList;
+        }
 
         /// <summary>
         /// Gets the total page of language table.

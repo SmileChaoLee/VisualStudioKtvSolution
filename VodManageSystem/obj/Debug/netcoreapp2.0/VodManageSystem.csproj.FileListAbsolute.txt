@@ -8,3 +8,4 @@
 /Users/chaolee/VisualStudio/KtvSolution/VodManageSystem/obj/Debug/netcoreapp2.0/VodManageSystem.AssemblyInfo.cs
 /Users/chaolee/VisualStudio/KtvSolution/VodManageSystem/obj/Debug/netcoreapp2.0/VodManageSystem.dll
 /Users/chaolee/VisualStudio/KtvSolution/VodManageSystem/obj/Debug/netcoreapp2.0/VodManageSystem.pdb
+/Users/chaolee/VisualStudio/KtvSolution/VodManageSystem/obj/Debug/netcoreapp2.0/VodManageSystem.csprojResolveAssemblyReference.cache
