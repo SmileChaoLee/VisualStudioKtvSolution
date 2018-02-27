@@ -99,16 +99,19 @@ namespace VodManageSystem.Controllers
                 song_no = string.Empty;
             }
             song_no = song_no.Trim();
+
             if (string.IsNullOrEmpty(vod_no))
             {
                 vod_no = string.Empty;
             }
             vod_no = vod_no.Trim();
+
             if (string.IsNullOrEmpty(song_na))
             {
                 song_na = string.Empty;
             }
             song_na = song_na.Trim();
+
             if (string.IsNullOrEmpty(lang_no))
             {
                 lang_no = string.Empty;
@@ -120,11 +123,13 @@ namespace VodManageSystem.Controllers
                 sing_na1 = string.Empty;
             }
             sing_na1 = sing_na1.Trim();
+
             if (string.IsNullOrEmpty(sing_na2))
             {
                 sing_na2 = string.Empty;
             }
             sing_na2 = sing_na2.Trim();
+
             string sButton = submitbutton.ToUpper();
 
             if (sButton == "CANCEL")

@@ -16,9 +16,9 @@
 {
 	<script type="text/javascript">
 	    $( document ).ready(function() { 
-            $('.table form input, .table select').attr('disabled', true);
+            $('.findTable form input, .findTable select').attr('disabled', true);
             $('input[name="search_type"]:radio').change(function(){
-                $('.table form input, .table select').attr('disabled', true);
+                $('.findTable form input, .findTable select').attr('disabled', true);
                 $(this).parent().find('form').find('input, select').attr('disabled', false);
                 $(this).parent().find('form input, form select').first().focus();
             });

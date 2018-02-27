@@ -2,7 +2,8 @@
   <MonoDevelop.Ide.ItemProperties.VodManageSystem PreferredExecutionTarget="MonoDevelop.Default" />
   <MonoDevelop.Ide.Workbench ActiveDocument="VodManageSystem/Controllers/SongController.cs">
     <Files>
-      <File FileName="VodManageSystem/Controllers/SongController.cs" Line="91" Column="69" />
+      <File FileName="VodManageSystem/Controllers/SongController.cs" Line="74" Column="65" />
+      <File FileName="VodManageSystem/Views/Song/SongsList.cshtml" Line="66" Column="10" />
     </Files>
   </MonoDevelop.Ide.Workbench>
   <MonoDevelop.Ide.Workspace ActiveConfiguration="Debug" />
