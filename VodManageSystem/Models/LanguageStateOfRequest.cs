@@ -15,6 +15,9 @@ namespace VodManageSystem.Models
         public int FirstLangId { get; set; }
         public DateTime StartTime { get; set; }
 
+        /// <summary>
+        /// Initializes a new instance of the <see cref="T:VodManageSystem.Models.LanguageStateOfRequest"/> class.
+        /// </summary>
         public LanguageStateOfRequest()
         {
             CurrentPageNo = 1;

@@ -60,33 +60,36 @@
                     minlength: 1,
                     maxlength: 2,
                 },
-                Singer1No: {
-                    required: true,
-                    minlength: 5,
-                    maxlength: 5,
-                    pattern: "[0-9]{5}"
-                },
-                Singer2No: {
-                    required: true,
-                    minlength: 5,
-                    maxlength: 5,
-                    pattern: "[0-9]{5}"
-                },
+
+                // do not need that any more because of using select and options tag and 
+                // Singer1No: {
+                //     required: true,
+                //     minlength: 5,
+                //     maxlength: 5,
+                //     pattern: "[0-9]{5}"
+                // },
+                // Singer2No: {
+                //     required: true,
+                //     minlength: 5,
+                //     maxlength: 5,
+                //     pattern: "[0-9]{5}"
+                // },
+    
                 NMpeg: {
                     required: true,
                     minlength: 2,
                     maxlength: 2,
-                    min: "11",
+                    min: "00",
                     max: "23",
-                    pattern: "[1-2][1-3]"
+                    pattern: "[1-2][1-3]|[0][0]"
                 },
                 MMpeg: {
                     required: true,
                     minlength: 2,
                     maxlength: 2,
-                    min: "11",
+                    min: "00",
                     max: "23",
-                    pattern: "[1-2][1-3]"
+                    pattern: "[1-2][1-3]|[0][0]"
                 },
                 VodNo: {
                     required: true,
@@ -148,7 +151,7 @@
                     required: "Music track must be specified.",
                     minlength: "It must be 2 digits.",
                     maxlength: "It must be 2 digits.",
-                    min: "The minimum is 11.",
+                    min: "The minimum is 00",
                     max: "The maximum is 23.",
                     pattern: "No such music track."
                 },
@@ -156,7 +159,7 @@
                     required: "Vocal track must be specified.",
                     minlength: "It must be 2 digits.",
                     maxlength: "It must be 2 digits.",
-                    min: "The minimum is 11.",
+                    min: "The minimum is 00.",
                     max: "The maximum is 23.",
                     pattern: "No such vocal track."
                 },

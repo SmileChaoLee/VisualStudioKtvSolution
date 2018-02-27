@@ -1,6 +1,13 @@
-﻿
+﻿@using VodManageSystem.Utilities
+@using Microsoft.AspNetCore.Html
+
 @{
     ViewData["Title"] = "Find Songs";
+    string languageList = JsonUtil.SetJsonStringFromObject(ViewBag.LanguageList);
+
+    // must transfer Serialized Json string that converted by JsonConvert.SerializeObject() to HtmlString, 
+    // then JSON.parse() can use it as a parameter
+    ViewBag.LangList = new HtmlString(languageList);
 }
 
 <h3 style="color:green;">@ViewData["Title"]</h3>
@@ -24,7 +31,17 @@
                     toSubmit("Submit");
                 }
             });
-               
+
+            // var tempList = JSON.parse($('input[name="test_state"]').val());
+            // the above statement must work with <!--input type="hidden" name="test_state" value="@languageList" / -->
+            var tempList = JSON.parse('@ViewBag.LangList');
+            var languageCount = tempList.length;
+            for (i=0; i<languageCount; i++)
+            {
+                $("#langSelect").append($("<option />").val(tempList[i].Value).html(tempList[i].Text));
+    
+            }
+
 	    });
             
 	    function toSubmit(type) {
@@ -90,6 +107,7 @@
             <input type="radio" name="search_type" value='song_no'/>
             <label class="radio">Song No.</label>
             <form asp-area="" asp-controller="Song" asp-action="Find" method="POST" data-search='song_no'>
+                <!-- input type="hidden" name="test_state" value="@languageList" / -->
                 <label>Song No:
                     <input name="song_no" type="text" maxlength="6" style='width:120px;' value=""/>
                 </label>
@@ -120,10 +138,18 @@
             <label class="radio">Language+Song Name</label>
             <form asp-area="" asp-controller="Song" asp-action="Find" method="POST" data-search='lang_songna'>
                 <label >Language:
-                    
-                    <select name='lang_no' asp-items='@ViewBag.LanguageList'></select>
-
+                    <!-- use jQuery to do the dropdown list (function in script block) -->
+                    <select id="langSelect" name="lang_no"></select>
+                    <!--
+                    <select name='lang_no'>
+                        <option value='1'>1</option>
+                        <option value='2'>2</option>
+                        <option value='7'>7</option>
+                    </select>
+                    -->
                     @*
+                    <select name="lang_no" asp-items="@ViewBag.LanguageList"></select>
+                    
                     if use one of the following two then @model VodManageSystem.Models.DataModels.Language
                     must be included on the top of this file (Find.cshtml)
                     <select asp-for='LangNo' asp-items='@ViewBag.LanguageList'></select>
