@@ -18,16 +18,15 @@
 
   <ItemGroup>
     <Folder Include="Models\DataModels\" />
-    <Folder Include="Views\Database\" />
     <Folder Include="Views\Authenticate\" />
     <Folder Include="Views\Song\" />
     <Folder Include="Views\Shared\DisplayTemplates\" />
     <Folder Include="ExtensionMethods\" />
     <Folder Include="Utilities\" />
     <Folder Include="Models\Dao\" />
-    <Folder Include="wwwroot\css\Song\" />
     <Folder Include="wwwroot\lib\propper\" />
     <Folder Include="Views\Language\" />
+    <Folder Include="Views\Singarea\" />
   </ItemGroup>
   <ItemGroup>
     <None Remove="VodManageSystem.tar" />

@@ -34,6 +34,7 @@ namespace VodManageSystem
                   options.UseMySql(Configuration.GetConnectionString("MySqlConnection")));
 
             services.AddScoped<LanguageManager>();  // languages management service
+            services.AddScoped<SingareaManager>();  // singer areas management service
             services.AddScoped<SingerManager>();    // singers management service
             services.AddScoped<SongManager>();      // songs management service
         }

@@ -1,9 +1,8 @@
 ﻿<Properties StartupConfiguration="{68EEE490-59E8-4AFB-A5E7-98E199788C6F}|Default">
   <MonoDevelop.Ide.ItemProperties.VodManageSystem PreferredExecutionTarget="MonoDevelop.Default" />
-  <MonoDevelop.Ide.Workbench ActiveDocument="VodManageSystem/Controllers/SongController.cs">
+  <MonoDevelop.Ide.Workbench ActiveDocument="VodManageSystem/Controllers/LanguageController.cs">
     <Files>
-      <File FileName="VodManageSystem/Controllers/SongController.cs" Line="74" Column="65" />
-      <File FileName="VodManageSystem/Views/Song/SongsList.cshtml" Line="66" Column="10" />
+      <File FileName="VodManageSystem/Controllers/LanguageController.cs" Line="387" Column="14" />
     </Files>
   </MonoDevelop.Ide.Workbench>
   <MonoDevelop.Ide.Workspace ActiveConfiguration="Debug" />

@@ -1,0 +1,93 @@
+﻿@using VodManageSystem.Utilities
+@using VodManageSystem.Models
+@using System
+
+@model IEnumerable<VodManageSystem.Models.DataModels.Singarea>
+
+@{
+    SingareaStateOfRequest singareaState = JsonUtil.GetObjectFromJsonString<SingareaStateOfRequest>(ViewBag.SingareaState as string);
+    DateTime endTime = DateTime.Now;
+    double diff = ( (TimeSpan)(endTime - singareaState.StartTime) ).TotalMilliseconds;
+    ViewData["Title"] = "Singareas Management ---- elapsed time = " + diff;
+}
+
+@section Scripts
+{
+    <script type="text/javascript">
+
+        // use jQuery
+        function toSubmit(action, sId) {
+            var form = '#bodyForm';
+            if ( ($(form).length) && (action !== undefined) ) {
+                // if form with id="bodyForm" exist. jQuery the length is greater than 0.
+                if ( (action==='/Singarea/Edit') || (action==='/Singarea/Delete') || (action==='/Singarea/Details') ) {
+                    var singarea_state = getSingareaStateValue();
+                    if ( (singarea_state.OrgId===0) && (singarea_state.OrgAreaNo==='') ) {
+                        // Edit, Delete, Details
+                        alert("Please select one singarea!");
+                        return false;   // cancel submit
+                    }
+                }
+                $(form).attr('action', action);
+                $(form).submit();
+                return true;
+            }
+            else {
+                return false;   // cancel submit
+            }
+        }
+
+        function orderBySubmit(orderBy) {
+            if (orderBy !== undefined) {
+                var form = '#bodyForm';
+                $(form).attr('action', '/Singarea/ChangeOrder');
+                var singarea_state = getSingareaStateValue();
+                singarea_state.OrderBy = orderBy;
+                $('input[name="singarea_state"]').val(JSON.stringify(singarea_state));
+                $(form).submit();
+                return true;
+            } else {
+                return false;
+            }
+        }
+
+        // use JavaScript
+        /* not used
+        function toSubmitJavaScript(action, sId) {
+            var form = document.getElementById('bodyForm');
+            if (form !== null ) {
+                // if form with id="bodyForm" exist.
+                toSubmitBodyForm(form, action, sId);
+            }
+        }
+        */
+
+        // highlight item
+        var selectedItem = "selectedItem";
+        var $items = $('tr.singareaitem').click(function(event) {
+            event.preventDefault();
+            $items.removeClass(selectedItem);
+            $(this).addClass(selectedItem);
+
+            // get data of this row. It is an array
+            var trData = $(this).children('td').map(function() {
+                return $(this).text();
+            }).get();
+
+            var singarea_state = getSingareaStateValue();
+            singarea_state.OrgId = trData[0];      // reset the oringinal id of singarea
+            singarea_state.OrgAreaNo = trData[1];  // reset the original area_no
+            // reset the value of singarea_state
+            $('input[name="singarea_state"]').val(JSON.stringify(singarea_state));
+        })
+
+        function getSingareaStateValue() {
+            // var singarea_state = $('#bodyForm').find('input[name="singarea_state"]').val();
+            var singarea_state = $('input[name="singarea_state"]').val();
+            return JSON.parse(singarea_state);
+        }
+        
+    </script>
+}
+
+<link rel="stylesheet" style="text/css" href="~/css/DataManageTableStyle.css" />

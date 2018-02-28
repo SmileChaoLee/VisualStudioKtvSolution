@@ -3,20 +3,29 @@ namespace VodManageSystem.Models
 {
     public class ErrorCodeModel
     {
-        public const int SongNotChanged = 0;
         public const int Succeeded = 1;
         public const int ErrorBecauseBugs = -1;
+
+        public const int SongNotChanged = 0;
         public const int SongIsNull = -2;
         public const int SongNoIsEmpty = -3;
         public const int SongNoDuplicate = -4;
-        public const int LangeNoIsEmpty = -5;
-        public const int LangeNoNotFound = -6;
+        public const int SongNoIsNotFound = -5;
         public const int Singer1NoNotFound = -7;
         public const int Singer2NoNotFound = -8;
         public const int OriginalSongNoIsEmpty = -11;
         public const int OriginalSongNotExist = -12;
         public const int VodNoOfSongIsEmpty = -21;
         public const int PathnameOfVodNoIsEmpty = -22;
+
+        public const int LanguageNotChanged = -30;
+        public const int LanguageIsNull = -32;
+        public const int LanguageNoIsEmpty = -33;
+        public const int LanguageNoDuplicate = -34;
+        public const int LanguageNoNotFound = -35;
+        public const int OriginalLanguageNoIsEmpty = -36;
+        public const int OriginalLanguageNotExist = -37;
+
         public const int DatabaseError = -99;
         public const int ModelBindingFailed = -999;
 
@@ -56,10 +65,10 @@ namespace VodManageSystem.Models
                 case SongNoDuplicate:
                     errorMsg = "Song No. was duplicate.";
                     break;
-                case LangeNoIsEmpty:
+                case LanguageNoIsEmpty:
                     errorMsg = "Language No. was empty or noll.";
                     break;
-                case LangeNoNotFound:
+                case LanguageNoNotFound:
                     errorMsg = "Language No. was found.";
                     break;
                 case Singer1NoNotFound:
@@ -85,6 +94,21 @@ namespace VodManageSystem.Models
                     break;
                 case ModelBindingFailed:
                     errorMsg = "Model binding failed (Model.IsValid = false.)";
+                    break;
+                case LanguageNotChanged:
+                    errorMsg = "Language was unchanged.";
+                    break;
+                case LanguageIsNull:
+                    errorMsg = "The object of Language was null.";
+                    break;
+                case LanguageNoDuplicate:
+                    errorMsg = "Language No. was duplicate.";
+                    break;
+                case OriginalLanguageNoIsEmpty:
+                    errorMsg = "The original language no was empty or null.";
+                    break;
+                case OriginalLanguageNotExist:
+                    errorMsg = "The original language is no logner exist.";
                     break;
                 default:
                     errorMsg = "Unknown error";

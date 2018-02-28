@@ -10,7 +10,7 @@ namespace VodManageSystem.Models.Dao
 {
     public class SingerManager : IDisposable
     {
-        private readonly int pageSize = 18;
+        private readonly int pageSize = 15;
         private readonly KtvSystemDBContext _context;
 
         /// <summary>

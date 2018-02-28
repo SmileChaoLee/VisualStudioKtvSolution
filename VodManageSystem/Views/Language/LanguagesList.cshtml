@@ -16,15 +16,19 @@
     <script type="text/javascript">
 
         // use jQuery
-        function toSubmit(action, sId) {
+        function toSubmit(action, sId, sNo) {
             var form = '#bodyForm';
             if ( ($(form).length) && (action !== undefined) ) {
                 // if form with id="bodyForm" exist. jQuery the length is greater than 0.
                 if ( (action==='/Language/Edit') || (action==='/Language/Delete') || (action==='/Language/Details') ) {
-                    var language_state = getLanguageStateValue();
-                    if ( (language_state.OrgId===0) && (language_state.OrgLangNo==='') ) {
+                    if ((sId !== undefined) && (sId !== 0) ) {
+                        var language_state = getLanguageStateValue();
+                        language_state.OrgId = sId;
+                        language_state.OrgLangNo = sNo;
+                        $('input[name="language_state"]').val(JSON.stringify(language_state));
+                    } else {
                         // Edit, Delete, Details
-                        alert("Please select one langage!");
+                        alert("Please select one language!");
                         return false;   // cancel submit
                     }
                 }
@@ -51,20 +55,9 @@
             }
         }
 
-        // use JavaScript
-        /* not used
-        function toSubmitJavaScript(action, sId) {
-            var form = document.getElementById('bodyForm');
-            if (form !== null ) {
-                // if form with id="bodyForm" exist.
-                toSubmitBodyForm(form, action, sId);
-            }
-        }
-        */
-
         // highlight item
         var selectedItem = "selectedItem";
-        var $items = $('tr.languageitem').click(function(event) {
+        var $items = $('tr.row_item').click(function(event) {
             event.preventDefault();
             $items.removeClass(selectedItem);
             $(this).addClass(selectedItem);
@@ -91,3 +84,79 @@
 }
 
 <link rel="stylesheet" style="text/css" href="~/css/DataManageTableStyle.css" />
+
+<h3 style="color:green;text-align:center;">@ViewData["Title"]</h3>
+
+<form id="bodyForm" asp-area="" asp-controller="" asp-action="" method="get">
+    <input type="hidden" name="language_state" value="@ViewBag.LanguageState" />
+    <p>
+        <button class="aboveTable" onclick="return toSubmit('/Language/Find');">Find</button>&nbsp;
+        <button class="aboveTable" onclick="return toSubmit('/Language/Print');">Print</button>&nbsp;  
+        <button class="aboveTable" onclick="return toSubmit('/Language/FirstPage');">First Page</button>&nbsp;
+        <button class="aboveTable" onclick="return toSubmit('/Language/LastPage');">Last Page</button>&nbsp; 
+        <button class="aboveTable" onclick="return toSubmit('/Language/PreviousPage');">Previous Page</button>&nbsp;
+        <button class="aboveTable" onclick="return toSubmit('/Language/NextPage');">Next Page</button>
+    </p>
+    <table style="margin-top:10px;"> <!-- class="table" -->
+        <thead>
+            <tr>
+                <th style="display:none;">
+                    @Html.DisplayNameFor(model => model.Id)
+                </th>
+                <th>Language No.</th>
+                <th>Language Name</th>
+                <th>English Name of the Language</th>
+                <th/>
+                <th/>
+                <th style="text-align:center;">
+                    <button class="crud" style="background-color:orange;" onclick="return toSubmit('/Language/Add');">Add</button>&nbsp;
+                </th>
+            </tr>
+        </thead>
+        <tbody>
+            @foreach (var item in Model) {
+
+                string selectedItem = "";
+                if (item.Id == languageState.OrgId)
+                {
+                    selectedItem = "selectedItem";
+                }
+
+                <tr class="row_item @selectedItem">
+                    <td style="display:none;">
+                        @Html.DisplayFor(modelItem => item.Id)
+                    </td>
+                    <td>
+                        @Html.DisplayFor(modelItem => item.LangNo)
+                    </td>
+                    <td>
+                        @Html.DisplayFor(modelItem => item.LangNa)
+                    </td>
+                    <td>
+                        @Html.DisplayFor(modelItem => item.LangEn)
+                    </td>
+
+                    <td style="text-align:center;width:100px;">
+                        <button class="crud" onclick="return toSubmit('/Language/Edit','@item.Id','@item.LangNo');">Edit</button>
+                    </td>
+
+                    <td style="text-align:center;width:100px">
+                        <button class="crud" onclick="toSubmit('/Language/Details','@item.Id','@item.LangNo')">Details</button>
+                    </td>
+
+                    <td style="text-align:center;width:100px;">
+                        <button class="crud" onclick="return toSubmit('/Language/Delete','@item.Id','@item.LangNo');">Delete</button>
+                    </td>
+           
+                </tr>
+            }
+        </tbody>
+    </table>
+    
+    <p style="margin-top:10px;">
+        <label style="color:brown; font-size:18px;">Order By:</label>
+        <button class="underTable" onclick="return orderBySubmit('LangNo');" >Language No</button>&nbsp;
+        <button class="underTable" onclick="return orderBySubmit('LangNa');" >Language Name</button>&nbsp;  
+    </p>
+    
+</form>

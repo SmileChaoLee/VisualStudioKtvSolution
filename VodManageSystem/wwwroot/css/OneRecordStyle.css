@@ -45,12 +45,12 @@ input.error{
     border: 1px solid #FF0000;
 }
 input.submit {
-        font-size: 20px;
-        width: 200px;
-        text-align: center;
-        color: darkred;
-        background-color: lightgrey
-    }
+    font-size: 20px;
+    width: 200px;
+    text-align: center;
+    color: darkred;
+    background-color: lightgrey
+}
 label.error{
     color: #FF0000;
     border: 1px solid #FF0000;

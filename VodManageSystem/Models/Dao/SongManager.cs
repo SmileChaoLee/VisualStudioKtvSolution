@@ -78,7 +78,7 @@ namespace VodManageSystem.Models.Dao
             if (string.IsNullOrEmpty(song.LangNo))
             {
                 // language no. has to be specified
-                result = ErrorCodeModel.LangeNoIsEmpty;
+                result = ErrorCodeModel.LanguageNoIsEmpty;
                 return result;
             }
             else
@@ -91,7 +91,7 @@ namespace VodManageSystem.Models.Dao
                 else
                 {
                     // no Language.LangNo found
-                    result = ErrorCodeModel.LangeNoNotFound;
+                    result = ErrorCodeModel.LanguageNoNotFound;
                     return result;
                 }
             }
@@ -239,6 +239,12 @@ namespace VodManageSystem.Models.Dao
         }
 
         // public methods
+
+        /// <summary>
+        /// Gets the one page of songs dictionary.
+        /// </summary>
+        /// <returns>The one page of songs dictionary.</returns>
+        /// <param name="songState">Song state.</param>
         public async Task<List<Song>> GetOnePageOfSongsDictionary(SongStateOfRequest songState)
         {
             if (songState == null)
@@ -276,8 +282,6 @@ namespace VodManageSystem.Models.Dao
             Song firstSong = songs.FirstOrDefault();
             if (firstSong != null)
             {
-                // songState.OrgId = firstSong.Id;  // no needed any more
-                // songState.OrgSongNo = firstSong.SongNo;
                 songState.FirstSongId = firstSong.Id;
             }
             else
@@ -289,6 +293,14 @@ namespace VodManageSystem.Models.Dao
 
             return songs;
         }
+
+        /// <summary>
+        /// Finds the one page of songs for one song.
+        /// </summary>
+        /// <returns>The one page of songs for one song.</returns>
+        /// <param name="songState">Song state.</param>
+        /// <param name="song">Song.</param>
+        /// <param name="id">Identifier.</param>
         public async Task<List<Song>> FindOnePageOfSongsForOneSong(SongStateOfRequest songState, Song song, int id)
         {
             if ( (songState == null) || (song == null) )
@@ -395,11 +407,20 @@ namespace VodManageSystem.Models.Dao
 
             if (songWithIndex.Value == null)
             {
-                songState.OrgId = 0;
-                songState.OrgSongNo = "";
-                songState.FirstSongId = 0;
-                // return empty list
-                return new List<Song>();
+                if (songsDictionary.Count == 0)
+                {
+                    // dictionay (Song Table) is empty
+                    songState.OrgId = 0;
+                    songState.OrgSongNo = "";
+                    songState.FirstSongId = 0;
+                    // return empty list
+                    return new List<Song>();
+                }
+                else
+                {
+                    // go to last page
+                    songWithIndex = songsDictionary.LastOrDefault();
+                }
             }
         
             Song songFound = songWithIndex.Value;
@@ -473,7 +494,6 @@ namespace VodManageSystem.Models.Dao
         /// Finds the one song by identifier.
         /// </summary>
         /// <returns>The one song by identifier (Song.Id).</returns>
-        /// <param name="songs">a list of songs. if songs is not null then find a song from this list</param>
         /// <param name="id">the id of the song.</param>
         public async Task<Song> FindOneSongById(int id)
         {
@@ -733,6 +753,9 @@ namespace VodManageSystem.Models.Dao
             }
             return result;
         }
+
+        // end of public methods
+
 
         #region IDisposable Support
         private bool disposedValue = false; // To detect redundant calls

@@ -354,8 +354,8 @@ namespace VodManageSystem.Models.DataModels
             {
                 entity.ToTable("singarea");
 
-                entity.HasIndex(e => e.AreaTy)
-                    .HasName("area_ty_UNIQUE")
+                entity.HasIndex(e => e.AreaNo)
+                    .HasName("area_no_UNIQUE")
                     .IsUnique();
 
                 entity.Property(e => e.Id)
@@ -372,10 +372,10 @@ namespace VodManageSystem.Models.DataModels
                     .HasColumnName("area_na")
                     .HasMaxLength(14);
 
-                entity.Property(e => e.AreaTy)
+                entity.Property(e => e.AreaNo)
                     .IsRequired()
-                    .HasColumnName("area_ty")
-                    .HasMaxLength(1);
+                    .HasColumnName("area_no")
+                    .HasMaxLength(2);
             });
 
             modelBuilder.Entity<Singer>(entity =>

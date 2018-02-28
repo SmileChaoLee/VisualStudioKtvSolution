@@ -253,18 +253,6 @@ namespace VodManageSystem.Controllers
             return RedirectToAction(nameof(SongsList), new {song_state = temp_state});
         }
 
-        // Get: mothed
-        [HttpGet,ActionName("BackToDataManageMenu")]
-        public IActionResult BackToDataManageMenu(string song_state) 
-        {
-            if (!LoginUtil.CheckIfLoggedIn(HttpContext)) return View(nameof(Index));
-
-            // return to data management menu
-            // pas song_state as a parameter, the second song_state is a parameter from View (Index)
-            // return RedirectToAction("Index", "Database", new {song_state = song_state});
-            return RedirectToAction("Index", "Database");
-        }
-
         // GET: Song/Add
         // the view of adding songs to Song table
         public async Task<IActionResult> Add(string song_state)
@@ -311,7 +299,7 @@ namespace VodManageSystem.Controllers
                 if (result == ErrorCodeModel.Succeeded)
                 {
                     // succeeded to add the song
-                    Song newSong = new Song();
+                    // Song newSong = new Song();
                     songState.OrgId = song.Id;
                     songState.OrgSongNo = song.SongNo;
                     // List<Song> songsTemp = await _songManager.FindOnePageOfSongsForOneSong(songState, newSong, songState.OrgId);
