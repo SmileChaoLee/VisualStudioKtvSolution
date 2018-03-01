@@ -8,7 +8,7 @@ namespace VodManageSystem.Models
         public string OrgAreaNo { get; set; }
         public string OrderBy { get; set; }
         public string QueryCondition { get; set; }
-        public int FirstAreaId { get; set; }
+        public int FirstId { get; set; }
         public DateTime StartTime { get; set; }
 
         /// <summary>
@@ -17,11 +17,11 @@ namespace VodManageSystem.Models
         public SingareaStateOfRequest()
         {
             CurrentPageNo = 1;
-            OrgId = 0;  // there is no Id = 0 in Language table
+            OrgId = 0;  // there is no Id = 0 in Singarea table
             OrgAreaNo = "";
             OrderBy = "AreaNo";
             QueryCondition = "";
-            FirstAreaId = 0;    // record the Id of first Language in this page
+            FirstId = 0;    // record the Id of first Singarea in this page
             StartTime = DateTime.Now;
         }
     }

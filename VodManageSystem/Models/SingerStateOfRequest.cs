@@ -8,7 +8,7 @@ namespace VodManageSystem.Models
         public string OrgSingNo { get; set; }
         public string OrderBy { get; set; }
         public string QueryCondition { get; set; }
-        public int FirstSingId { get; set; }
+        public int FirstId { get; set; }
         public DateTime StartTime { get; set; }
 
         /// <summary>
@@ -17,11 +17,11 @@ namespace VodManageSystem.Models
         public SingerStateOfRequest()
         {
             CurrentPageNo = 1;
-            OrgId = 0;  // there is no Id = 0 in Language table
+            OrgId = 0;  // there is no Id = 0 in Singer table
             OrgSingNo = "";
             OrderBy = "SingNo";
             QueryCondition = "";
-            FirstSingId = 0;    // record the Id of first Language in this page
+            FirstId = 0;    // record the Id of first Singer in this page
             StartTime = DateTime.Now;
         }
     }

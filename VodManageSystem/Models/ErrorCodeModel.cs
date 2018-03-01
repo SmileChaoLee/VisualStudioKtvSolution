@@ -26,6 +26,22 @@ namespace VodManageSystem.Models
         public const int OriginalLanguageNoIsEmpty = -36;
         public const int OriginalLanguageNotExist = -37;
 
+        public const int SingareaNotChanged = -40;
+        public const int SingareaIsNull = -42;
+        public const int SingareaNoIsEmpty = -43;
+        public const int SingareaNoDuplicate = -44;
+        public const int SingareaNoNotFound = -45;
+        public const int OriginalSingareaNoIsEmpty = -46;
+        public const int OriginalSingareaNotExist = -47;
+
+        public const int SingerNotChanged = -50;
+        public const int SingerIsNull = -52;
+        public const int SingerNoIsEmpty = -53;
+        public const int SingerNoDuplicate = -54;
+        public const int SingerNoNotFound = -55;
+        public const int OriginalSingerNoIsEmpty = -56;
+        public const int OriginalSingerNotExist = -57;
+
         public const int DatabaseError = -99;
         public const int ModelBindingFailed = -999;
 
@@ -65,12 +81,6 @@ namespace VodManageSystem.Models
                 case SongNoDuplicate:
                     errorMsg = "Song No. was duplicate.";
                     break;
-                case LanguageNoIsEmpty:
-                    errorMsg = "Language No. was empty or noll.";
-                    break;
-                case LanguageNoNotFound:
-                    errorMsg = "Language No. was found.";
-                    break;
                 case Singer1NoNotFound:
                     errorMsg = "The singer No. for first singer was no found";
                     break;
@@ -89,17 +99,17 @@ namespace VodManageSystem.Models
                 case PathnameOfVodNoIsEmpty:
                     errorMsg = "Path name for this Vod video was empty.";
                     break;
-                case DatabaseError:
-                    errorMsg = "Error on database exception.";
-                    break;
-                case ModelBindingFailed:
-                    errorMsg = "Model binding failed (Model.IsValid = false.)";
-                    break;
                 case LanguageNotChanged:
                     errorMsg = "Language was unchanged.";
                     break;
                 case LanguageIsNull:
                     errorMsg = "The object of Language was null.";
+                    break;
+                case LanguageNoIsEmpty:
+                    errorMsg = "Language No. was empty or noll.";
+                    break;
+                case LanguageNoNotFound:
+                    errorMsg = "Language No. was found.";
                     break;
                 case LanguageNoDuplicate:
                     errorMsg = "Language No. was duplicate.";
@@ -109,6 +119,54 @@ namespace VodManageSystem.Models
                     break;
                 case OriginalLanguageNotExist:
                     errorMsg = "The original language is no logner exist.";
+                    break;
+                case SingareaNotChanged:
+                    errorMsg = "Singarea was unchanged.";
+                    break;
+                case SingareaIsNull:
+                    errorMsg = "The object of Singarea was null.";
+                    break;
+                case SingareaNoIsEmpty:
+                    errorMsg = "Singarea No. was empty or noll.";
+                    break;
+                case SingareaNoNotFound:
+                    errorMsg = "Singarea No. was found.";
+                    break;
+                case SingareaNoDuplicate:
+                    errorMsg = "Singarea No. was duplicate.";
+                    break;
+                case OriginalSingareaNoIsEmpty:
+                    errorMsg = "The original singarea no was empty or null.";
+                    break;
+                case OriginalSingareaNotExist:
+                    errorMsg = "The original singarea is no logner exist.";
+                    break;
+                case SingerNotChanged:
+                    errorMsg = "Singer was unchanged.";
+                    break;
+                case SingerIsNull:
+                    errorMsg = "The object of Singer was null.";
+                    break;
+                case SingerNoIsEmpty:
+                    errorMsg = "Singer No. was empty or noll.";
+                    break;
+                case SingerNoNotFound:
+                    errorMsg = "Singer No. was found.";
+                    break;
+                case SingerNoDuplicate:
+                    errorMsg = "Singer No. was duplicate.";
+                    break;
+                case OriginalSingerNoIsEmpty:
+                    errorMsg = "The original singer no was empty or null.";
+                    break;
+                case OriginalSingerNotExist:
+                    errorMsg = "The original singer is no logner exist.";
+                    break;
+                case DatabaseError:
+                    errorMsg = "Error on database exception.";
+                    break;
+                case ModelBindingFailed:
+                    errorMsg = "Model binding failed (Model.IsValid = false.)";
                     break;
                 default:
                     errorMsg = "Unknown error";

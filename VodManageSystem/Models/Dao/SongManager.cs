@@ -63,7 +63,7 @@ namespace VodManageSystem.Models.Dao
                     existSong.Singer2Na = sing2.SingNa;
                 }
 
-                song.CopyFromAnotherSong(existSong);
+                song.CopyFrom(existSong);
             }
         }
 
@@ -282,13 +282,13 @@ namespace VodManageSystem.Models.Dao
             Song firstSong = songs.FirstOrDefault();
             if (firstSong != null)
             {
-                songState.FirstSongId = firstSong.Id;
+                songState.FirstId = firstSong.Id;
             }
             else
             {
                 songState.OrgId = 0;
                 songState.OrgSongNo = "";
-                songState.FirstSongId = 0;
+                songState.FirstId = 0;
             }
 
             return songs;
@@ -412,7 +412,7 @@ namespace VodManageSystem.Models.Dao
                     // dictionay (Song Table) is empty
                     songState.OrgId = 0;
                     songState.OrgSongNo = "";
-                    songState.FirstSongId = 0;
+                    songState.FirstId = 0;
                     // return empty list
                     return new List<Song>();
                 }
@@ -442,11 +442,11 @@ namespace VodManageSystem.Models.Dao
             Song firstSong = songs.FirstOrDefault();
             if(firstSong != null)
             {
-                songState.FirstSongId = firstSong.Id;
+                songState.FirstId = firstSong.Id;
             }
             else
             {
-                songState.FirstSongId = 0;
+                songState.FirstId = 0;
             }
                
             return songs;

@@ -1,6 +1,6 @@
 ﻿
 @{
-    ViewData["Title"] = "Find Languages";
+    ViewData["Title"] = "Find Singer Areas";
 }
 
 <h3 style="color:green;text-align:center;">@ViewData["Title"]</h3>
@@ -37,7 +37,7 @@
             // $checkRadio.parent().find('form').attr("action","Find");
             $checkRadio.parent().find('form').append("<input type='hidden' name='search_type' value='"+$checkRadio.val()+"'>");
             $checkRadio.parent().find('form').append("<input type='hidden' name='submitbutton' value='"+type+ "'>");
-            $checkRadio.parent().find('form').append('<input type="hidden" name="language_state", value="@ViewBag.LanguageState" />');
+            $checkRadio.parent().find('form').append('<input type="hidden" name="singarea_state", value="@ViewBag.SingareaState" />');
             $checkRadio.parent().find('form').submit();
 	    }
 	</script>
@@ -87,22 +87,22 @@
 <table class="findTable">
     <tr>
         <td>            
-            <input type="radio" name="search_type" value='language_no'/>
-            <label class="radio">Language No.</label>
-            <form asp-area="" asp-controller="Language" asp-action="Find" method="POST" data-search='lang_no'>
-                <label>Language No.:
-                    <input name="lang_no" type="text" maxlength="2" style='width:120px;' value=""/>
+            <input type="radio" name="search_type" value='singarea_no'/>
+            <label class="radio">Singer Area No.</label>
+            <form asp-area="" asp-controller="Singarea" asp-action="Find" method="POST" data-search='area_no'>
+                <label>Singer Area No.:
+                    <input name="area_no" type="text" maxlength="2" style='width:120px;' value=""/>
                 </label>
             </form>
         </td>
     </tr>
     <tr>
         <td>
-            <input type="radio" name="search_type" value='language_na'/>
-            <label class="radio">Language Name</label>
-            <form asp-area="" asp-controller="Language" asp-action="Find" method="POST" data-search='lang_na'>
-                <label>Language Name:
-                    <input name="lang_na" type="text" maxlength="32" style='width:320px;' value=""/>
+            <input type="radio" name="search_type" value='singarea_na'/>
+            <label class="radio">Singer Area Name</label>
+            <form asp-area="" asp-controller="Singarea" asp-action="Find" method="POST" data-search='area_na'>
+                <label>Singer Area Name:
+                    <input name="area_na" type="text" maxlength="32" style='width:320px;' value=""/>
                 </label>
             </form>                   
         </td>

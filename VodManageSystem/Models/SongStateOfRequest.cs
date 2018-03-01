@@ -12,7 +12,7 @@ namespace VodManageSystem.Models
         public string OrgSongNo { get; set; }
         public string OrderBy { get; set; }
         public string QueryCondition { get; set; }
-        public int FirstSongId { get; set; }
+        public int FirstId { get; set; }
         public DateTime StartTime { get; set; }
 
         public SongStateOfRequest()
@@ -22,7 +22,7 @@ namespace VodManageSystem.Models
             OrgSongNo = "";
             OrderBy = "SongNo";
             QueryCondition = "";
-            FirstSongId = 0;    // record the Id of first song in this page
+            FirstId = 0;    // record the Id of first song in this page
             StartTime = DateTime.Now;
         }
     }

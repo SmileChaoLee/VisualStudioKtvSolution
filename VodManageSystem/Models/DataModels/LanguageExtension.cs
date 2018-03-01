@@ -7,10 +7,10 @@ namespace VodManageSystem.Models.DataModels
     public partial class Language
     {
         /// <summary>
-        /// Copies from another song.
+        /// Copies from another language.
         /// </summary>
         /// <param name="language">Language.</param>
-        public void CopyFromAnotherLanguage(Language language)
+        public void CopyFrom(Language language)
         {
             Id = language.Id;
             LangNo = language.LangNo;

@@ -8,7 +8,7 @@
     SingareaStateOfRequest singareaState = JsonUtil.GetObjectFromJsonString<SingareaStateOfRequest>(ViewBag.SingareaState as string);
     DateTime endTime = DateTime.Now;
     double diff = ( (TimeSpan)(endTime - singareaState.StartTime) ).TotalMilliseconds;
-    ViewData["Title"] = "Singareas Management ---- elapsed time = " + diff;
+    ViewData["Title"] = "Singer Areas Management ---- elapsed time = " + diff;
 }
 
 @section Scripts
@@ -16,13 +16,17 @@
     <script type="text/javascript">
 
         // use jQuery
-        function toSubmit(action, sId) {
+        function toSubmit(action, sId, sNo) {
             var form = '#bodyForm';
             if ( ($(form).length) && (action !== undefined) ) {
                 // if form with id="bodyForm" exist. jQuery the length is greater than 0.
                 if ( (action==='/Singarea/Edit') || (action==='/Singarea/Delete') || (action==='/Singarea/Details') ) {
-                    var singarea_state = getSingareaStateValue();
-                    if ( (singarea_state.OrgId===0) && (singarea_state.OrgAreaNo==='') ) {
+                    if ((sId !== undefined) && (sId !== 0) ) {
+                        var singarea_state = getSingareaStateValue();
+                        singarea_state.OrgId = sId;
+                        singarea_state.OrgAreaNo = sNo;
+                        $('input[name="singarea_state"]').val(JSON.stringify(singarea_state));
+                    } else {
                         // Edit, Delete, Details
                         alert("Please select one singarea!");
                         return false;   // cancel submit
@@ -51,20 +55,9 @@
             }
         }
 
-        // use JavaScript
-        /* not used
-        function toSubmitJavaScript(action, sId) {
-            var form = document.getElementById('bodyForm');
-            if (form !== null ) {
-                // if form with id="bodyForm" exist.
-                toSubmitBodyForm(form, action, sId);
-            }
-        }
-        */
-
         // highlight item
         var selectedItem = "selectedItem";
-        var $items = $('tr.singareaitem').click(function(event) {
+        var $items = $('tr.row_item').click(function(event) {
             event.preventDefault();
             $items.removeClass(selectedItem);
             $(this).addClass(selectedItem);
@@ -91,3 +84,79 @@
 }
 
 <link rel="stylesheet" style="text/css" href="~/css/DataManageTableStyle.css" />
+
+<h3 style="color:green;text-align:center;">@ViewData["Title"]</h3>
+
+<form id="bodyForm" asp-area="" asp-controller="" asp-action="" method="get">
+    <input type="hidden" name="singarea_state" value="@ViewBag.SingareaState" />
+    <p>
+        <button class="aboveTable" onclick="return toSubmit('/Singarea/Find');">Find</button>&nbsp;
+        <button class="aboveTable" onclick="return toSubmit('/Singarea/Print');">Print</button>&nbsp;  
+        <button class="aboveTable" onclick="return toSubmit('/Singarea/FirstPage');">First Page</button>&nbsp;
+        <button class="aboveTable" onclick="return toSubmit('/Singarea/LastPage');">Last Page</button>&nbsp; 
+        <button class="aboveTable" onclick="return toSubmit('/Singarea/PreviousPage');">Previous Page</button>&nbsp;
+        <button class="aboveTable" onclick="return toSubmit('/Singarea/NextPage');">Next Page</button>
+    </p>
+    <table style="margin-top:10px;"> <!-- class="table" -->
+        <thead>
+            <tr>
+                <th style="display:none;">
+                    @Html.DisplayNameFor(model => model.Id)
+                </th>
+                <th>Singer Area No.</th>
+                <th>Singer Area Name</th>
+                <th>English Name of the Area</th>
+                <th/>
+                <th/>
+                <th style="text-align:center;">
+                    <button class="crud" style="background-color:orange;" onclick="return toSubmit('/Singarea/Add');">Add</button>&nbsp;
+                </th>
+            </tr>
+        </thead>
+        <tbody>
+            @foreach (var item in Model) {
+
+                string selectedItem = "";
+                if (item.Id == singareaState.OrgId)
+                {
+                    selectedItem = "selectedItem";
+                }
+
+                <tr class="row_item @selectedItem">
+                    <td style="display:none;">
+                        @Html.DisplayFor(modelItem => item.Id)
+                    </td>
+                    <td>
+                        @Html.DisplayFor(modelItem => item.AreaNo)
+                    </td>
+                    <td>
+                        @Html.DisplayFor(modelItem => item.AreaNa)
+                    </td>
+                    <td>
+                        @Html.DisplayFor(modelItem => item.AreaEn)
+                    </td>
+
+                    <td style="text-align:center;width:100px;">
+                        <button class="crud" onclick="return toSubmit('/Singarea/Edit','@item.Id','@item.AreaNo');">Edit</button>
+                    </td>
+
+                    <td style="text-align:center;width:100px">
+                        <button class="crud" onclick="toSubmit('/Singarea/Details','@item.Id','@item.AreaNo')">Details</button>
+                    </td>
+
+                    <td style="text-align:center;width:100px;">
+                        <button class="crud" onclick="return toSubmit('/Singarea/Delete','@item.Id','@item.AreaNo');">Delete</button>
+                    </td>
+           
+                </tr>
+            }
+        </tbody>
+    </table>
+    
+    <p style="margin-top:10px;">
+        <label style="color:brown; font-size:18px;">Order By:</label>
+        <button class="underTable" onclick="return orderBySubmit('AreaNo');" >Singer Area No.</button>&nbsp;
+        <button class="underTable" onclick="return orderBySubmit('AreaNa');" >Singer Area Name</button>&nbsp;  
+    </p>
+    
+</form>

@@ -12,7 +12,7 @@ namespace VodManageSystem.Models
         public string OrgLangNo { get; set; }
         public string OrderBy { get; set; }
         public string QueryCondition { get; set; }
-        public int FirstLangId { get; set; }
+        public int FirstId { get; set; }
         public DateTime StartTime { get; set; }
 
         /// <summary>
@@ -25,7 +25,7 @@ namespace VodManageSystem.Models
             OrgLangNo = "";
             OrderBy = "LangNo";
             QueryCondition = "";
-            FirstLangId = 0;    // record the Id of first Language in this page
+            FirstId = 0;    // record the Id of first Language in this page
             StartTime = DateTime.Now;
         }
     }

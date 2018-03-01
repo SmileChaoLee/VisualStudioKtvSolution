@@ -413,7 +413,7 @@ namespace VodManageSystem.Controllers
                 languageState.OrgLangNo = language.LangNo;
                 string temp_state = JsonUtil.SetJsonStringFromObject(languageState);
 
-                ViewBag.languageState = temp_state;
+                ViewBag.LanguageState = temp_state;
                 return View(language);
             }
         }
@@ -450,7 +450,7 @@ namespace VodManageSystem.Controllers
             {
                 // no language found or selected in this page
                 // then use the first language of this page
-                orgId = languageState.FirstLangId;
+                orgId = languageState.FirstId;
             }
             else
             {

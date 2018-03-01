@@ -539,7 +539,7 @@ namespace VodManageSystem.Controllers
             {
                 // no song found or selected in this page
                 // then use the first song of this page
-                orgId = songState.FirstSongId;
+                orgId = songState.FirstId;
             }
             else
             {

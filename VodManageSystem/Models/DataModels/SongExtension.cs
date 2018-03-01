@@ -44,7 +44,7 @@ namespace VodManageSystem.Models.DataModels
         /// Copies from another song.
         /// </summary>
         /// <param name="song">Song.</param>
-        public void CopyFromAnotherSong(Song song)
+        public void CopyFrom(Song song)
         {
             Id = song.Id;
             SongNo = song.SongNo;

@@ -40,7 +40,7 @@ namespace VodManageSystem.Models.Dao
         {
             if (existLanguage != null)
             {
-                language.CopyFromAnotherLanguage(existLanguage);
+                language.CopyFrom(existLanguage);
             }
         }
 
@@ -166,13 +166,13 @@ namespace VodManageSystem.Models.Dao
             Language firstLanguage = languages.FirstOrDefault();
             if (firstLanguage != null)
             {
-                languageState.FirstLangId = firstLanguage.Id;
+                languageState.FirstId = firstLanguage.Id;
             }
             else
             {
                 languageState.OrgId = 0;
                 languageState.OrgLangNo = "";
-                languageState.FirstLangId = 0;
+                languageState.FirstId = 0;
             }
 
             return languages;
@@ -233,7 +233,7 @@ namespace VodManageSystem.Models.Dao
                     // dictionary (Language Table) is empty
                     languageState.OrgId = 0;
                     languageState.OrgLangNo = "";
-                    languageState.FirstLangId = 0;
+                    languageState.FirstId = 0;
                     // return empty list
                     return new List<Language>();
                 }
@@ -263,11 +263,11 @@ namespace VodManageSystem.Models.Dao
             Language firstLanguage = languages.FirstOrDefault();
             if(firstLanguage != null)
             {
-                languageState.FirstLangId = firstLanguage.Id;
+                languageState.FirstId = firstLanguage.Id;
             }
             else
             {
-                languageState.FirstLangId = 0;
+                languageState.FirstId = 0;
             }
                
             return languages;
