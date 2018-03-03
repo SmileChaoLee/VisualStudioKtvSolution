@@ -29,21 +29,6 @@ namespace VodManageSystem.Models.Dao
 
         // private methods
 
-        // private methods
-        /// <summary>
-        /// Copies the language from exist one.
-        /// </summary>
-        /// <returns>The language from exist one.</returns>
-        /// <param name="language">Language.</param>
-        /// <param name="existLanguage">Exist language.</param>
-        private void CopyLanguageFromExistOne(Language language, Language existLanguage)
-        {
-            if (existLanguage != null)
-            {
-                language.CopyFrom(existLanguage);
-            }
-        }
-
         // end of private methods
 
 
@@ -245,7 +230,7 @@ namespace VodManageSystem.Models.Dao
             }
         
             Language languageFound = languageWithIndex.Value;
-            CopyLanguageFromExistOne(language, languageFound);
+            language.CopyFrom(languageFound);
 
             int tempCount = languageWithIndex.Key;
             int pageNo =  tempCount / pageSize;
@@ -390,7 +375,7 @@ namespace VodManageSystem.Models.Dao
                 }
                 else
                 {
-                    CopyLanguageFromExistOne(orgLanguage, language);
+                    orgLanguage.CopyColumnsFrom(language);
                     
                     // check if entry state changed
                     if ( (_context.Entry(orgLanguage).State) == EntityState.Modified)

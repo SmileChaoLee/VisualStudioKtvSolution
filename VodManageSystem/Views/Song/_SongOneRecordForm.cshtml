@@ -38,7 +38,7 @@
             </td>
         </tr>
         <tr>
-            <td class="labelname">Language No.</td>
+            <td class="labelname">Language</td>
             <td>
                 <!--
                 <input asp-for="LangNo" maxlength="2" style="width:100px;"/>
@@ -62,7 +62,7 @@
             </td>
             <td class="labelname">Num_pw</td>
             <td>
-                <input asp-for="NumPw" pattern="[A-Z0]" maxlength="1" style="width:100px;" />
+                <input asp-for="NumPw" pattern="[A-Z]" maxlength="1" style="width:100px;" />
                 <span asp-validation-for="NumPw" class="text-danger"></span>
             </td>
         </tr>
@@ -76,7 +76,7 @@
                 -->
                 <select asp-for="Singer1No" asp-items="@ViewBag.SingerList"></select>
             </td>
-            <td class="labelname">Singer2 No.</td>
+            <td class="labelname">Singer 2</td>
             <td>
                 <!--
                 <input asp-for="Singer2No" maxlength="5" style="width:100px;"/>
@@ -139,11 +139,23 @@
         <tr>
             <td class="labelname"></td>
             <td style="text-align:center" colspan="3">
-                @if ( ((string)ViewBag.Action).Trim() != "Details") {
-                    string inputStr = "<input class='submit' type='submit' name='submitbutton' value='Submit' />";
+                @{
+                    string _action = ((string)ViewBag.Action).Trim();
+                    if (_action != "Details")
+                    {
+                        string inputStr = "";
+                        if ( (_action == "Add") || (_action == "Edit") )
+                        {
+                            inputStr = "<input class='submit' type='submit' name='submitbutton' value='Submit' />";
+
+                        } else if (_action == "Delete")
+                        {
+                            inputStr = "<input formnovalidate='formnovalidate' class='submit' type='submit' name='submitbutton' value='Submit' />";
+                        }
                     inputStr += "&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;";
                     ViewData["InputButton"] = new HtmlString(inputStr);
-                }
+                    }
+                }       
                 @ViewData["InputButton"]
                 <input formnovalidate="formnovalidate" class="submit" type="submit" name="submitbutton" value="Cancel"/>
             </td>

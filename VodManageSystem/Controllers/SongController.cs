@@ -343,13 +343,14 @@ namespace VodManageSystem.Controllers
             {
                 songState.OrgId = song.Id;
                 songState.OrgSongNo = song.SongNo;
+                string temp_state = JsonUtil.SetJsonStringFromObject(songState);
+
                 List<SelectListItem> languageSelectList = await _languageManager.GetSelectListOfLanguages(new LanguageStateOfRequest());
                 List<SelectListItem> singerSelectList = await _singerManager.GetSelectListOfSingers(new SingerStateOfRequest());
 
                 ViewBag.LanguageList = languageSelectList;
                 ViewBag.SingerList = singerSelectList;
-                ViewBag.SongState = JsonUtil.SetJsonStringFromObject(songState);
-
+                ViewBag.SongState = temp_state;
                 return View(song);
             }
         }
@@ -419,13 +420,14 @@ namespace VodManageSystem.Controllers
             {
                 songState.OrgId = id;
                 songState.OrgSongNo = song.SongNo;
+                string temp_state = JsonUtil.SetJsonStringFromObject(songState);
 
                 List<SelectListItem> languageSelectList = await _languageManager.GetSelectListOfLanguages(new LanguageStateOfRequest());
                 List<SelectListItem> singerSelectList = await _singerManager.GetSelectListOfSingers(new SingerStateOfRequest());
 
                 ViewBag.LanguageList = languageSelectList;
                 ViewBag.SingerList = singerSelectList;
-                ViewBag.SongState = JsonUtil.SetJsonStringFromObject(songState);
+                ViewBag.SongState = temp_state;
                 return View(song);
             }
         }

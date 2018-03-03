@@ -269,8 +269,9 @@ namespace VodManageSystem.Controllers
             {
                 languageState.OrgId = language.Id;
                 languageState.OrgLangNo = language.LangNo;
+                string temp_state = JsonUtil.SetJsonStringFromObject(languageState);
 
-                ViewBag.LanguageState = JsonUtil.SetJsonStringFromObject(languageState);
+                ViewBag.LanguageState = temp_state;
                 return View(language);
             }
         }
@@ -340,8 +341,9 @@ namespace VodManageSystem.Controllers
             {
                 languageState.OrgId = id;
                 languageState.OrgLangNo = language.LangNo;
+                string temp_state = JsonUtil.SetJsonStringFromObject(languageState);
 
-                ViewBag.LanguageState = JsonUtil.SetJsonStringFromObject(languageState);
+                ViewBag.LanguageState = temp_state;
                 return View(language);
             }
         }

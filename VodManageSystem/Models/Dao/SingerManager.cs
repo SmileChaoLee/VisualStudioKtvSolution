@@ -29,19 +29,25 @@ namespace VodManageSystem.Models.Dao
 
         // private methods
 
-        // private methods
         /// <summary>
-        /// Copies the singer from exist one.
+        /// Verifies the singer.
         /// </summary>
-        /// <returns>The singer from exist one.</returns>
+        /// <returns>The singer.</returns>
         /// <param name="singer">Singer.</param>
-        /// <param name="existSinger">Exist singer.</param>
-        private void CopySingerFromExistOne(Singer singer, Singer existSinger)
+        private async Task<int> VerifySinger(Singer singer)
         {
-            if (existSinger != null)
+            // int result = 1; // valid by verification 
+            int result = ErrorCodeModel.SingareaNoNotFound;
+            if (singer.AreaId >= 0 )
             {
-                singer.CopyFrom(existSinger);
+                Singarea area = await _context.Singarea.Where(x => x.Id == singer.AreaId).SingleOrDefaultAsync();
+                if (area != null)
+                {
+                    result = 1; // found singarea
+                }
             }
+
+            return result;
         }
 
         // end of private methods
@@ -61,7 +67,8 @@ namespace VodManageSystem.Models.Dao
                 return new SortedDictionary<int, Singer>();
             }
 
-            List<Singer> totalSingers = await _context.Singer.AsNoTracking().ToListAsync();
+            List<Singer> totalSingers = await _context.Singer.Include(x=>x.Singarea)
+                                                      .AsNoTracking().ToListAsync();
 
             Dictionary<int, Singer> singersDictionary = null;
 
@@ -245,7 +252,7 @@ namespace VodManageSystem.Models.Dao
             }
         
             Singer singerFound = singerWithIndex.Value;
-            CopySingerFromExistOne(singer, singerFound);
+            singer.CopyFrom(singerFound);
 
             int tempCount = singerWithIndex.Key;
             int pageNo =  tempCount / pageSize;
@@ -280,7 +287,8 @@ namespace VodManageSystem.Models.Dao
         /// <param name="sing_no">Singer no.</param>
         public async Task<Singer> FindOneSingerBySingNo(string sing_no)
         {
-            Singer singer = await _context.Singer.Where(x=>x.SingNo == sing_no).SingleOrDefaultAsync();
+            Singer singer = await _context.Singer.Include(x=>x.Singarea)
+                            .Where(x=>x.SingNo == sing_no).SingleOrDefaultAsync();
 
             return singer;
         }
@@ -292,7 +300,8 @@ namespace VodManageSystem.Models.Dao
         /// <param name="id">the id of the singer.</param>
         public async Task<Singer> FindOneSingerById(int id)
         {
-            Singer singer = await _context.Singer.Where(x=>x.Id == id).SingleOrDefaultAsync();
+            Singer singer = await _context.Singer.Include(x=>x.Singarea)
+                            .Where(x=>x.Id == id).SingleOrDefaultAsync();
 
             return singer;
         }
@@ -327,6 +336,15 @@ namespace VodManageSystem.Models.Dao
 
             try
             {
+                // verifying the validation for singer data
+                int validCode = await VerifySinger(singer);
+                if (validCode != ErrorCodeModel.Succeeded)
+                {
+                    // data is invalid
+                    result = validCode;
+                    return result;
+                }
+
                 _context.Add(singer);
                 await _context.SaveChangesAsync();
                 result = ErrorCodeModel.Succeeded;
@@ -390,8 +408,17 @@ namespace VodManageSystem.Models.Dao
                 }
                 else
                 {
-                    CopySingerFromExistOne(orgSinger, singer);
-                    
+                    orgSinger.CopyColumnsFrom(singer);
+
+                    // verifying the validation for Song data
+                    int validCode = await VerifySinger(orgSinger);
+                    if (validCode != ErrorCodeModel.Succeeded)
+                    {
+                        // data is invalid
+                        result = validCode;
+                        return result;
+                    }
+                     
                     // check if entry state changed
                     if ( (_context.Entry(orgSinger).State) == EntityState.Modified)
                     {

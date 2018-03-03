@@ -1,0 +1,96 @@
+@model VodManageSystem.Models.DataModels.Singer
+
+@{
+    string boolString = "false";    // default is "Add" or "Edit" --> writable
+    string vBag = ViewBag.Action as string;
+    if (!string.IsNullOrEmpty(vBag))
+    {
+        if ( (vBag.Trim() == "Delete") || (vBag.Trim() == "Details") )
+        {
+            // form is readonly
+            boolString = "true";
+        }
+    }
+}
+
+<script type="text/javascript">
+    // jQuery function to set focus on first input item
+    $( document ).ready(function() {
+        $('form input[type="text"]').prop("readonly",@boolString);
+        $('form input[type="number"]').prop("readonly",@boolString);
+        $('form input[type="date"]').prop("readonly",@boolString);
+        $('form select').prop("disabled",@boolString);
+        $('form input:first').focus();
+
+        // validattion
+        $("#OneSingerForm").validate({
+            rules: {
+                SingNo: {
+                    required: true,
+                    minlength: 5,
+                    maxlength: 5,
+                    pattern: "[0-9]{5}"
+                },
+                SingNa: {
+                    required: true,
+                    maxlength: 30
+                },
+                NumFw: {
+                    required: true,
+                    min: 0,
+                    max: 99,
+                    minlength: 1,
+                    maxlength: 2,
+                },
+                NumPw: {
+                    required: true,
+                    minlength: 1,
+                    maxlength: 1,
+                    pattern:"[A-Z]"
+                },
+                PicFile: {
+                    minlength: 5,
+                    maxlength: 5,
+                    pattern:"[0-9A-Z]{5}"
+                }
+            },
+            
+            messages: {
+                SingNo: {
+                    required: "Singer No. cannot be blank.",
+                    minlength: "At least 6 digits.",
+                    maxlength: "At most 6 digits.",
+                    pattern: "Singer No. cannot contain alphabet character."
+                },
+                SingNa: {
+                    required: "Singer Name cannot be blank.",
+                    maxlength: "The maximum string length is 30."
+                },
+                NumFw: {
+                    required: "Strokes for the singer is required.",
+                    min: "Minimum value is 0.",
+                    max: "Maximim value is 99.",
+                    minlength: "At least 1 digit.",
+                    maxlength: "At most 2 digits"
+                },
+                NumPw: {
+                    required: "Pinyin for the singer is required.",
+                    minlength: "At least 1 digit.",
+                    maxlength: "At most 1 digits.",
+                    pattern: "Only A-Z."
+                },
+                PicFile: {
+                    minlength: "At least 5 characters.",
+                    maxlength: "At most 5 characters.",
+                    pattern:"[0-9A-Z]"
+                }
+            },
+
+            submitHandler: function(form){
+                // alert("submitHandler");
+                form.submit();
+            }
+        });
+    });
+
+</script>

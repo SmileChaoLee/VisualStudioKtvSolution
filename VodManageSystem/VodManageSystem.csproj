@@ -27,6 +27,7 @@
     <Folder Include="wwwroot\lib\propper\" />
     <Folder Include="Views\Language\" />
     <Folder Include="Views\Singarea\" />
+    <Folder Include="Views\Singer\" />
   </ItemGroup>
   <ItemGroup>
     <None Remove="VodManageSystem.tar" />

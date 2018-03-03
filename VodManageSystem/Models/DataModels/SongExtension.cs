@@ -41,10 +41,10 @@ namespace VodManageSystem.Models.DataModels
         }
 
         /// <summary>
-        /// Copies from another song.
+        /// Copies the columns from.
         /// </summary>
         /// <param name="song">Song.</param>
-        public void CopyFrom(Song song)
+        public void CopyColumnsFrom(Song song)
         {
             Id = song.Id;
             SongNo = song.SongNo;
@@ -55,11 +55,24 @@ namespace VodManageSystem.Models.DataModels
             SeleTf = song.SeleTf;
 
             LanguageId = song.LanguageId;
+            if (song.Language != null)
+            {
+                song.LangNo = song.Language.LangNo;
+            }
             LangNo = song.LangNo;
 
             Singer1Id = song.Singer1Id;
+            if (song.Singer1 != null)
+            {
+                song.Singer1No = song.Singer1.SingNo;
+            }
             Singer1No = song.Singer1No;
+
             Singer2Id = song.Singer2Id;
+            if (song.Singer2 != null)
+            {
+                song.Singer2No = song.Singer2.SingNo;
+            }
             Singer2No = song.Singer2No;
 
             Chor = song.Chor;
@@ -73,6 +86,15 @@ namespace VodManageSystem.Models.DataModels
             OrdNo = song.OrdNo;
             OrdOldN = song.OrdOldN;
             OrderNum = song.OrderNum;
+        }
+
+        /// <summary>
+        /// Copies from another song.
+        /// </summary>
+        /// <param name="song">Song.</param>
+        public void CopyFrom(Song song)
+        {
+            CopyColumnsFrom(song);
 
             Language = song.Language;
             Singer1 = song.Singer1;

@@ -29,21 +29,6 @@ namespace VodManageSystem.Models.Dao
 
         // private methods
 
-        // private methods
-        /// <summary>
-        /// Copies the Singarea from exist one.
-        /// </summary>
-        /// <returns>The singarea from exist one.</returns>
-        /// <param name="singarea">Singarea.</param>
-        /// <param name="existSingarea">Exist singarea.</param>
-        private void CopySingareaFromExistOne(Singarea singarea, Singarea existSingarea)
-        {
-            if (existSingarea != null)
-            {
-                singarea.CopyFrom(existSingarea);
-            }
-        }
-
         // end of private methods
 
 
@@ -100,7 +85,7 @@ namespace VodManageSystem.Models.Dao
                 selectList.Add(new SelectListItem
                 {
                     Text = area.AreaNa,
-                    Value = area.AreaNo
+                    Value = Convert.ToString(area.Id)
                 });
             }
             return selectList;
@@ -245,7 +230,7 @@ namespace VodManageSystem.Models.Dao
             }
         
             Singarea singareaFound = singareaWithIndex.Value;
-            CopySingareaFromExistOne(singarea, singareaFound);
+            singarea.CopyFrom(singareaFound);
 
             int tempCount = singareaWithIndex.Key;
             int pageNo =  tempCount / pageSize;
@@ -390,7 +375,7 @@ namespace VodManageSystem.Models.Dao
                 }
                 else
                 {
-                    CopySingareaFromExistOne(orgSingarea, singarea);
+                    orgSingarea.CopyColumnsFrom(singarea);
                     
                     // check if entry state changed
                     if ( (_context.Entry(orgSingarea).State) == EntityState.Modified)

@@ -35,7 +35,7 @@
                 },
                 SongNa: {
                     required: true,
-                    maxlength: 50
+                    maxlength: 36
                 },
 
                 // do not need that any more because of using select and options tag and 
@@ -59,6 +59,12 @@
                     max: 99,
                     minlength: 1,
                     maxlength: 2,
+                },
+                NumPw: {
+                    required: true,
+                    minlength: 1,
+                    maxlength: 1,
+                    pattern:"[A-Z]"
                 },
 
                 // do not need that any more because of using select and options tag and 
@@ -113,14 +119,17 @@
                 },
                 SongNa: {
                     required: "Song Name cannot be blank.",
-                    maxlength: "The maximum string length is 50."
+                    maxlength: "The maximum string length is 36."
                 },
-                LangNo: {
-                    required: "Language No. cannot be blank.",
-                    minlength: "Has to be 2 characters",
-                    maxlength: "Has to be 2 characters",
-                    pattern: "Only numbers allowed."
-                },
+    
+                // do not need that any more because of using select and options tag and 
+                // LangNo: {
+                //     required: "Language No. cannot be blank.",
+                //     minlength: "Has to be 2 characters",
+                //     maxlength: "Has to be 2 characters",
+                //     pattern: "Only numbers allowed."
+                // },
+    
                 SNumWord: {
                     required: "number of words is required.",
                     min: "Minimum value is 0.",
@@ -133,20 +142,29 @@
                     min: "Minimum value is 0.",
                     max: "Maximim value is 99.",
                     minlength: "At least 1 digit.",
-                    maxlength: "At most 2 digits"
+                    maxlength: "At most 2 digits."
                 },
-                Singer1No: {
-                    required: "Singer No. is required.",
-                    minlength: "At least 5 digits.",
-                    maxlength: "At most 5 digits.",
-                    pattern: "Only numbers are allowed."
+                NumPw: {
+                    required: "Pinyin for the song is required.",
+                    minlength: "At least 1 digit.",
+                    maxlength: "At most 1 digits.",
+                    pattern: "Only A-Z."
                 },
-                Singer2No: {
-                    required: "Singer No. is required.",
-                    minlength: "At least 5 digits.",
-                    maxlength: "At most 5 digits.",
-                    pattern: "Only numbers are allowed."
-                },
+
+                // do not need that any more because of using select and options tag and 
+                // Singer1No: {
+                //     required: "Singer No. is required.",
+                //     minlength: "At least 5 digits.",
+                //     maxlength: "At most 5 digits.",
+                //     pattern: "Only numbers are allowed."
+                // },
+                // Singer2No: {
+                //     required: "Singer No. is required.",
+                //     minlength: "At least 5 digits.",
+                //     maxlength: "At most 5 digits.",
+                //     pattern: "Only numbers are allowed."
+                // },
+    
                 NMpeg: {
                     required: "Music track must be specified.",
                     minlength: "It must be 2 digits.",

@@ -267,8 +267,9 @@ namespace VodManageSystem.Controllers
             {
                 singareaState.OrgId = singarea.Id;
                 singareaState.OrgAreaNo = singarea.AreaNo;
+                string temp_state = JsonUtil.SetJsonStringFromObject(singareaState);
 
-                ViewBag.SingareaState = JsonUtil.SetJsonStringFromObject(singareaState);
+                ViewBag.SingareaState = temp_state;
                 return View(singarea);
             }
         }
@@ -338,8 +339,9 @@ namespace VodManageSystem.Controllers
             {
                 singareaState.OrgId = id;
                 singareaState.OrgAreaNo = singarea.AreaNo;
+                string temp_state = JsonUtil.SetJsonStringFromObject(singareaState);
 
-                ViewBag.SingareaState = JsonUtil.SetJsonStringFromObject(singareaState);
+                ViewBag.SingareaState = temp_state;
                 return View(singarea);
             }
         }

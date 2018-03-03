@@ -424,7 +424,8 @@ namespace VodManageSystem.Models.Dao
             }
         
             Song songFound = songWithIndex.Value;
-            await CopySongFromExistOne(song, songFound);
+            // await CopySongFromExistOne(song, songFound);
+            song.CopyFrom(songFound);
 
             int tempCount = songWithIndex.Key;
             int pageNo =  tempCount / pageSize;
@@ -633,6 +634,7 @@ namespace VodManageSystem.Models.Dao
                 }
                 else
                 {
+                    /*
                     orgSong.SongNo = song.SongNo;
                     orgSong.SongNa = song.SongNa;
                     orgSong.MMpeg = song.MMpeg;
@@ -647,6 +649,9 @@ namespace VodManageSystem.Models.Dao
                     orgSong.LangNo = song.LangNo;
                     orgSong.Singer1No = song.Singer1No;
                     orgSong.Singer2No = song.Singer2No;
+                    */
+
+                    orgSong.CopyColumnsFrom(song);
                     
                     // verifying the validation for Song data
                     int validCode = await VerifySong(orgSong);

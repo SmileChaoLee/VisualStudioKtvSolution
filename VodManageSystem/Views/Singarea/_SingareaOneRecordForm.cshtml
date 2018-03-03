@@ -39,11 +39,23 @@
         <tr>
             <td class="labelname"></td>
             <td style="text-align:center">
-                @if ( ((string)ViewBag.Action).Trim() != "Details") {
-                    string inputStr = "<input class='submit' type='submit' name='submitbutton' value='Submit' />";
-                    inputStr += "&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;";
-                    ViewData["InputButton"] = new HtmlString(inputStr);
-                }
+                @{
+                    string _action = ((string)ViewBag.Action).Trim();
+                    if (_action != "Details")
+                    {
+                        string inputStr = "";
+                        if ( (_action == "Add") || (_action == "Edit") )
+                        {
+                            inputStr = "<input class='submit' type='submit' name='submitbutton' value='Submit' />";
+
+                        } else if (_action == "Delete")
+                        {
+                            inputStr = "<input formnovalidate='formnovalidate' class='submit' type='submit' name='submitbutton' value='Submit' />";
+                        }
+                        inputStr += "&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;";
+                        ViewData["InputButton"] = new HtmlString(inputStr);
+                    }
+                }       
                 @ViewData["InputButton"]
                 <input formnovalidate="formnovalidate" class="submit" type="submit" name="submitbutton" value="Cancel"/>
             </td>
