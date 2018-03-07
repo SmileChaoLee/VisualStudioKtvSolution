@@ -1,6 +1,5 @@
 ﻿body {
     font-family: "New Roman";
-    background-color: #d0e4fe;
 }
 
 table {
@@ -13,7 +12,6 @@ table {
 th {
     font-weight: bold;
     text-align: center;
-    background-color: lightblue;
     border: 1px solid black;
 }
 
@@ -24,11 +22,10 @@ td {
 }
 
 button.aboveTable {
-    font-size: 16px;
+    font-weight: bold;
     color: black;
-    background-color: lightgrey;
-    height: 24px;
-    text-align: center;
+    text-align: center
+
 }
 
 button.aboveTable:hover {
@@ -36,12 +33,9 @@ button.aboveTable:hover {
 }
 
 button.crud {
-    font-size: 16px;
     font-weight: bold;
     color: black;
-    background-color: lightgreen;
-    height: 24px;
-    text-align: center;
+    text-align: center
 }
 
 button.crud:hover {
@@ -49,11 +43,8 @@ button.crud:hover {
 }
 
 button.underTable {
-    font-size: 16px;
     font-weight: bold;
     color: black;
-    background-color: lightgrey;
-    height: 24px;
     text-align: center;
 }
 

@@ -3,7 +3,7 @@
     ViewData["Title"] = "Find Languages";
 }
 
-<h3 style="color:green;text-align:center;">@ViewData["Title"]</h3>
+<h3 style="text-align:center;">@ViewData["Title"]</h3>
 
 @section Scripts
 {
@@ -42,48 +42,9 @@
 	    }
 	</script>
 }
-	
-<style>
-    body
-	{
-        font-family:"New Roman";
-        background-color:#d0e4fe;
-    }
-    table {
-        width:100%;
-        border-collapse: collapse;
-    }
-    table.findTable {
-        font-size:16px;
-        border: 2px solid #000000;
-        margin-left: auto;margin-right: auto;
-    }
-    td,th {
-        padding-left: 10px;padding-top: 5px;padding-right: 10px;padding-bottom: 5px;
-        border: 1px solid #000000;
-    }
-    .findTable label {
-        display: inline-block;
-        font-weight: lighter;
-        color:black;
-    }
-    .findTable label.radio {
-        font-weight: bold;
-        color:black;
-    }
-    .findTable select {
-    }
-    input {
-        font-size:20px;
-    }
-    button {
-        font-weight:bold;
-        font-size:20px;width:200px;
-        text-align:center;
-        color:darkred;background-color: lightgrey;
-    }
-</style>      
-	        
+
+<link rel="stylesheet" type="text/css" href="~/css/FindRecordStyle.css" /> 
+
 <table class="findTable">
     <tr>
         <td>            

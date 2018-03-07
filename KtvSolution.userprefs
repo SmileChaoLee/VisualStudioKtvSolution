@@ -1,9 +1,8 @@
 ﻿<Properties StartupConfiguration="{68EEE490-59E8-4AFB-A5E7-98E199788C6F}|Default">
   <MonoDevelop.Ide.ItemProperties.VodManageSystem PreferredExecutionTarget="MonoDevelop.Default" />
-  <MonoDevelop.Ide.Workbench ActiveDocument="VodManageSystem/Views/Song/SongsList.cshtml">
+  <MonoDevelop.Ide.Workbench ActiveDocument="VodManageSystem/Views/Authenticate/Login.cshtml">
     <Files>
-      <File FileName="VodManageSystem/Controllers/SingerController.cs" Line="247" Column="17" />
-      <File FileName="VodManageSystem/Views/Song/SongsList.cshtml" Line="238" Column="101" />
+      <File FileName="VodManageSystem/Views/Authenticate/Login.cshtml" Line="50" Column="13" />
     </Files>
   </MonoDevelop.Ide.Workbench>
   <MonoDevelop.Ide.Workspace ActiveConfiguration="Debug" />
