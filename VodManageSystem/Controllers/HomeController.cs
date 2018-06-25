@@ -16,20 +16,19 @@ namespace VodManageSystem.Controllers
     {
         public IActionResult Index()
         {
-            ViewData["Message"] = "Company description.";
+            ViewData["Message"] = "Company description";
             return View();
         }
 
-        public IActionResult About()
+        public IActionResult Technical_Docs()
         {
-            ViewData["Message"] = "Application description.";
 
             return View();
         }
 
         public IActionResult Contact()
         {
-            ViewData["Message"] = "Contact Information.";
+            ViewData["Message"] = "Contact Information";
 
             return View();
         }
