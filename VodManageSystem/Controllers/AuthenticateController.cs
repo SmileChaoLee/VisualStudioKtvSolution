@@ -10,6 +10,8 @@ using Microsoft.Extensions.Logging;
 
 using VodManageSystem.Models.DataModels;
 using System.Text;
+using VodManageSystem.Utilities;
+using Newtonsoft.Json.Linq;
 
 // For more information on enabling MVC for empty projects, visit https://go.microsoft.com/fwlink/?LinkID=397860
 
@@ -59,42 +61,37 @@ namespace VodManageSystem.Controllers
             return View();
         }
 
-        [HttpPost, ActionName("LoginFromAndroid")]
-        // [ValidateAntiForgeryToken]   // prevent forgery
-        // the following method definition is wrong for REST Web Service
-        // public async Task<IActionResult> LoginFromAndroid(string username, string password)
-        public async Task LoginFromAndroid(string username, string password)
-        {
-            bool loginYn = false;
-            if ((!string.IsNullOrEmpty(username)) && (!string.IsNullOrEmpty(password)))
-            {
-                username = username.Trim();
-                password = password.Trim();
-                var user = await _context.User.SingleOrDefaultAsync(m => (m.UserName == username) && m.UserPassword == password);
-                if (user != null)
-                {
-                    // found the user
-                    loginYn = true;
+        [HttpPost, ActionName("LoginForRESTfulService")]         // [ValidateAntiForgeryToken]   // prevent forgery         // the following method definition is wrong for REST Web Service         // public async Task<IActionResult> LoginFromAndroid(string username, string password)         public async Task LoginForRESTfulService(string username, string password)         {             string uName = string.Empty;             string pWord = string.Empty;
+
+            bool connectedToDatabase = true;             User user = new User();             if ((!string.IsNullOrEmpty(username)) && (!string.IsNullOrEmpty(password)))             {                 uName = username.Trim();                 pWord = password.Trim();
+                try {                     user = await _context.User.SingleOrDefaultAsync(m => (m.UserName == uName) && m.UserPassword == pWord);                     if (user == null)                     {
+                        // the user not found
+                        user.UserName = "User not found or wrong password.";                         user.UserEmail = "";                         user.UserState = "";                     }
                 }
-            }
+                catch (Exception ex)
+                {
+                    string msg = ex.StackTrace.ToString();
+                    Console.WriteLine(msg);
+                    // jsonObject.Property("isConnectedToJDBC").Value = false;
+                    connectedToDatabase = false;
+                    user.UserName = "Database Exception happend.";
+                    user.UserEmail = "";
+                    user.UserState = "";
+                }             }             else             {                 // empty user name of password                 user.UserName = "User name can not be blank.";                 user.UserEmail = "";                 user.UserState = "";             }              // string userJSON = JsonUtil.SetJsonStringFromObject(user);
+            // JObject jsonObject = JObject.Parse(userJSON);
+            // jsonObject.Add("isConnectedToJDBC", connectedToDatabase);
+            // the following 2 statements are also set value to a property of JObject object
+            // jsonObject.Property("IsConnectedToJDBC").Value = connectedToDatabase;
+            // jsonObject["IsConnectedToJDBC"] = connectedToDatabase;
 
-            String message;
-            Response.ContentType = "text/plain";
-            if (loginYn)
-            {
-                message = "Succeeded to login (test.)";
-            }
-            else
-            {
-                message = "Failed to login (test.)";
-            }
+            JObject jsonObject = new JObject();
+            jsonObject.Add("isConnectedToJDBC", connectedToDatabase);
+            jsonObject.Add("userName", user.UserName);
+            jsonObject.Add("userEmail", user.UserEmail);
+            jsonObject.Add("userState", user.UserState);
 
-            await Response.WriteAsync(message, Encoding.UTF8);
-
-            // or
-            // byte[] mBytes = Encoding.UTF8.GetBytes(message);
-            // await Response.Body.WriteAsync(mBytes,0,mBytes.Length);
-        }
+            // Response.ContentType = "text/plain; charset=utf-8";
+            Response.ContentType = "application/json; charset=utf-8";             await Response.WriteAsync(jsonObject.ToString(), Encoding.UTF8);              // or             // byte[] mBytes = Encoding.UTF8.GetBytes(jsonObject.ToString());             // await Response.Body.WriteAsync(mBytes,0,mBytes.Length);         } 
 
         // GET: /<controller>/
         [HttpGet]
