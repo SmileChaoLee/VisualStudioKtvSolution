@@ -28,6 +28,7 @@ namespace VodManageSystem.Models.DataModels
         public virtual DbSet<Singer> Singer { get; set; }
         public virtual DbSet<Song> Song { get; set; }
         public virtual DbSet<User> User { get; set; }
+        public virtual DbSet<Playerscore> Playerscore { get; set; }
 
         /*
         protected override void OnConfiguring(DbContextOptionsBuilder optionsBuilder)
@@ -610,6 +611,29 @@ namespace VodManageSystem.Models.DataModels
                 entity.Property(e => e.UserState)
                     .HasColumnName("userState")
                     .HasColumnType("tinytext");
+            });
+
+            modelBuilder.Entity<Playerscore>(entity =>
+            {
+                entity.ToTable("playerscore");
+
+                entity.HasIndex(e => e.Id)
+                    .HasName("id_UNIQUE")
+                    .IsUnique();
+                
+                entity.Property(e => e.Id)
+                    .HasColumnName("id")
+                    .HasColumnType("int(11)");
+
+                entity.Property(e => e.PlayerName)
+                    .HasColumnName("playername")
+                    .HasMaxLength(45);
+
+
+                entity.Property(e => e.Score)
+                    .HasColumnName("score")
+                    .HasColumnType("int(12)");
+                
             });
         }
     }
