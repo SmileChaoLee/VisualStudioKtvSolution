@@ -42,6 +42,11 @@ namespace VodManageSystem.Models
         public const int OriginalSingerNoIsEmpty = -56;
         public const int OriginalSingerNotExist = -57;
 
+        public const int PlayerscoreNotChanged = -100;
+        public const int PlayerscoreIsNull = -102;
+        public const int PlayerNameIsEmpty = -103;
+        public const int OriginalPlayerscoreNotExist = -107;
+
         public const int DatabaseError = -99;
         public const int ModelBindingFailed = -999;
 

@@ -37,6 +37,7 @@ namespace VodManageSystem
             services.AddScoped<SingareaManager>();  // singer areas management service
             services.AddScoped<SingerManager>();    // singers management service
             services.AddScoped<SongManager>();      // songs management service
+            services.AddScoped<PlayerscoreManager>();   // Playerscore Manager service
         }
 
         // This method gets called by the runtime. Use this method to configure the HTTP request pipeline.

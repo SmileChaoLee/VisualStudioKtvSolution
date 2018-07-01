@@ -32,6 +32,7 @@
     <Folder Include="Views\Language\" />
     <Folder Include="Views\Singarea\" />
     <Folder Include="Views\Singer\" />
+    <Folder Include="Views\Playerscore\" />
   </ItemGroup>
   <ItemGroup>
     <None Remove="VodManageSystem.tar" />
