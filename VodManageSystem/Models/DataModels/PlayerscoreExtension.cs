@@ -13,6 +13,7 @@ namespace VodManageSystem.Models.DataModels
         {
             PlayerName = playerscore.PlayerName;
             Score = playerscore.Score;
+            GameId = playerscore.GameId;
         }
     }
 }

@@ -28,8 +28,8 @@ namespace VodManageSystem.Controllers
                 ViewData["Message"] = "Please login before doing data management.";
                 return View();
             }
-
-            List<Playerscore> top10List = await _playerscoreManager.GetTop10ScoresList();
+            int gameId = 1; // for Color balls
+            List<Playerscore> top10List = await _playerscoreManager.GetTop10ScoresList(gameId);
             string rValue = JsonUtil.SetJsonStringFromObject(top10List);
             ViewData["Message"] = rValue;
 
@@ -43,8 +43,15 @@ namespace VodManageSystem.Controllers
         /// </summary>
         /// <returns>The top10 playerscores. return value is a JSON array</returns>
         [HttpGet]
-        public async Task<string> GetTop10PlayerscoresREST() {
-            List<Playerscore> top10List = await _playerscoreManager.GetTop10ScoresList();
+        public async Task<string> GetTop10PlayerscoresREST(int? gameId) {
+            int gId = 1;
+            if (gameId != null)
+            {
+                gId = gameId.Value;
+            }
+            Console.WriteLine("gameId = " + gameId);
+            Console.WriteLine("gId = " + gId);
+            List<Playerscore> top10List = await _playerscoreManager.GetTop10ScoresList(gId);
             string rValue = JsonUtil.SetJsonStringFromObject(top10List);
             Console.WriteLine("Player score list = " + rValue);
             return rValue;
@@ -69,8 +76,10 @@ namespace VodManageSystem.Controllers
                 Playerscore playerscore = new Playerscore();
                 playerscore.PlayerName = (string)json["PlayerName"];
                 playerscore.Score = Convert.ToInt32((string)json["Score"]);
+                playerscore.GameId = Convert.ToInt32((string)json["GameId"]);
                 Console.WriteLine("playercore.PlayerName = " + playerscore.PlayerName);
                 Console.WriteLine("playercore.Score = " + playerscore.Score);
+                Console.WriteLine("playercore.GameId = " + playerscore.GameId);
 
                 int result = await _playerscoreManager.AddOnePlayerscoreToTable(playerscore);
                 if (result == ErrorCodeModel.Succeeded)

@@ -629,11 +629,14 @@ namespace VodManageSystem.Models.DataModels
                     .HasColumnName("playername")
                     .HasMaxLength(45);
 
-
                 entity.Property(e => e.Score)
                     .HasColumnName("score")
                     .HasColumnType("int(12)");
-                
+
+                entity.Property(e => e.GameId)
+                    .HasColumnName("game_id")
+                    .HasColumnType("int(11)");
+
             });
         }
     }

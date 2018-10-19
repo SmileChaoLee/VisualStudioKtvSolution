@@ -415,10 +415,16 @@ namespace VodManageSystem.Models.Dao
             return result;
         }
 
-        public async Task<List<Playerscore>> GetTop10ScoresList()
+        public async Task<List<Playerscore>> GetTop10ScoresList(int gameId)
         {
             List<Playerscore> top10List;
-            top10List = await _context.Playerscore.OrderByDescending(x => x.Score).Take(10).ToListAsync();
+            if (gameId == 1) {
+                top10List = await _context.Playerscore.Where(x => (x.GameId==null) || (x.GameId==1))
+                                          .OrderByDescending(x => x.Score).Take(10).ToListAsync();
+            } else {
+                top10List = await _context.Playerscore.Where(x => x.GameId == gameId).OrderByDescending(x => x.Score).Take(10).ToListAsync();
+            }
+
             return top10List;
         }
 
