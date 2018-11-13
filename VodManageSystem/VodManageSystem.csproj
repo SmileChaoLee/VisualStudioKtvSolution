@@ -32,6 +32,8 @@
     <Folder Include="Views\Singarea\" />
     <Folder Include="Views\Singer\" />
     <Folder Include="Views\Playerscore\" />
+    <Folder Include="Api\" />
+    <Folder Include="Api\Controllers\" />
   </ItemGroup>
   <ItemGroup>
     <None Remove="VodManageSystem.tar" />

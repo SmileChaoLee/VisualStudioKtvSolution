@@ -43,7 +43,7 @@ namespace VodManageSystem.Controllers
         /// </summary>
         /// <returns>The top10 playerscores. return value is a JSON array</returns>
         [HttpGet]
-        public async Task<string> GetTop10PlayerscoresREST(int? gameId) {
+        public async Task<List<Playerscore>> GetTop10PlayerscoresREST(int? gameId) {
             int gId = 1;
             if (gameId != null)
             {
@@ -52,9 +52,7 @@ namespace VodManageSystem.Controllers
             Console.WriteLine("gameId = " + gameId);
             Console.WriteLine("gId = " + gId);
             List<Playerscore> top10List = await _playerscoreManager.GetTop10ScoresList(gId);
-            string rValue = JsonUtil.SetJsonStringFromObject(top10List);
-            Console.WriteLine("Player score list = " + rValue);
-            return rValue;
+            return top10List;
         }
 
         /// <summary>

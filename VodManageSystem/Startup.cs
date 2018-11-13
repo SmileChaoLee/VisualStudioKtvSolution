@@ -10,6 +10,7 @@ using Microsoft.EntityFrameworkCore;
 
 using VodManageSystem.Models.DataModels;
 using VodManageSystem.Models.Dao;
+using Newtonsoft.Json.Serialization;
 
 namespace VodManageSystem
 {
@@ -26,6 +27,11 @@ namespace VodManageSystem
         public void ConfigureServices(IServiceCollection services)
         {
             services.AddMvc();
+
+            // the follwing is to keep the properties' name as the as they are defined
+            // when the model is Serialized
+            services.AddMvc()
+            .AddJsonOptions(options => options.SerializerSettings.ContractResolver = new DefaultContractResolver());
 
             services.AddDistributedMemoryCache();
             services.AddSession();

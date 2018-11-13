@@ -31,6 +31,7 @@ namespace VodManageSystem.Controllers
         }
 
         // GET: /<controller>/
+        // [Route("/[controller]/[action]")]
         public IActionResult Index(string singarea_state)
         {
             // new Index.cshtml
@@ -43,6 +44,7 @@ namespace VodManageSystem.Controllers
         }
 
         // Get: get method
+        // [Route("/[controller]/[action]")]
         [HttpGet, ActionName("SingareasList")]
         public async Task<IActionResult> SingareasList(string singarea_state)
         {

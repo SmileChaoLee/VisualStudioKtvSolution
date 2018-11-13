@@ -419,7 +419,7 @@ namespace VodManageSystem.Models.Dao
         {
             List<Playerscore> top10List;
             if (gameId == 1) {
-                top10List = await _context.Playerscore.Where(x => (x.GameId==null) || (x.GameId==1))
+                top10List = await _context.Playerscore.Where(x => (x.GameId==0) || (x.GameId==1))
                                           .OrderByDescending(x => x.Score).Take(10).ToListAsync();
             } else {
                 top10List = await _context.Playerscore.Where(x => x.GameId == gameId).OrderByDescending(x => x.Score).Take(10).ToListAsync();
