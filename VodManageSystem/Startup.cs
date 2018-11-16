@@ -39,7 +39,7 @@ namespace VodManageSystem
                     // the follwing is to keep the properties' name as the as they are defined
                     // when the model is Serialized
                     options.SerializerSettings.ContractResolver = new DefaultContractResolver();
-                    // for avoiding infinite loop
+                    // for avoiding infinite loop when serializing
                     options.SerializerSettings.ReferenceLoopHandling = Newtonsoft.Json.ReferenceLoopHandling.Ignore;
                 }
             );

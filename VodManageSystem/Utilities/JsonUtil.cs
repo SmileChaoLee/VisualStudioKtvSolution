@@ -51,7 +51,10 @@ namespace VodManageSystem.Utilities
             {
                 return null;    // return null string
             }
-            return JsonConvert.SerializeObject(obj);
+            return JsonConvert.SerializeObject(obj, Formatting.Indented, new JsonSerializerSettings()
+            {
+                ReferenceLoopHandling = Newtonsoft.Json.ReferenceLoopHandling.Ignore
+            });
         }
     }
 }

@@ -3,6 +3,7 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
 using Microsoft.AspNetCore.Mvc;
+using Newtonsoft.Json.Linq;
 using VodManageSystem.Models;
 using VodManageSystem.Models.Dao;
 using VodManageSystem.Models.DataModels;
@@ -34,7 +35,7 @@ namespace VodManageSystem.Api.Controllers
 
         // GET: api/values
         [HttpGet]
-        public async Task<IEnumerable<Singer>> Get()
+        public async Task<string> Get()
         {
             Console.WriteLine("Get all singers.");
             // get all singers. 
@@ -45,7 +46,17 @@ namespace VodManageSystem.Api.Controllers
             singerState.PageSize = 50;
             singerState.CurrentPageNo = 1;
             List<Singer> singers = await _singerManager.GetOnePageOfSingers(singerState);
-            return singers;
+
+            // convert singers object to JSON string (serializing)
+            string singersString = JsonUtil.SetJsonStringFromObject(singers);
+
+            JObject jObject = new JObject();
+            jObject.Add("PageNo", singerState.CurrentPageNo);
+            jObject.Add("PageSize", singerState.PageSize);
+            JArray jArray = JArray.Parse(singersString);
+            jObject.Add("Singers", jArray);
+
+            return jObject.ToString();
         }
 
         // GET api/values/5
@@ -59,18 +70,28 @@ namespace VodManageSystem.Api.Controllers
 
         // GET api/values/10/1
         [HttpGet("{pageSize}/{pageNo}")]
-        public async Task<List<Singer>> Get(int pageSize, int pageNo) {
+        public async Task<string> Get(int pageSize, int pageNo) {
             Console.WriteLine("HttpGet[\"{ pageSize}/{ pageNo}\")]");
             SingerStateOfRequest singerState = new SingerStateOfRequest();
             singerState.PageSize = pageSize;
             singerState.CurrentPageNo = pageNo;
             List<Singer> singers = await _singerManager.GetOnePageOfSingers(singerState);
-            return singers;
+
+            // convert singers object to JSON string (serializing)
+            string singersString = JsonUtil.SetJsonStringFromObject(singers);
+
+            JObject jObject = new JObject();
+            jObject.Add("PageNo", singerState.CurrentPageNo);
+            jObject.Add("PageSize", singerState.PageSize);
+            JArray jArray = JArray.Parse(singersString);
+            jObject.Add("Singers", jArray);
+
+            return jObject.ToString();
         }
 
         // GET api/values/5/"1"/10/1
         [HttpGet("{areaId}/{sex}/{pageSize}/{pageNo}")]
-        public async Task<List<Singer>> Get(int areaId, String sex, int pageSize, int pageNo)
+        public async Task<string> Get(int areaId, String sex, int pageSize, int pageNo)
         {
             Console.WriteLine("HttpGet[\"{areaId}/{sex}/{ pageSize}/{ pageNo}\")]");
             Console.WriteLine("areaId = {0}, sex = {1}, pageSize = {2}, pageNo = {3}", areaId, sex, pageSize, pageNo);
@@ -79,7 +100,17 @@ namespace VodManageSystem.Api.Controllers
             singerState.CurrentPageNo = pageNo;
             singerState.OrderBy = "SingNa"; // order by singer's name
             List<Singer> singers = await _singerManager.GetOnePageOfSingersByAreaSex(singerState, areaId, sex);
-            return singers;
+
+            // convert singers object to JSON string (serializing)
+            string singersString = JsonUtil.SetJsonStringFromObject(singers);
+
+            JObject jObject = new JObject();
+            jObject.Add("PageNo",singerState.CurrentPageNo);
+            jObject.Add("PageSize", singerState.PageSize);
+            JArray jArray = JArray.Parse(singersString);
+            jObject.Add("Singers", jArray);
+
+            return jObject.ToString();
         }
 
         // POST api/values
