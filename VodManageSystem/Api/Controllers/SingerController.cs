@@ -38,13 +38,12 @@ namespace VodManageSystem.Api.Controllers
         public async Task<string> Get()
         {
             Console.WriteLine("Get all singers.");
-            // get all singers. 
-            // return await _singerManager.GetAllSingersAsync();
 
             // It is too many so only the first 50 records
             SingerStateOfRequest singerState = new SingerStateOfRequest();
             singerState.PageSize = 50;
             singerState.CurrentPageNo = 1;
+            singerState.OrgSingNo = "SingNo";   // order by singer's No
             List<Singer> singers = await _singerManager.GetOnePageOfSingers(singerState);
 
             // convert singers object to JSON string (serializing)
@@ -69,12 +68,37 @@ namespace VodManageSystem.Api.Controllers
         }
 
         // GET api/values/10/1
-        [HttpGet("{pageSize}/{pageNo}")]
-        public async Task<string> Get(int pageSize, int pageNo) {
-            Console.WriteLine("HttpGet[\"{ pageSize}/{ pageNo}\")]");
+        [HttpGet("{pageSize}/{pageNo}/{orderBy}")]
+        public async Task<string> Get(int pageSize, int pageNo, string orderBy) {
+            Console.WriteLine("HttpGet[\"{ pageSize}/{ pageNo}/{orderBy}\")]");
+
+            // orderBy is either "SingNo" or "SingNa"
+            string orderByParam;
+            if (string.IsNullOrEmpty(orderBy))
+            {
+                orderByParam = "SingNo"; // default value is "SingNo"
+            }
+            else
+            {
+                string orderByTemp = orderBy.ToUpper();
+                if (orderByTemp == "SINGNO")
+                {
+                    orderByParam = "SingNo";
+                }
+                else if (orderByTemp == "SINGNA")
+                {
+                    orderByParam = "SingNa";
+                }
+                else
+                {
+                    orderByParam = "SingNo";
+                }
+            }
+
             SingerStateOfRequest singerState = new SingerStateOfRequest();
             singerState.PageSize = pageSize;
             singerState.CurrentPageNo = pageNo;
+            singerState.OrderBy = orderByParam;
             List<Singer> singers = await _singerManager.GetOnePageOfSingers(singerState);
 
             // convert singers object to JSON string (serializing)
@@ -90,15 +114,39 @@ namespace VodManageSystem.Api.Controllers
         }
 
         // GET api/values/5/"1"/10/1
-        [HttpGet("{areaId}/{sex}/{pageSize}/{pageNo}")]
-        public async Task<string> Get(int areaId, String sex, int pageSize, int pageNo)
+        [HttpGet("{areaId}/{sex}/{pageSize}/{pageNo}/{orderBy}")]
+        public async Task<string> Get(int areaId, String sex, int pageSize, int pageNo, string orderBy)
         {
-            Console.WriteLine("HttpGet[\"{areaId}/{sex}/{ pageSize}/{ pageNo}\")]");
-            Console.WriteLine("areaId = {0}, sex = {1}, pageSize = {2}, pageNo = {3}", areaId, sex, pageSize, pageNo);
+            Console.WriteLine("HttpGet[\"{areaId}/{sex}/{ pageSize}/{ pageNo}/{orderBy}\")]");
+            Console.WriteLine("areaId = {0}, sex = {1}, pageSize = {2}, pageNo = {3}, orderBy = {4}", areaId, sex, pageSize, pageNo, orderBy);
+
+            // orderBy is either "SingNo" or "SingNa"
+            string orderByParam;
+            if (string.IsNullOrEmpty(orderBy))
+            {
+                orderByParam = "SingNo"; // default value is "SingNo"
+            }
+            else
+            {
+                string orderByTemp = orderBy.ToUpper();
+                if (orderByTemp == "SINGNO")
+                {
+                    orderByParam = "SingNo";
+                }
+                else if (orderByTemp == "SINGNA")
+                {
+                    orderByParam = "SingNa";
+                }
+                else
+                {
+                    orderByParam = "SingNo";
+                }
+            }
+
             SingerStateOfRequest singerState = new SingerStateOfRequest();
             singerState.PageSize = pageSize;
             singerState.CurrentPageNo = pageNo;
-            singerState.OrderBy = "SingNa"; // order by singer's name
+            singerState.OrderBy = orderByParam;
             List<Singer> singers = await _singerManager.GetOnePageOfSingersByAreaSex(singerState, areaId, sex);
 
             // convert singers object to JSON string (serializing)

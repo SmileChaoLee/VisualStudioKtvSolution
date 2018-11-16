@@ -50,7 +50,8 @@ namespace VodManageSystem.Controllers
         public async Task<IActionResult> SingersList(string singer_state)
         {
             SingerStateOfRequest singerState = JsonUtil.GetObjectFromJsonString<SingerStateOfRequest>(singer_state);
-            List<Singer> singers = await _singerManager.GetOnePageOfSingersDictionary(singerState);
+            // List<Singer> singers = await _singerManager.GetOnePageOfSingersDictionary(singerState);
+            List<Singer> singers = await _singerManager.GetOnePageOfSingers(singerState);
 
             ViewBag.SingerState = JsonUtil.SetJsonStringFromObject(singerState);
             return View(singers);

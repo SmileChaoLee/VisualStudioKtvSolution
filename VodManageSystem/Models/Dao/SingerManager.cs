@@ -152,6 +152,7 @@ namespace VodManageSystem.Models.Dao
             }
             if (string.IsNullOrEmpty(singerState.OrderBy))
             {
+                // default is order by singer's No
                 singerState.OrderBy = "SingNo";
             }
 
@@ -202,8 +203,8 @@ namespace VodManageSystem.Models.Dao
             }
             if (string.IsNullOrEmpty(singerState.OrderBy))
             {
-                // default is order by singer's name
-                singerState.OrderBy = "SingNa";
+                // default is order by singer's No
+                singerState.OrderBy = "SingNo";
             }
 
             int pageNo = singerState.CurrentPageNo;
@@ -233,7 +234,6 @@ namespace VodManageSystem.Models.Dao
                                         .OrderBy(x => x.SingNo)
                                         .Skip(recordNum).Take(pageSize)
                                         .AsNoTracking().ToListAsync();
-                Console.WriteLine("GetOnePageOfSingers()->OrderBy SingNo");
             }
             else if (singerState.OrderBy == "SingNa")
             {
@@ -241,14 +241,12 @@ namespace VodManageSystem.Models.Dao
                                         .OrderBy(x => x.SingNa)
                                         .Skip(recordNum).Take(pageSize)
                                         .AsNoTracking().ToListAsync();
-                Console.WriteLine("GetOnePageOfSingers()->OrderBy SingNa");
             }
             else
             {
                 singers = await _context.Singer.Include(x => x.Singarea)
                                         .Skip(recordNum).Take(pageSize)
                                         .AsNoTracking().ToListAsync();
-                Console.WriteLine("GetOnePageOfSingers()->no order");
             }
 
             singerState.CurrentPageNo = pageNo;
@@ -282,8 +280,8 @@ namespace VodManageSystem.Models.Dao
             }
             if (string.IsNullOrEmpty(singerState.OrderBy))
             {
-                // default is order by singer's name
-                singerState.OrderBy = "SingNa";
+                // default is order by singer's No
+                singerState.OrderBy = "SingNo";
             }
 
             var singersSubTotal = _context.Singer.Where(x=>x.AreaId == -1);
@@ -424,6 +422,7 @@ namespace VodManageSystem.Models.Dao
             }
             if (string.IsNullOrEmpty(singerState.OrderBy))
             {
+                // default is order by singer's No
                 singerState.OrderBy = "SingNo";
             }
 
