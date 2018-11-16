@@ -154,7 +154,7 @@ namespace VodManageSystem.Controllers
 
             SingareaStateOfRequest singareaState = JsonUtil.GetObjectFromJsonString<SingareaStateOfRequest>(singarea_state);
             singareaState.StartTime = DateTime.Now;
-            singareaState.CurrentPageNo = Int32.MaxValue / SingareaManager.pageSize;
+            singareaState.CurrentPageNo = Int32.MaxValue / singareaState.PageSize;  // default value for View
             string temp_state = JsonUtil.SetJsonStringFromObject(singareaState);
 
             return RedirectToAction(nameof(SingareasList), new { singarea_state = temp_state });

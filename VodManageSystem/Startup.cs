@@ -30,8 +30,19 @@ namespace VodManageSystem
 
             // the follwing is to keep the properties' name as the as they are defined
             // when the model is Serialized
-            services.AddMvc()
-            .AddJsonOptions(options => options.SerializerSettings.ContractResolver = new DefaultContractResolver());
+            // services.AddMvc()
+            // .AddJsonOptions(options => options.SerializerSettings.ContractResolver = new DefaultContractResolver());
+
+            services.AddMvc().AddJsonOptions(
+                options =>
+                {
+                    // the follwing is to keep the properties' name as the as they are defined
+                    // when the model is Serialized
+                    options.SerializerSettings.ContractResolver = new DefaultContractResolver();
+                    // for avoiding infinite loop
+                    options.SerializerSettings.ReferenceLoopHandling = Newtonsoft.Json.ReferenceLoopHandling.Ignore;
+                }
+            );
 
             services.AddDistributedMemoryCache();
             services.AddSession();

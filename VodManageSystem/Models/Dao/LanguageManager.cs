@@ -15,7 +15,6 @@ namespace VodManageSystem.Models.Dao
         // end of private properties
 
         // public properties
-        public static readonly int pageSize = 15; 
         // end of public properties
 
         /// <summary>
@@ -95,8 +94,13 @@ namespace VodManageSystem.Models.Dao
         /// Gets the total page of language table.
         /// </summary>
         /// <returns>The total page of language table.</returns>
-        public async Task<int> GetTotalPageOfLanguageTable()    // by condition
+        public async Task<int> GetTotalPageOfLanguageTable(int pageSize)    // by condition
         {
+            if (pageSize <= 0)
+            {
+                Console.WriteLine("The value of pageSize cannot be less than 0.");
+                return 0;
+            }
             // have to define queryCondition
             // queryCondition has not been used for now
 
@@ -130,6 +134,7 @@ namespace VodManageSystem.Models.Dao
             {
                 pageNo = 1;
             }
+            int pageSize = languageState.PageSize;
 
             SortedDictionary<int, Language> languagesDictionary = await GetDictionaryOfLanguages(languageState);
 
@@ -180,6 +185,8 @@ namespace VodManageSystem.Models.Dao
             {
                 languageState.OrderBy = "LangNo";
             }
+
+            int pageSize = languageState.PageSize;
 
             List<Language> languages = null;
             KeyValuePair<int,Language> languageWithIndex = new KeyValuePair<int, Language>(-1,null);

@@ -219,7 +219,7 @@ namespace VodManageSystem.Controllers
             songState.StartTime = DateTime.Now;
             // songState.CurrentPageNo = await _songManager.GetTotalPageOfSongTable();    // go to last page
             // use the max value to make GetOnePageOfSongsDictionary() go to last page
-            songState.CurrentPageNo = Int32.MaxValue / SongManager.pageSize;
+            songState.CurrentPageNo = Int32.MaxValue / songState.PageSize;  // default value for View
             string temp_state = JsonUtil.SetJsonStringFromObject(songState);
 
             return RedirectToAction(nameof(SongsList), new { song_state = temp_state });

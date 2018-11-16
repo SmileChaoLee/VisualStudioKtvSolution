@@ -20,7 +20,6 @@ namespace VodManageSystem.Models.Dao
         private readonly KtvSystemDBContext _context;
 
         // public members
-        public static readonly int pageSize = 15;
 
         /// <summary>
         /// Initializes a new instance of the <see cref="T:VodManageSystem.DOA.SongManager"/> class.
@@ -224,8 +223,13 @@ namespace VodManageSystem.Models.Dao
         /// Gets the total page of song table.
         /// </summary>
         /// <returns>The total page of song table.</returns>
-        public async Task<int> GetTotalPageOfSongTable()  // by a condition
+        public async Task<int> GetTotalPageOfSongTable(int pageSize)  // by a condition
         {
+            if (pageSize <= 0)
+            {
+                Console.WriteLine("The value of pageSize cannot be less than 0.");
+                return 0;
+            }
             // have to define queryCondition
             // queryCondition has not been used for now
 
@@ -261,6 +265,7 @@ namespace VodManageSystem.Models.Dao
             {
                 pageNo = 1;
             }
+            int pageSize = songState.PageSize;
 
             SortedDictionary<int, Song> songsDictionary = await GetDictionaryOfSongs(songState);
 
@@ -311,6 +316,8 @@ namespace VodManageSystem.Models.Dao
             {
                 songState.OrderBy = "SongNo";
             }
+
+            int pageSize = songState.PageSize;
 
             List<Song> songs = null;
             KeyValuePair<int,Song> songWithIndex = new KeyValuePair<int, Song>(-1,null);

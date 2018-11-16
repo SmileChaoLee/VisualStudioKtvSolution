@@ -8,6 +8,7 @@ namespace VodManageSystem.Models
     public class SongStateOfRequest
     {
         public int CurrentPageNo { get; set; }
+        public int PageSize { get; set; }
         public int OrgId { get; set; }
         public string OrgSongNo { get; set; }
         public string OrderBy { get; set; }
@@ -18,6 +19,7 @@ namespace VodManageSystem.Models
         public SongStateOfRequest()
         {
             CurrentPageNo = 1;
+            PageSize = 15;  // default value for View
             OrgId = 0;  // there is no Id = 0 in Song table
             OrgSongNo = "";
             OrderBy = "SongNo";

@@ -155,7 +155,7 @@ namespace VodManageSystem.Controllers
 
             SingerStateOfRequest singerState = JsonUtil.GetObjectFromJsonString<SingerStateOfRequest>(singer_state);
             singerState.StartTime = DateTime.Now;
-            singerState.CurrentPageNo = Int32.MaxValue / SingerManager.pageSize;
+            singerState.CurrentPageNo = Int32.MaxValue / singerState.PageSize;  // default  value for View
 
             string temp_state = JsonUtil.SetJsonStringFromObject(singerState);
             return RedirectToAction(nameof(SingersList), new { singer_state = temp_state });

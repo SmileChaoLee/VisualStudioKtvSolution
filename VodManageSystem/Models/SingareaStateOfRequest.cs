@@ -4,6 +4,7 @@ namespace VodManageSystem.Models
     public class SingareaStateOfRequest
     {
         public int CurrentPageNo { get; set; }
+        public int PageSize { get; set; }
         public int OrgId { get; set; }
         public string OrgAreaNo { get; set; }
         public string OrderBy { get; set; }
@@ -17,6 +18,7 @@ namespace VodManageSystem.Models
         public SingareaStateOfRequest()
         {
             CurrentPageNo = 1;
+            PageSize = 15;  // default value for View
             OrgId = 0;  // there is no Id = 0 in Singarea table
             OrgAreaNo = "";
             OrderBy = "AreaNo";

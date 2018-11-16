@@ -15,7 +15,6 @@ namespace VodManageSystem.Models.Dao
         // end of private properties
 
         // public properties
-        public static readonly int pageSize = 15;
         // end of public properties
 
         public PlayerscoreManager(KtvSystemDBContext context)
@@ -90,8 +89,13 @@ namespace VodManageSystem.Models.Dao
         /// Gets the total page of playerscore table.
         /// </summary>
         /// <returns>The total page of Playerscore table.</returns>
-        public async Task<int> GetTotalPageOfPlayerscoreTable()    // by condition
+        public async Task<int> GetTotalPageOfPlayerscoreTable(int pageSize)    // by condition
         {
+            if (pageSize <= 0)
+            {
+                Console.WriteLine("The value of pageSize cannot be less than 0.");
+                return 0;
+            }
             // have to define queryCondition
             // queryCondition has not been used for now
 
@@ -125,6 +129,7 @@ namespace VodManageSystem.Models.Dao
             {
                 pageNo = 1;
             }
+            int pageSize = playerscoreState.PageSize;
 
             SortedDictionary<int, Playerscore> playerscoresDictionary = await GetDictionaryOfPlayerscores(playerscoreState);
 
@@ -175,6 +180,8 @@ namespace VodManageSystem.Models.Dao
             {
                 playerscoreState.OrderBy = "PlayerName";
             }
+
+            int pageSize = playerscoreState.PageSize;
 
             List<Playerscore> playerscores = null;
             KeyValuePair<int, Playerscore> playerscoreWithIndex = new KeyValuePair<int, Playerscore>(-1, null);

@@ -32,19 +32,17 @@ namespace VodManageSystem.Api.Controllers
         [HttpGet]
         public async Task<IEnumerable<Singarea>> Get()
         {
-            SingareaStateOfRequest singareaState = new SingareaStateOfRequest();
-            return await _singareaManager.GetOnePageOfSingareasDictionary(singareaState);
+            // get all singarea
+            IEnumerable<Singarea> sgEnum = await _singareaManager.GetAllSingareasAsync();
+            return sgEnum;
         }
 
         // GET api/values/5
         [HttpGet("{id}")]
         public async Task<Singarea> Get(int id)
         {
-            Console.WriteLine("id = " + id);
+            // get one Singarea
             Singarea sArea = await _singareaManager.FindOneSingareaById(id);
-            if (sArea == null) {
-                Console.WriteLine("Did not find a Singarea record.");
-            }
             return sArea;
         }
 

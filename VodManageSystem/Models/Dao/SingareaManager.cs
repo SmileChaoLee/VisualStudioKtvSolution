@@ -15,7 +15,6 @@ namespace VodManageSystem.Models.Dao
         // end of private properties
 
         // public properties
-        public static readonly int pageSize = 15; 
         // end of public properties
 
         /// <summary>
@@ -33,6 +32,10 @@ namespace VodManageSystem.Models.Dao
 
 
         // public methods
+        public async Task<List<Singarea>> GetAllSingareasAsync() {
+            List<Singarea> totalSingareas = await _context.Singarea.AsNoTracking().ToListAsync();
+            return totalSingareas;
+        }
 
         /// <summary>
         /// Gets the dictionary of singareas.
@@ -46,7 +49,7 @@ namespace VodManageSystem.Models.Dao
                 return new SortedDictionary<int, Singarea>();
             }
 
-            List<Singarea> totalSingareas = await _context.Singarea.AsNoTracking().ToListAsync();
+            List<Singarea> totalSingareas = await GetAllSingareasAsync();
 
             Dictionary<int, Singarea> singareasDictionary = null;
 
@@ -95,8 +98,13 @@ namespace VodManageSystem.Models.Dao
         /// Gets the total page of singarea table.
         /// </summary>
         /// <returns>The total page of singarea table.</returns>
-        public async Task<int> GetTotalPageOfSingareaTable()    // by condition
+        public async Task<int> GetTotalPageOfSingareaTable(int pageSize)    // by condition
         {
+            if (pageSize <= 0)
+            {
+                Console.WriteLine("the value of pageSize cannot be less than 0.");
+                return 0;
+            }
             // have to define queryCondition
             // queryCondition has not been used for now
 
@@ -130,6 +138,7 @@ namespace VodManageSystem.Models.Dao
             {
                 pageNo = 1;
             }
+            int pageSize = singareaState.PageSize;
 
             SortedDictionary<int, Singarea> singareasDictionary = await GetDictionaryOfSingareas(singareaState);
 
@@ -180,6 +189,8 @@ namespace VodManageSystem.Models.Dao
             {
                 singareaState.OrderBy = "AreaNo";
             }
+
+            int pageSize = singareaState.PageSize;
 
             List<Singarea> singareas = null;
             KeyValuePair<int,Singarea> singareaWithIndex = new KeyValuePair<int, Singarea>(-1,null);

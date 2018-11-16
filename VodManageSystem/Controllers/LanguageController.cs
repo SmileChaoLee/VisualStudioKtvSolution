@@ -154,7 +154,7 @@ namespace VodManageSystem.Controllers
             languageState.StartTime = DateTime.Now;
             // languageState.CurrentPageNo = await _languageManager.GetTotalPageOfLanguageTable();    // go to last page
             // use the max value to make GetOnePageOfLanguagesDictionary() go to last page
-            languageState.CurrentPageNo = Int32.MaxValue / LanguageManager.pageSize;
+            languageState.CurrentPageNo = Int32.MaxValue / languageState.PageSize;  // default value for View
             string temp_state = JsonUtil.SetJsonStringFromObject(languageState);
 
             return RedirectToAction(nameof(LanguagesList), new { language_state = temp_state });

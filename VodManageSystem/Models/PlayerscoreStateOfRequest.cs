@@ -4,6 +4,7 @@ namespace VodManageSystem.Models
     public class PlayerscoreStateOfRequest
     {
         public int CurrentPageNo { get; set; }
+        public int PageSize { get; set; }
         public int OrgId { get; set; }
         public string OrgPlayerName { get; set; }
         public string OrderBy { get; set; }
@@ -14,6 +15,7 @@ namespace VodManageSystem.Models
         public PlayerscoreStateOfRequest()
         {
             CurrentPageNo = 1;
+            PageSize = 15;  // default value for View
             OrgId = 0;  // there is no Id = 0 in Singer table
             OrgPlayerName = "";
             OrderBy = "PlayerName";
