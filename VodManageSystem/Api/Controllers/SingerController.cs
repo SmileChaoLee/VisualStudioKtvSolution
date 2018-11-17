@@ -45,6 +45,12 @@ namespace VodManageSystem.Api.Controllers
             singerState.CurrentPageNo = 1;
             singerState.OrgSingNo = "SingNo";   // order by singer's No
             List<Singer> singers = await _singerManager.GetOnePageOfSingers(singerState);
+            foreach(var singer in singers){
+                // set the properties that are not needed to null
+                singer.Singarea = null;
+                singer.SongSinger1s = null;
+                singer.SongSinger2s = null;
+            }
 
             // convert singers object to JSON string (serializing)
             string singersString = JsonUtil.SetJsonStringFromObject(singers);
@@ -100,6 +106,13 @@ namespace VodManageSystem.Api.Controllers
             singerState.CurrentPageNo = pageNo;
             singerState.OrderBy = orderByParam;
             List<Singer> singers = await _singerManager.GetOnePageOfSingers(singerState);
+            foreach (var singer in singers)
+            {
+                // set the properties that are not needed to null
+                singer.Singarea = null;
+                singer.SongSinger1s = null;
+                singer.SongSinger2s = null;
+            }
 
             // convert singers object to JSON string (serializing)
             string singersString = JsonUtil.SetJsonStringFromObject(singers);
@@ -148,6 +161,13 @@ namespace VodManageSystem.Api.Controllers
             singerState.CurrentPageNo = pageNo;
             singerState.OrderBy = orderByParam;
             List<Singer> singers = await _singerManager.GetOnePageOfSingersByAreaSex(singerState, areaId, sex);
+            foreach (var singer in singers)
+            {
+                // set the properties that are not needed to null
+                singer.Singarea = null;
+                singer.SongSinger1s = null;
+                singer.SongSinger2s = null;
+            }
 
             // convert singers object to JSON string (serializing)
             string singersString = JsonUtil.SetJsonStringFromObject(singers);
