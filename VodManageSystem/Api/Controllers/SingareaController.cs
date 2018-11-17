@@ -6,6 +6,7 @@ using Microsoft.AspNetCore.Mvc;
 using VodManageSystem.Models;
 using VodManageSystem.Models.Dao;
 using VodManageSystem.Models.DataModels;
+using VodManageSystem.Utilities;
 
 // For more information on enabling Web API for empty projects, visit https://go.microsoft.com/fwlink/?LinkID=397860
 
@@ -30,11 +31,14 @@ namespace VodManageSystem.Api.Controllers
 
         // GET: api/values
         [HttpGet]
-        public async Task<IEnumerable<Singarea>> Get()
+        public async Task<string> Get()
         {
             // get all singarea
-            IEnumerable<Singarea> sgEnum = await _singareaManager.GetAllSingareasAsync();
-            return sgEnum;
+            SingareaStateOfRequest singareaState = new SingareaStateOfRequest();
+            List<Singarea> singareas = await _singareaManager.GetAllSingareasAsync(singareaState);
+            // convert singers object to JSON string (serializing)
+            string singareasString = JsonUtil.SetJsonStringFromObject(singareas);
+            return singareasString;
         }
 
         // GET api/values/5

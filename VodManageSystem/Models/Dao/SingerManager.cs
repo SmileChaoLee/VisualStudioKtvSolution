@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.Globalization;
 using System.Linq;
 using System.Threading.Tasks;
 using Microsoft.AspNetCore.Mvc.Rendering;
@@ -238,7 +239,7 @@ namespace VodManageSystem.Models.Dao
             else if (singerState.OrderBy == "SingNa")
             {
                 singers = await _context.Singer.Include(x => x.Singarea)
-                                        .OrderBy(x => x.SingNa)
+                                        .OrderBy(x => x.SingNa).ThenBy(x => x.SingNo)
                                         .Skip(recordNum).Take(pageSize)
                                         .AsNoTracking().ToListAsync();
             }
@@ -285,60 +286,30 @@ namespace VodManageSystem.Models.Dao
             }
 
             var singersSubTotal = _context.Singer.Where(x=>x.AreaId == -1);
-
             if (singerState.OrderBy=="SingNo")
             {
                 if (sex == "0")
                 {
                     singersSubTotal = _context.Singer.Where(x =>x.AreaId == areaId)
-                                              .OrderBy(x=>x.SingNo);
-
-                    /*
-                    singersSubTotal = await _context.Singer.Include(x => x.Singarea)
-                                            .Where(x => (x.AreaId == areaId))
-                                            .OrderBy(x => x.SingNo)
-                                            .Skip(recordNum).Take(pageSize)
-                                            .AsNoTracking().ToListAsync();
-                    */
+                                                .OrderBy(x=>x.SingNo);
                 }
                 else
                 {
                     singersSubTotal = _context.Singer.Where(x => (x.AreaId == areaId) && (x.Sex==sex))
                                                 .OrderBy(x => x.SingNo);
-                    /*
-                    singersSubTotal = await _context.Singer.Include(x => x.Singarea)
-                                            .Where(x => (x.AreaId == areaId) && (x.Sex==sex))
-                                            .OrderBy(x => x.SingNo)
-                                            .Skip(recordNum).Take(pageSize)
-                                            .AsNoTracking().ToListAsync();
-                    */
                 }
             }
             else if (singerState.OrderBy=="SingNa")
             {
                 if (sex == "0")
                 {
-                    singersSubTotal = _context.Singer.Where(x =>x.AreaId == areaId)
-                                                .OrderBy(x => x.SingNa);
-                    /*
-                    singersSubTotal = await _context.Singer.Include(x => x.Singarea)
-                                            .Where(x => (x.AreaId == areaId))
-                                            .OrderBy(x => x.SingNa)
-                                            .Skip(recordNum).Take(pageSize)
-                                            .AsNoTracking().ToListAsync();
-                    */
+                    singersSubTotal = _context.Singer.Where(x => x.AreaId == areaId)
+                                              .OrderBy(x => x.SingNa).ThenBy(x => x.SingNo);
                 }
                 else
                 {
                     singersSubTotal = _context.Singer.Where(x => (x.AreaId == areaId) && (x.Sex == sex))
-                                                .OrderBy(x => x.SingNa);
-                    /*
-                    singersSubTotal = await _context.Singer.Include(x => x.Singarea)
-                                            .Where(x => (x.AreaId == areaId) && (x.Sex==sex))
-                                            .OrderBy(x => x.SingNa)
-                                            .Skip(recordNum).Take(pageSize)
-                                            .AsNoTracking().ToListAsync();
-                    */
+                                              .OrderBy(x => x.SingNa).ThenBy(x => x.SingNo);
                 }
             } 
             else
@@ -346,22 +317,10 @@ namespace VodManageSystem.Models.Dao
                 if (sex == "0")
                 {
                     singersSubTotal = _context.Singer.Where(x => x.AreaId == areaId);
-                    /*
-                    singersSubTotal = await _context.Singer.Include(x => x.Singarea)
-                                            .Where(x => (x.AreaId == areaId))
-                                            .Skip(recordNum).Take(pageSize)
-                                            .AsNoTracking().ToListAsync();
-                    */
                 }
                 else
                 {
                     singersSubTotal = _context.Singer.Where(x => (x.AreaId == areaId) && (x.Sex==sex));
-                    /*
-                    singersSubTotal = await _context.Singer.Include(x => x.Singarea)
-                                            .Where(x => (x.AreaId == areaId) && (x.Sex==sex))
-                                            .Skip(recordNum).Take(pageSize)
-                                            .AsNoTracking().ToListAsync();
-                    */
                 }
             }
 
@@ -444,12 +403,14 @@ namespace VodManageSystem.Models.Dao
                 if (singerState.OrderBy == "SingNo")
                 {
                     string sing_no = singer.SingNo;
-                    singerWithIndex = singersDictionary.Where(x=>(String.Compare(x.Value.SingNo,sing_no)>=0)).FirstOrDefault();
+                    singerWithIndex = singersDictionary
+                        .Where(x=>(String.Compare(x.Value.SingNo,sing_no, false) >= 0)).FirstOrDefault();
                 }
                 else if (singerState.OrderBy == "SingNa")
                 {
                     string sing_na = singer.SingNa;
-                    singerWithIndex = singersDictionary.Where(x=>(String.Compare(x.Value.SingNa,sing_na)>=0)).FirstOrDefault();
+                    singerWithIndex = singersDictionary
+                        .Where(x => String.Compare(x.Value.SingNa, sing_na, false) >= 0).FirstOrDefault();
                 }
                 else
                 {
@@ -477,7 +438,7 @@ namespace VodManageSystem.Models.Dao
             }
         
             Singer singerFound = singerWithIndex.Value;
-            singer.CopyFrom(singerFound);
+            singer.CopyFrom(singerFound);   // return to calling function
 
             int tempCount = singerWithIndex.Key;
             int pageNo =  tempCount / pageSize;

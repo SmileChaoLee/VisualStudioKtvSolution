@@ -1,10 +1,8 @@
 ﻿using System;
 using System.Collections.Generic;
-using System.Linq;
 using System.Threading.Tasks;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
-using Microsoft.AspNetCore.Mvc.Rendering;
 using VodManageSystem.Models;
 using VodManageSystem.Models.Dao;
 using VodManageSystem.Models.DataModels;
@@ -49,7 +47,7 @@ namespace VodManageSystem.Controllers
         public async Task<IActionResult> SingareasList(string singarea_state)
         {
             SingareaStateOfRequest singareaState = JsonUtil.GetObjectFromJsonString<SingareaStateOfRequest>(singarea_state);
-            List<Singarea> singareas = await _singareaManager.GetOnePageOfSingareasDictionary(singareaState);
+            List<Singarea> singareas = await _singareaManager.GetOnePageOfSingareas(singareaState);
 
             ViewBag.SingareaState = JsonUtil.SetJsonStringFromObject(singareaState);
             return View(singareas);
