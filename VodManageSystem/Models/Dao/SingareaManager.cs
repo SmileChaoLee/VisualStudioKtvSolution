@@ -32,7 +32,19 @@ namespace VodManageSystem.Models.Dao
 
 
         // public methods
-        public async Task<List<Singarea>> GetAllSingareasAsync(SingareaStateOfRequest singareaState) {
+        public async Task<List<Singarea>> GetAllSingareas(SingareaStateOfRequest singareaState) {
+
+            if (singareaState == null)
+            {
+                return new List<Singarea>();    // return empty list
+            }
+
+            singareaState.CurrentPageNo = -100; // present to all Singareas
+            List<Singarea> totalSingareas = await GetOnePageOfSingareas(singareaState);
+
+            return totalSingareas;
+
+            /*
             List<Singarea> totalSingareas;
             if (singareaState.OrderBy == "AreaNo")
             {
@@ -52,6 +64,89 @@ namespace VodManageSystem.Models.Dao
                 totalSingareas = new List<Singarea>();    // empty lsit
             }
             return totalSingareas;
+            */
+        }
+
+        public async Task<List<Singarea>> GetOnePageOfSingareas(SingareaStateOfRequest singareaState)
+        {
+            if (singareaState == null)
+            {
+                return new List<Singarea>();
+            }
+            if (string.IsNullOrEmpty(singareaState.OrderBy))
+            {
+                // default is order by Singarea's No
+                singareaState.OrderBy = "AreaNo";
+            }
+
+            var singareasList = _context.Singarea.Where(x => x.Id == 0);
+            if (singareaState.OrderBy == "AreaNo")
+            {
+                singareasList = _context.Singarea.OrderBy(x => x.AreaNo);
+            }
+            else if (singareaState.OrderBy == "AreaNa")
+            {
+                singareasList = _context.Singarea.OrderBy(x => x.AreaNa).ThenBy(x => x.AreaNo);
+            }
+            else
+            {
+                singareasList = _context.Singarea;
+            }
+
+            int pageNo = singareaState.CurrentPageNo;
+            int pageSize = singareaState.PageSize;
+            int totalPages = await GetTotalPageOfSingareaTable(pageSize);
+
+            bool getAll = false;
+            if (pageNo == -1)
+            {
+                // get the last page
+                pageNo = totalPages;
+            }
+            else if (pageNo == -100)
+            {
+                // get all songs
+                getAll = true;
+                pageNo = 1; // restore pageNo to 1
+            }
+            else
+            {
+                if (pageNo < 1)
+                {
+                    pageNo = 1;
+                }
+                else if (pageNo > totalPages)
+                {
+                    pageNo = totalPages;
+                }
+            }
+
+            int recordNum = (pageNo - 1) * pageSize;
+
+            List<Singarea> singareas;
+            if (getAll)
+            {
+                singareas = await singareasList.AsNoTracking().ToListAsync();
+            }
+            else
+            {
+                singareas = await singareasList.Skip(recordNum).Take(pageSize).AsNoTracking().ToListAsync();
+            }
+
+            singareaState.CurrentPageNo = pageNo;
+            Singarea firstSingarea = singareas.FirstOrDefault();
+            if (firstSingarea != null)
+            {
+                singareaState.FirstId = firstSingarea.Id;
+            }
+            else
+            {
+                singareaState.OrgId = 0;
+                singareaState.OrgAreaNo = "";
+                singareaState.FirstId = 0;
+            }
+
+            return singareas;
         }
 
         /// <summary>
@@ -177,74 +272,6 @@ namespace VodManageSystem.Models.Dao
 
             int recordNo = (pageNo - 1) * pageSize;
             List<Singarea> singareas = singareasDictionary.Skip(recordNo).Take(pageSize).Select(m => m.Value).ToList();
-
-            singareaState.CurrentPageNo = pageNo;
-            Singarea firstSingarea = singareas.FirstOrDefault();
-            if (firstSingarea != null)
-            {
-                singareaState.FirstId = firstSingarea.Id;
-            }
-            else
-            {
-                singareaState.OrgId = 0;
-                singareaState.OrgAreaNo = "";
-                singareaState.FirstId = 0;
-            }
-
-            return singareas;
-        }
-
-        public async Task<List<Singarea>> GetOnePageOfSingareas(SingareaStateOfRequest singareaState)
-        {
-            if (singareaState == null)
-            {
-                return new List<Singarea>();
-            }
-            if (string.IsNullOrEmpty(singareaState.OrderBy))
-            {
-                // default is order by Singarea's No
-                singareaState.OrderBy = "AreaNo";
-            }
-
-            int pageNo = singareaState.CurrentPageNo;
-            int pageSize = singareaState.PageSize;
-            int totalPages = await GetTotalPageOfSingareaTable(pageSize);
-            if (pageNo == -1)
-            {
-                // get the last page
-                pageNo = totalPages;
-            }
-            else if (pageNo < 1)
-            {
-                pageNo = 1;
-            }
-            else if (pageNo > totalPages)
-            {
-                pageNo = totalPages;
-            }
-
-            int recordNum = (pageNo - 1) * pageSize;
-
-            List<Singarea> singareas;
-
-            if (singareaState.OrderBy == "AreaNo")
-            {
-                singareas = await _context.Singarea.OrderBy(x => x.AreaNo)
-                                        .Skip(recordNum).Take(pageSize)
-                                        .AsNoTracking().ToListAsync();
-            }
-            else if (singareaState.OrderBy == "AreaNa")
-            {
-                singareas = await _context.Singarea.OrderBy(x => x.AreaNa).ThenBy(x=>x.AreaNo)
-                                        .Skip(recordNum).Take(pageSize)
-                                        .AsNoTracking().ToListAsync();
-            }
-            else
-            {
-                singareas = await _context.Singarea
-                                        .Skip(recordNum).Take(pageSize)
-                                        .AsNoTracking().ToListAsync();
-            }
 
             singareaState.CurrentPageNo = pageNo;
             Singarea firstSingarea = singareas.FirstOrDefault();

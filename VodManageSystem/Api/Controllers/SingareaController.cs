@@ -35,7 +35,7 @@ namespace VodManageSystem.Api.Controllers
         {
             // get all singarea
             SingareaStateOfRequest singareaState = new SingareaStateOfRequest();
-            List<Singarea> singareas = await _singareaManager.GetAllSingareasAsync(singareaState);
+            List<Singarea> singareas = await _singareaManager.GetAllSingareas(singareaState);
             // convert singers object to JSON string (serializing)
             string singareasString = JsonUtil.SetJsonStringFromObject(singareas);
             return singareasString;

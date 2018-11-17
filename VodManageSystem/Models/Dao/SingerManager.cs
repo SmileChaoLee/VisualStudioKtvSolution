@@ -54,7 +54,18 @@ namespace VodManageSystem.Models.Dao
 
 
         // public methods
-        public async Task<List<Singer>> GetAllSingersAsync(SingerStateOfRequest singerState) {
+        public async Task<List<Singer>> GetAllSingers(SingerStateOfRequest singerState) {
+            if (singerState == null)
+            {
+                return new List<Singer>();  // return empty list
+            }
+
+            singerState.CurrentPageNo = -100;   // present to get all singers
+            List<Singer> totalSingers = await GetOnePageOfSingers(singerState);
+
+            return totalSingers;
+
+            /*
             List<Singer> totalSingers;
             if (singerState.OrderBy == "SingNo")
             {
@@ -74,6 +85,92 @@ namespace VodManageSystem.Models.Dao
             }
 
             return totalSingers;
+            */
+        }
+
+        public async Task<List<Singer>> GetOnePageOfSingers(SingerStateOfRequest singerState)
+        {
+            if (singerState == null)
+            {
+                return new List<Singer>();
+            }
+
+            if (string.IsNullOrEmpty(singerState.OrderBy))
+            {
+                // default is order by singer's No
+                singerState.OrderBy = "SingNo";
+            }
+
+            var singersList = _context.Singer.Where(x => x.Id == 0);
+            if (singerState.OrderBy == "SingNo")
+            {
+                singersList = _context.Singer.Include(x => x.Singarea)
+                                      .OrderBy(x => x.SingNo);
+            }
+            else if (singerState.OrderBy == "SingNa")
+            {
+                singersList = _context.Singer.Include(x => x.Singarea)
+                                      .OrderBy(x => x.SingNa).ThenBy(x => x.SingNo);
+            }
+            else
+            {
+                singersList = _context.Singer.Include(x => x.Singarea);
+            }
+
+            int pageNo = singerState.CurrentPageNo;
+            int pageSize = singerState.PageSize;
+            int totalPages = await GetTotalPageOfSingerTable(pageSize);
+
+            bool getAll = false;
+            if (pageNo == -1)
+            {
+                // get the last page
+                pageNo = totalPages;
+            }
+            else if (pageNo == -100)
+            {
+                // get all songs
+                getAll = true;
+                pageNo = 1; // restore pageNo to 1
+            }
+            else
+            {
+                if (pageNo < 1)
+                {
+                    pageNo = 1;
+                }
+                else if (pageNo > totalPages)
+                {
+                    pageNo = totalPages;
+                }
+            }
+
+            int recordNum = (pageNo - 1) * pageSize;
+
+            List<Singer> singers;
+            if (getAll)
+            {
+                singers = await singersList.AsNoTracking().ToListAsync();
+            }
+            else
+            {
+                singers = await singersList.Skip(recordNum).Take(pageSize).AsNoTracking().ToListAsync();
+            }
+
+            singerState.CurrentPageNo = pageNo;
+            Singer firstSinger = singers.FirstOrDefault();
+            if (firstSinger != null)
+            {
+                singerState.FirstId = firstSinger.Id;
+            }
+            else
+            {
+                singerState.OrgId = 0;
+                singerState.OrgSingNo = "";
+                singerState.FirstId = 0;
+            }
+
+            return singers;
         }
 
         /// <summary>
@@ -203,77 +300,6 @@ namespace VodManageSystem.Models.Dao
 
             int recordNo = (pageNo - 1) * pageSize;
             List<Singer> singers = singersDictionary.Skip(recordNo).Take(pageSize).Select(m => m.Value).ToList();
-
-            singerState.CurrentPageNo = pageNo;
-            Singer firstSinger = singers.FirstOrDefault();
-            if (firstSinger != null)
-            {
-                singerState.FirstId = firstSinger.Id;
-            }
-            else
-            {
-                singerState.OrgId = 0;
-                singerState.OrgSingNo = "";
-                singerState.FirstId = 0;
-            }
-
-            return singers;
-        }
-
-        public async Task<List<Singer>> GetOnePageOfSingers(SingerStateOfRequest singerState)
-        {
-            if (singerState == null)
-            {
-                return new List<Singer>();
-            }
-
-            if (string.IsNullOrEmpty(singerState.OrderBy))
-            {
-                // default is order by singer's No
-                singerState.OrderBy = "SingNo";
-            }
-
-            int pageNo = singerState.CurrentPageNo;
-            int pageSize = singerState.PageSize;
-            int totalPages = await GetTotalPageOfSingerTable(pageSize);
-            if (pageNo == -1)
-            {
-                // get the last page
-                pageNo = totalPages;
-            }
-            else if (pageNo < 1)
-            {
-                pageNo = 1;
-            }
-            else if (pageNo > totalPages)
-            {
-                pageNo = totalPages;
-            }
-
-            int recordNum = (pageNo - 1) * pageSize;
-
-            List<Singer> singers;
-
-            if (singerState.OrderBy == "SingNo")
-            {
-                singers = await _context.Singer.Include(x => x.Singarea)
-                                        .OrderBy(x => x.SingNo)
-                                        .Skip(recordNum).Take(pageSize)
-                                        .AsNoTracking().ToListAsync();
-            }
-            else if (singerState.OrderBy == "SingNa")
-            {
-                singers = await _context.Singer.Include(x => x.Singarea)
-                                        .OrderBy(x => x.SingNa).ThenBy(x => x.SingNo)
-                                        .Skip(recordNum).Take(pageSize)
-                                        .AsNoTracking().ToListAsync();
-            }
-            else
-            {
-                singers = await _context.Singer.Include(x => x.Singarea)
-                                        .Skip(recordNum).Take(pageSize)
-                                        .AsNoTracking().ToListAsync();
-            }
 
             singerState.CurrentPageNo = pageNo;
             Singer firstSinger = singers.FirstOrDefault();
