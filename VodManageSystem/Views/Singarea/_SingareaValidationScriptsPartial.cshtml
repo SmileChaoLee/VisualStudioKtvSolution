@@ -1,0 +1,64 @@
+@model VodManageSystem.Models.DataModels.Singarea
+
+@{
+    string boolString = "false";    // default is "Add" or "Edit" --> writable
+    string vBag = ViewBag.Action as string;
+    if (!string.IsNullOrEmpty(vBag))
+    {
+        if ( (vBag.Trim() == "Delete") || (vBag.Trim() == "Details") )
+        {
+            // form is readonly
+            boolString = "true";
+        }
+    }
+}
+
+<script type="text/javascript">
+    // jQuery function to set focus on first input item
+    $( document ).ready(function() {
+        $('form input[type="text"]').prop("readonly",@boolString);
+        $('form input[type="number"]').prop("readonly",@boolString);
+        $('form input:first').focus();
+
+        // validattion
+        $("#OneSingareaForm").validate({
+            rules: {
+                AreaNo: {
+                    required: true,
+                    minlength: 2,
+                    maxlength: 2,
+                    pattern: "[0-9]{2}"
+                },
+                AreaNa: {
+                    required: true,
+                    maxlength: 32
+                },
+                AreaEn: {
+                    maxlength: 32
+                }
+            },
+            
+            messages: {
+                AreaNo: {
+                    required: "Singer Area No. cannot be blank.",
+                    minlength: "At least 2 digits.",
+                    maxlength: "At most 2 digits.",
+                    pattern: "Singer Area No. cannot contain alphabet character."
+                },
+                AreaNa: {
+                    required: "Singer Area Name cannot be blank.",
+                    maxlength: "The maximum string length is 32."
+                },
+                AreaEn: {
+                    maxlength: "The maximum string length is 32."
+                }
+            },
+
+            submitHandler: function(form){
+                // alert("submitHandler");
+                form.submit();
+            }
+        });
+    });
+
+</script>

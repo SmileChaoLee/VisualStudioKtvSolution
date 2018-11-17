@@ -1,0 +1,153 @@
+﻿@model VodManageSystem.Models.DataModels.Language
+@using VodManageSystem.Utilities
+@using Microsoft.AspNetCore.Html
+
+@{
+    ViewData["Title"] = "Find Songs";
+
+
+    // must transfer Serialized Json string that converted by JsonConvert.SerializeObject() to HtmlString, 
+    // then JSON.parse() can use it as a parameter
+
+    // The following two statements are for using jQuery to do JSON.parse() and show language list
+    // and they have to be in this block
+    // string languageList = JsonUtil.SetJsonStringFromObject(ViewBag.LanguageList);
+    // ViewBag.LangList = new HtmlString(languageList);
+
+    // The follwoing code have to be inside JavaScript block <script />
+    // This is for JSON of jQuery
+    // var tempList = JSON.parse('@ViewBag.LangList');
+    // var languageCount = tempList.length;
+    // for (i=0; i<languageCount; i++) {
+    //     $("#langSelect").append($("<option />").val(tempList[i].Value).html(tempList[i].Text));
+    // }
+
+    // the following has to be in <form/>
+    // <select id="langSelect" name="lang_no"></select>
+}
+
+<h3 style="text-align:center">@ViewData["Title"]</h3>
+
+@section Scripts
+{
+	<script type="text/javascript">
+	    $( document ).ready(function() { 
+            $('.findTable form input, .findTable select').attr('disabled', true);
+            $('input[name="search_type"]:radio').change(function(){
+                $('.findTable form input, .findTable select').attr('disabled', true);
+                $(this).parent().find('form').find('input, select').attr('disabled', false);
+                $(this).parent().find('form input, form select').first().focus();
+            });
+               
+            $('input[name="search_type"]:radio').first().prop('checked',true);
+            $('input[name="search_type"]:radio').first().trigger('change');
+            
+            $('form').keydown(function(e) {
+                if (e.keyCode === 13) {
+                    toSubmit("Submit");
+                }
+            });
+
+	    });
+            
+	    function toSubmit(type) {
+            var $checkRadio =  $('input[name="search_type"]:checked');
+            if ($checkRadio.val() === undefined){
+                if (type.toUpperCase()==="CANCEL") {
+                    $checkRadio = $('input[name="search_type"]:first');
+                }
+            }
+            // $checkRadio.parent().find('form').attr("action","Find");
+            $checkRadio.parent().find('form').append("<input type='hidden' name='search_type' value='"+$checkRadio.val()+"'>");
+            $checkRadio.parent().find('form').append("<input type='hidden' name='submitbutton' value='"+type+ "'>");
+            $checkRadio.parent().find('form').append('<input type="hidden" name="song_state", value="@ViewBag.SongState" />');
+            $checkRadio.parent().find('form').submit();
+	    }
+	</script>
+}
+	
+<link rel="stylesheet" type="text/css" href="~/css/FindRecordStyle.css" /> 
+
+<table class="findTable">
+    <tr>
+        <td>            
+            <input type="radio" name="search_type" value='song_no'/>
+            <label class="radio">Song No.</label>
+            <form asp-area="" asp-controller="Song" asp-action="Find" method="POST" data-search='song_no'>
+                <label>Song No.:
+                    <input name="song_no" type="text" maxlength="6" style='width:120px;' value=""/>
+                </label>
+            </form>
+        </td>
+        <td>
+            <input type="radio" name="search_type" value='vod_no'/>
+            <label class="radio">Vod No.</label>
+            <form asp-area="" asp-controller="Song" asp-action="Find" method="POST" data-search='vod_no'>
+                <label>Vod No.:
+                    <input name="vod_no" type="text" maxlength="6" style='width:120px;' value=""/>
+                </label>
+            </form>                   
+        </td>
+    </tr>
+    <tr>
+        <td>
+            <input type="radio" name="search_type" value='song_na'/>
+            <label class="radio">Song Name</label>
+            <form asp-area="" asp-controller="Song" asp-action="Find" method="POST" data-search='song_na'>
+                <label>Song Name:
+                    <input name="song_na" type="text" maxlength="36" style='width:260px;' value=""/>
+                </label>
+            </form>
+        </td>
+        <td>
+            <input type="radio" name="search_type" value='lang_songna'/>
+            <label class="radio">Language+Song Name</label>
+            <form asp-area="" asp-controller="Song" asp-action="Find" method="POST" data-search='lang_songna'>
+                <label >Language:
+                    <select asp-for="LangNo" asp-items="@ViewBag.LanguageList"></select>
+                    @*
+                    <!-- use jQuery to do the dropdown list (function in script block) -->
+                    <select id="langSelect" name="lang_no"></select>
+
+                    if use one of the following two then @model VodManageSystem.Models.DataModels.Language
+                    must be included on the top of this file (Find.cshtml)
+                    <select asp-for='LangNo' asp-items='@ViewBag.LanguageList'></select>
+
+                    <!-- here ViewBag.LanguageList2 is a list of model Language -->
+                    <select asp-for='LangNo' asp-items='@(new SelectList(@ViewBag.LanguageList2, "LangNo", "LangNa"))'></select>
+                    *@
+                </label>
+                <label>Song Name:
+                    <input name="song_na" type="text" maxlength="36" style='width:260px;' value=""/>
+                </label>
+            </form>
+        </td>
+    </tr>
+    <tr>
+        <td>
+            <input type="radio" name="search_type" value='singer1_na'/>
+            <label class="radio">Singer1 Name</label>
+            <form asp-area="" asp-controller="Song" asp-action="Find" method="POST" data-search='singer1_na'>
+                <label>Singer1 Name:
+                    <input name="sing_na1" type="text" maxlength="30" style='width:200px;' value=""/>
+                </label>
+            </form>
+        </td>            
+        <td>
+            <input type="radio" name="search_type" value='singer2_na'/>
+            <label class="radio">Singer2 Name</label>
+            <form asp-area="" asp-controller="Song" asp-action="Find" method="POST" data-search='singer2_na'>
+                <label>Singer2 Name:
+                    <input name="sing_na2" type="text" maxlength="30" style='width:200px;' value=""/>
+                </label>
+            </form>
+        </td>             
+    </tr>        
+</table>
+
+<br />
+    
+<div style='margin:auto;text-align:center'>
+    <button type="submit" onclick='toSubmit("Submit")'>Submit</button>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
+    <button type='submit' onclick='toSubmit("Cancel")'>Cancel</button>
+</div>

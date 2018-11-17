@@ -1,0 +1,384 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<project version="4">
+  <component name="ChangeListManager">
+    <list default="true" id="60c7c227-24ba-47cd-a619-cbdd3798d22d" name="Default" comment="">
+      <change type="NEW" beforePath="" afterPath="$PROJECT_DIR$/VoManageTest/bin/Debug/netcoreapp2.0/VoManageTest.dll" />
+      <change type="NEW" beforePath="" afterPath="$PROJECT_DIR$/VoManageTest/bin/Debug/netcoreapp2.0/VoManageTest.pdb" />
+      <change type="NEW" beforePath="" afterPath="$PROJECT_DIR$/VoManageTest/bin/Debug/netcoreapp2.0/VodManageSystem.dll" />
+      <change type="NEW" beforePath="" afterPath="$PROJECT_DIR$/VoManageTest/bin/Debug/netcoreapp2.0/VodManageSystem.pdb" />
+      <change type="NEW" beforePath="" afterPath="$PROJECT_DIR$/VoManageTest/bin/Debug/netcoreapp2.0/xunit.runner.reporters.netcoreapp10.dll" />
+      <change type="NEW" beforePath="" afterPath="$PROJECT_DIR$/VoManageTest/bin/Debug/netcoreapp2.0/xunit.runner.utility.netcoreapp10.dll" />
+      <change type="NEW" beforePath="" afterPath="$PROJECT_DIR$/VoManageTest/bin/Debug/netcoreapp2.0/xunit.runner.visualstudio.dotnetcore.testadapter.dll" />
+      <change type="NEW" beforePath="" afterPath="$PROJECT_DIR$/VoManageTest/obj/Debug/netcoreapp2.0/VoManageTest.AssemblyInfoInputs.cache" />
+      <change type="NEW" beforePath="" afterPath="$PROJECT_DIR$/VoManageTest/obj/Debug/netcoreapp2.0/VoManageTest.csproj.CopyComplete" />
+      <change type="NEW" beforePath="" afterPath="$PROJECT_DIR$/VoManageTest/obj/Debug/netcoreapp2.0/VoManageTest.csproj.CoreCompileInputs.cache" />
+      <change type="NEW" beforePath="" afterPath="$PROJECT_DIR$/VoManageTest/obj/Debug/netcoreapp2.0/VoManageTest.csprojResolveAssemblyReference.cache" />
+      <change type="NEW" beforePath="" afterPath="$PROJECT_DIR$/VoManageTest/obj/Debug/netcoreapp2.0/VoManageTest.dll" />
+      <change type="NEW" beforePath="" afterPath="$PROJECT_DIR$/VoManageTest/obj/Debug/netcoreapp2.0/VoManageTest.pdb" />
+      <change type="NEW" beforePath="" afterPath="$PROJECT_DIR$/VoManageTest/obj/VoManageTest.csproj.nuget.cache" />
+      <change type="NEW" beforePath="" afterPath="$PROJECT_DIR$/VoManageTest/UnitTestForVodManageSystem.cs" />
+      <change type="NEW" beforePath="" afterPath="$PROJECT_DIR$/VoManageTest/VoManageTest.csproj" />
+      <change type="NEW" beforePath="" afterPath="$PROJECT_DIR$/VoManageTest/bin/Debug/netcoreapp2.0/VoManageTest.deps.json" />
+      <change type="NEW" beforePath="" afterPath="$PROJECT_DIR$/VoManageTest/bin/Debug/netcoreapp2.0/VoManageTest.runtimeconfig.dev.json" />
+      <change type="NEW" beforePath="" afterPath="$PROJECT_DIR$/VoManageTest/bin/Debug/netcoreapp2.0/VoManageTest.runtimeconfig.json" />
+      <change type="NEW" beforePath="" afterPath="$PROJECT_DIR$/VoManageTest/obj/Debug/netcoreapp2.0/VoManageTest.AssemblyInfo.cs" />
+      <change type="NEW" beforePath="" afterPath="$PROJECT_DIR$/VoManageTest/obj/Debug/netcoreapp2.0/VoManageTest.Program.cs" />
+      <change type="NEW" beforePath="" afterPath="$PROJECT_DIR$/VoManageTest/obj/Debug/netcoreapp2.0/VoManageTest.csproj.FileListAbsolute.txt" />
+      <change type="NEW" beforePath="" afterPath="$PROJECT_DIR$/VoManageTest/obj/VoManageTest.csproj.nuget.g.props" />
+      <change type="NEW" beforePath="" afterPath="$PROJECT_DIR$/VoManageTest/obj/VoManageTest.csproj.nuget.g.targets" />
+      <change type="NEW" beforePath="" afterPath="$PROJECT_DIR$/VoManageTest/obj/project.assets.json" />
+      <change type="DELETED" beforePath="$PROJECT_DIR$/.vscode/launch.json" afterPath="" />
+      <change type="DELETED" beforePath="$PROJECT_DIR$/.vscode/tasks.json" afterPath="" />
+      <change type="MOVED" beforePath="$PROJECT_DIR$/VodManageSystem/Models/Doa/SongManager.cs" afterPath="$PROJECT_DIR$/VodManageSystem/Models/Dao/SongManager.cs" />
+      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/VodManageSystem/bin/Debug/netcoreapp2.0/VodManageSystem.dll" afterPath="$PROJECT_DIR$/VodManageSystem/bin/Debug/netcoreapp2.0/VodManageSystem.dll" />
+      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/VodManageSystem/bin/Debug/netcoreapp2.0/VodManageSystem.pdb" afterPath="$PROJECT_DIR$/VodManageSystem/bin/Debug/netcoreapp2.0/VodManageSystem.pdb" />
+      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/VodManageSystem/obj/Debug/netcoreapp2.0/VodManageSystem.csproj.CoreCompileInputs.cache" afterPath="$PROJECT_DIR$/VodManageSystem/obj/Debug/netcoreapp2.0/VodManageSystem.csproj.CoreCompileInputs.cache" />
+      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/VodManageSystem/obj/Debug/netcoreapp2.0/VodManageSystem.dll" afterPath="$PROJECT_DIR$/VodManageSystem/obj/Debug/netcoreapp2.0/VodManageSystem.dll" />
+      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/VodManageSystem/obj/Debug/netcoreapp2.0/VodManageSystem.pdb" afterPath="$PROJECT_DIR$/VodManageSystem/obj/Debug/netcoreapp2.0/VodManageSystem.pdb" />
+      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/VodManageSystem/obj/VodManageSystem.csproj.nuget.cache" afterPath="$PROJECT_DIR$/VodManageSystem/obj/VodManageSystem.csproj.nuget.cache" />
+      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/KtvSolution.userprefs" afterPath="$PROJECT_DIR$/KtvSolution.userprefs" />
+      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/VodManageSystem/Controllers/SongController.cs" afterPath="$PROJECT_DIR$/VodManageSystem/Controllers/SongController.cs" />
+      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/VodManageSystem/Models/DataModels/SongExtension.cs" afterPath="$PROJECT_DIR$/VodManageSystem/Models/DataModels/SongExtension.cs" />
+      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/VodManageSystem/Startup.cs" afterPath="$PROJECT_DIR$/VodManageSystem/Startup.cs" />
+      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/VodManageSystem/Views/Song/Find.cshtml" afterPath="$PROJECT_DIR$/VodManageSystem/Views/Song/Find.cshtml" />
+      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/VodManageSystem/VodManageSystem.csproj" afterPath="$PROJECT_DIR$/VodManageSystem/VodManageSystem.csproj" />
+      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/VodManageSystem/bin/Debug/netcoreapp2.0/VodManageSystem.runtimeconfig.dev.json" afterPath="$PROJECT_DIR$/VodManageSystem/bin/Debug/netcoreapp2.0/VodManageSystem.runtimeconfig.dev.json" />
+      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/VodManageSystem/obj/Debug/netcoreapp2.0/VodManageSystem.csproj.FileListAbsolute.txt" afterPath="$PROJECT_DIR$/VodManageSystem/obj/Debug/netcoreapp2.0/VodManageSystem.csproj.FileListAbsolute.txt" />
+      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/VodManageSystem/obj/VodManageSystem.csproj.nuget.g.props" afterPath="$PROJECT_DIR$/VodManageSystem/obj/VodManageSystem.csproj.nuget.g.props" />
+      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/VodManageSystem/obj/project.assets.json" afterPath="$PROJECT_DIR$/VodManageSystem/obj/project.assets.json" />
+    </list>
+    <option name="EXCLUDED_CONVERTED_TO_IGNORED" value="true" />
+    <option name="TRACKING_ENABLED" value="true" />
+    <option name="SHOW_DIALOG" value="false" />
+    <option name="HIGHLIGHT_CONFLICTS" value="true" />
+    <option name="HIGHLIGHT_NON_ACTIVE_CHANGELIST" value="false" />
+    <option name="LAST_RESOLUTION" value="IGNORE" />
+  </component>
+  <component name="FileEditorManager">
+    <leaf>
+      <file leaf-file-name="_LoginPartial.cshtml" pinned="false" current-in-tab="false">
+        <entry file="file://$PROJECT_DIR$/VodManageSystem/Views/Shared/_LoginPartial.cshtml">
+          <provider selected="true" editor-type-id="text-editor">
+            <state relative-caret-position="345">
+              <caret line="23" column="8" lean-forward="false" selection-start-line="23" selection-start-column="8" selection-end-line="23" selection-end-column="8" />
+              <folding>
+                <marker date="1511887241789" expanded="true" signature="35:266" ph="@{...}" />
+                <marker date="1511887241789" expanded="true" signature="58:264" ph="&lt;style.../&gt;" />
+                <marker date="1511887241789" expanded="true" signature="102:251" ph="{...}" />
+                <marker date="1511887241789" expanded="true" signature="268:1593" ph="@..." />
+                <marker date="1511887241789" expanded="true" signature="358:979" ph="{...}" />
+                <marker date="1511887241789" expanded="true" signature="365:642" ph="&lt;ul.../&gt;" />
+                <marker date="1511887241789" expanded="true" signature="414:632" ph="&lt;li.../&gt;" />
+                <marker date="1511887241789" expanded="true" signature="648:977" ph="&lt;!--...--&gt;" />
+                <marker date="1511887241789" expanded="true" signature="657:969" ph="&lt;form.../&gt;" />
+                <marker date="1511887241789" expanded="true" signature="769:957" ph="&lt;ul.../&gt;" />
+                <marker date="1511887241789" expanded="true" signature="822:943" ph="&lt;li.../&gt;" />
+                <marker date="1511887241789" expanded="true" signature="984:1593" ph="{...}" />
+                <marker date="1511887241789" expanded="true" signature="991:1196" ph="&lt;ul.../&gt;" />
+                <marker date="1511887241789" expanded="true" signature="1040:1186" ph="&lt;li.../&gt;" />
+                <marker date="1511887241789" expanded="true" signature="1202:1591" ph="&lt;!--...--&gt;" />
+                <marker date="1511887241789" expanded="true" signature="1211:1583" ph="&lt;form.../&gt;" />
+                <marker date="1511887241789" expanded="true" signature="1321:1571" ph="&lt;ul.../&gt;" />
+                <marker date="1511887241789" expanded="true" signature="1374:1557" ph="&lt;li.../&gt;" />
+                <marker date="1511887241789" expanded="true" signature="1395:1539" ph="&lt;button.../&gt;" />
+              </folding>
+            </state>
+          </provider>
+        </entry>
+      </file>
+      <file leaf-file-name="DataManageMenu.cshtml" pinned="false" current-in-tab="true">
+        <entry file="file://$PROJECT_DIR$/VodManageSystem/Views/Database/DataManageMenu.cshtml">
+          <provider selected="true" editor-type-id="text-editor">
+            <state relative-caret-position="255">
+              <caret line="17" column="11" lean-forward="true" selection-start-line="17" selection-start-column="11" selection-end-line="17" selection-end-column="11" />
+              <folding>
+                <marker date="1512057528174" expanded="true" signature="0:47" ph="@..." />
+                <marker date="1512057528174" expanded="true" signature="49:389" ph="&lt;style.../&gt;" />
+                <marker date="1512057528174" expanded="true" signature="66:164" ph="{...}" />
+                <marker date="1512057528174" expanded="true" signature="175:327" ph="{...}" />
+                <marker date="1512057528174" expanded="true" signature="338:380" ph="{...}" />
+                <marker date="1512057528174" expanded="true" signature="441:712" ph="&lt;table.../&gt;" />
+                <marker date="1512057528174" expanded="true" signature="453:703" ph="&lt;tr.../&gt;" />
+                <marker date="1512057528174" expanded="true" signature="466:573" ph="&lt;td.../&gt;" />
+                <marker date="1512057528174" expanded="true" signature="582:693" ph="&lt;td.../&gt;" />
+              </folding>
+            </state>
+          </provider>
+        </entry>
+      </file>
+    </leaf>
+  </component>
+  <component name="FindInProjectRecents">
+    <findStrings>
+      <find>log</find>
+    </findStrings>
+  </component>
+  <component name="Git.Settings">
+    <option name="RECENT_GIT_ROOT_PATH" value="$PROJECT_DIR$" />
+  </component>
+  <component name="HighlightingSettingsPerFile">
+    <setting file="file://$PROJECT_DIR$/VodManageSystem/Controllers/AuthenticateController.cs" root0="FORCE_HIGHLIGHTING" />
+    <setting file="file://$PROJECT_DIR$/VodManageSystem/Views/Shared/_LoginPartial.cshtml" root0="FORCE_HIGHLIGHTING" />
+    <setting file="file://$PROJECT_DIR$/VodManageSystem/Views/Database/DataManageMenu.cshtml" root0="FORCE_HIGHLIGHTING" />
+    <setting file="file://$PROJECT_DIR$/VodManageSystem/Views/Song/Find.cshtml" root0="FORCE_HIGHLIGHTING" />
+  </component>
+  <component name="IdeDocumentHistory">
+    <option name="CHANGED_PATHS">
+      <list>
+        <option value="$PROJECT_DIR$/VodManageSystem/Views/Shared/_LoginPartial.cshtml" />
+      </list>
+    </option>
+  </component>
+  <component name="JsBuildToolGruntFileManager" detection-done="true" sorting="DEFINITION_ORDER" />
+  <component name="JsBuildToolPackageJson" detection-done="true" sorting="DEFINITION_ORDER" />
+  <component name="JsGulpfileManager">
+    <detection-done>true</detection-done>
+    <sorting>DEFINITION_ORDER</sorting>
+  </component>
+  <component name="ProjectFrameBounds">
+    <option name="x" value="10" />
+    <option name="y" value="43" />
+    <option name="width" value="1260" />
+    <option name="height" value="688" />
+  </component>
+  <component name="ProjectView">
+    <navigator currentView="SolutionExplorer" proportions="" version="1">
+      <flattenPackages />
+      <showMembers />
+      <showModules />
+      <showLibraryContents />
+      <hideEmptyPackages />
+      <abbreviatePackageNames />
+      <autoscrollToSource />
+      <autoscrollFromSource />
+      <sortByType />
+      <manualOrder />
+      <foldersAlwaysOnTop value="true" />
+    </navigator>
+    <panes>
+      <pane id="SolutionExplorer">
+        <subPane>
+          <expand>
+            <path>
+              <item name="" type="13324e5d:SolutionExplorerViewPane$ProjectViewPaneTreeStructure$createRoot$1" />
+              <item name="KtvSolution (1 project)" type="977d5f41:SolutionExplorerNodeRider" />
+            </path>
+            <path>
+              <item name="" type="13324e5d:SolutionExplorerViewPane$ProjectViewPaneTreeStructure$createRoot$1" />
+              <item name="KtvSolution (1 project)" type="977d5f41:SolutionExplorerNodeRider" />
+              <item name="VodManageSystem" type="977d5f41:SolutionExplorerNodeRider" />
+            </path>
+            <path>
+              <item name="" type="13324e5d:SolutionExplorerViewPane$ProjectViewPaneTreeStructure$createRoot$1" />
+              <item name="KtvSolution (1 project)" type="977d5f41:SolutionExplorerNodeRider" />
+              <item name="VodManageSystem" type="977d5f41:SolutionExplorerNodeRider" />
+              <item name="Controllers" type="977d5f41:SolutionExplorerNodeRider" />
+            </path>
+            <path>
+              <item name="" type="13324e5d:SolutionExplorerViewPane$ProjectViewPaneTreeStructure$createRoot$1" />
+              <item name="KtvSolution (1 project)" type="977d5f41:SolutionExplorerNodeRider" />
+              <item name="VodManageSystem" type="977d5f41:SolutionExplorerNodeRider" />
+              <item name="Views" type="977d5f41:SolutionExplorerNodeRider" />
+            </path>
+            <path>
+              <item name="" type="13324e5d:SolutionExplorerViewPane$ProjectViewPaneTreeStructure$createRoot$1" />
+              <item name="KtvSolution (1 project)" type="977d5f41:SolutionExplorerNodeRider" />
+              <item name="VodManageSystem" type="977d5f41:SolutionExplorerNodeRider" />
+              <item name="Views" type="977d5f41:SolutionExplorerNodeRider" />
+              <item name="Authenticate" type="977d5f41:SolutionExplorerNodeRider" />
+            </path>
+            <path>
+              <item name="" type="13324e5d:SolutionExplorerViewPane$ProjectViewPaneTreeStructure$createRoot$1" />
+              <item name="KtvSolution (1 project)" type="977d5f41:SolutionExplorerNodeRider" />
+              <item name="VodManageSystem" type="977d5f41:SolutionExplorerNodeRider" />
+              <item name="Views" type="977d5f41:SolutionExplorerNodeRider" />
+              <item name="Database" type="977d5f41:SolutionExplorerNodeRider" />
+            </path>
+            <path>
+              <item name="" type="13324e5d:SolutionExplorerViewPane$ProjectViewPaneTreeStructure$createRoot$1" />
+              <item name="KtvSolution (1 project)" type="977d5f41:SolutionExplorerNodeRider" />
+              <item name="VodManageSystem" type="977d5f41:SolutionExplorerNodeRider" />
+              <item name="Views" type="977d5f41:SolutionExplorerNodeRider" />
+              <item name="Shared" type="977d5f41:SolutionExplorerNodeRider" />
+            </path>
+            <path>
+              <item name="" type="13324e5d:SolutionExplorerViewPane$ProjectViewPaneTreeStructure$createRoot$1" />
+              <item name="KtvSolution (1 project)" type="977d5f41:SolutionExplorerNodeRider" />
+              <item name="VodManageSystem" type="977d5f41:SolutionExplorerNodeRider" />
+              <item name="Views" type="977d5f41:SolutionExplorerNodeRider" />
+              <item name="Song" type="977d5f41:SolutionExplorerNodeRider" />
+            </path>
+          </expand>
+          <select />
+        </subPane>
+        <option name="show-file-system" value="false" />
+        <option name="show-all-items" value="false" />
+      </pane>
+      <pane id="Scratches" />
+    </panes>
+  </component>
+  <component name="PropertiesComponent">
+    <property name="WebServerToolWindowFactoryState" value="false" />
+  </component>
+  <component name="RunDashboard">
+    <option name="ruleStates">
+      <list>
+        <RuleState>
+          <option name="name" value="ConfigurationTypeDashboardGroupingRule" />
+        </RuleState>
+        <RuleState>
+          <option name="name" value="StatusDashboardGroupingRule" />
+        </RuleState>
+      </list>
+    </option>
+  </component>
+  <component name="RunManager" selected=".NET Project.Default">
+    <configuration name="Default" type="DotNetProject" factoryName=".NET Project">
+      <option name="EXE_PATH" value="$PROJECT_DIR$/VodManageSystem/bin/Debug/netcoreapp2.0/VodManageSystem.dll" />
+      <option name="PROGRAM_PARAMETERS" value="" />
+      <option name="WORKING_DIRECTORY" value="$PROJECT_DIR$/VodManageSystem" />
+      <option name="PASS_PARENT_ENVS" value="1" />
+      <envs>
+        <env name="ASPNETCORE_ENVIRONMENT" value="Development" />
+        <env name="ASPNETCORE_URLS" value="http://localhost:5000" />
+      </envs>
+      <option name="USE_MONO" value="0" />
+      <option name="USE_EXTERNAL_CONSOLE" value="0" />
+      <option name="PROJECT_PATH" value="$PROJECT_DIR$/VodManageSystem/VodManageSystem.csproj" />
+      <option name="PROJECT_OUTPUT_TRACKING" value="1" />
+      <option name="PROJECT_KIND" value="DotNetCore" />
+      <option name="PROJECT_TFM" value=".NETCoreApp,Version=v2.0" />
+      <browser url="http://localhost:5000" />
+    </configuration>
+  </component>
+  <component name="ShelveChangesManager" show_recycled="false">
+    <option name="remove_strategy" value="false" />
+  </component>
+  <component name="TaskManager">
+    <task active="true" id="Default" summary="Default task">
+      <changelist id="60c7c227-24ba-47cd-a619-cbdd3798d22d" name="Default" comment="" />
+      <created>1513210023178</created>
+      <option name="number" value="Default" />
+      <option name="presentableId" value="Default" />
+      <updated>1513210023178</updated>
+      <workItem from="1513210024590" duration="656000" />
+    </task>
+    <servers />
+  </component>
+  <component name="TimeTrackingManager">
+    <option name="totallyTimeSpent" value="656000" />
+  </component>
+  <component name="TodoView">
+    <todo-panel id="selected-file">
+      <is-autoscroll-to-source value="true" />
+    </todo-panel>
+    <todo-panel id="all">
+      <are-packages-shown value="true" />
+      <is-autoscroll-to-source value="true" />
+    </todo-panel>
+  </component>
+  <component name="ToolWindowManager">
+    <frame x="10" y="43" width="1260" height="688" extended-state="0" />
+    <layout>
+      <window_info id="TODO" active="false" anchor="bottom" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" show_stripe_button="true" weight="0.33" sideWeight="0.5" order="6" side_tool="false" content_ui="tabs" />
+      <window_info id="Errors In Solution" active="false" anchor="right" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" show_stripe_button="true" weight="0.33" sideWeight="0.5" order="-1" side_tool="false" content_ui="tabs" />
+      <window_info id="Event Log" active="false" anchor="bottom" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" show_stripe_button="true" weight="0.33" sideWeight="0.5" order="-1" side_tool="true" content_ui="tabs" />
+      <window_info id="Unit Tests" active="false" anchor="bottom" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" show_stripe_button="true" weight="0.33" sideWeight="0.5" order="-1" side_tool="false" content_ui="tabs" />
+      <window_info id="Version Control" active="false" anchor="bottom" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" show_stripe_button="true" weight="0.33" sideWeight="0.5" order="-1" side_tool="false" content_ui="tabs" />
+      <window_info id="Run" active="false" anchor="bottom" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" show_stripe_button="true" weight="0.32954547" sideWeight="0.5" order="2" side_tool="false" content_ui="tabs" />
+      <window_info id="Terminal" active="false" anchor="bottom" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" show_stripe_button="true" weight="0.33" sideWeight="0.5" order="-1" side_tool="false" content_ui="tabs" />
+      <window_info id="NuGet" active="false" anchor="bottom" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" show_stripe_button="true" weight="0.33" sideWeight="0.5" order="-1" side_tool="false" content_ui="tabs" />
+      <window_info id="Project" active="false" anchor="left" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="true" show_stripe_button="true" weight="0.25" sideWeight="0.5" order="0" side_tool="false" content_ui="combo" />
+      <window_info id="Build" active="false" anchor="bottom" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" show_stripe_button="true" weight="0.33" sideWeight="0.5" order="-1" side_tool="false" content_ui="tabs" />
+      <window_info id="Database" active="false" anchor="right" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" show_stripe_button="true" weight="0.33" sideWeight="0.5" order="-1" side_tool="false" content_ui="tabs" />
+      <window_info id="Structure" active="false" anchor="left" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" show_stripe_button="true" weight="0.25" sideWeight="0.5" order="1" side_tool="false" content_ui="tabs" />
+      <window_info id="Favorites" active="false" anchor="left" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" show_stripe_button="true" weight="0.33" sideWeight="0.5" order="-1" side_tool="true" content_ui="tabs" />
+      <window_info id="Debug" active="false" anchor="bottom" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" show_stripe_button="true" weight="0.4" sideWeight="0.5" order="3" side_tool="false" content_ui="tabs" />
+      <window_info id="Cvs" active="false" anchor="bottom" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" show_stripe_button="true" weight="0.25" sideWeight="0.5" order="4" side_tool="false" content_ui="tabs" />
+      <window_info id="Hierarchy" active="false" anchor="right" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" show_stripe_button="true" weight="0.25" sideWeight="0.5" order="2" side_tool="false" content_ui="combo" />
+      <window_info id="Message" active="false" anchor="bottom" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" show_stripe_button="true" weight="0.33" sideWeight="0.5" order="0" side_tool="false" content_ui="tabs" />
+      <window_info id="Commander" active="false" anchor="right" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" show_stripe_button="true" weight="0.4" sideWeight="0.5" order="0" side_tool="false" content_ui="tabs" />
+      <window_info id="Find" active="false" anchor="bottom" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" show_stripe_button="true" weight="0.33" sideWeight="0.5" order="1" side_tool="false" content_ui="tabs" />
+      <window_info id="Inspection" active="false" anchor="bottom" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" show_stripe_button="true" weight="0.4" sideWeight="0.5" order="5" side_tool="false" content_ui="tabs" />
+      <window_info id="Ant Build" active="false" anchor="right" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" show_stripe_button="true" weight="0.25" sideWeight="0.5" order="1" side_tool="false" content_ui="tabs" />
+    </layout>
+  </component>
+  <component name="TypeScriptGeneratedFilesManager">
+    <option name="version" value="1" />
+  </component>
+  <component name="VcsContentAnnotationSettings">
+    <option name="myLimit" value="2678400000" />
+  </component>
+  <component name="XDebuggerManager">
+    <breakpoint-manager />
+    <watches-manager />
+  </component>
+  <component name="editorHistoryManager">
+    <entry file="file://$PROJECT_DIR$/VodManageSystem/Controllers/AuthenticateController.cs">
+      <provider selected="true" editor-type-id="text-editor">
+        <state relative-caret-position="-201">
+          <caret line="21" column="9" lean-forward="true" selection-start-line="21" selection-start-column="9" selection-end-line="21" selection-end-column="9" />
+          <folding>
+            <marker date="1512425045000" expanded="false" signature="6:309" ph="..." />
+            <marker date="1512425045000" expanded="true" signature="462:2671" ph="{...}" />
+            <marker date="1512425045000" expanded="true" signature="517:2669" ph="{...}" />
+            <marker date="1512425045000" expanded="true" signature="644:696" ph="{...}" />
+            <marker date="1512425045000" expanded="true" signature="765:1013" ph="{...}" />
+            <marker date="1512425045000" expanded="true" signature="1184:2154" ph="{...}" />
+            <marker date="1512425045000" expanded="true" signature="1282:1819" ph="{...}" />
+            <marker date="1512425045000" expanded="true" signature="1548:1805" ph="{...}" />
+            <marker date="1512425045000" expanded="true" signature="2022:2117" ph="/* user name not found or wrong password ... */" />
+            <marker date="1512425045000" expanded="true" signature="2244:2352" ph="{...}" />
+            <marker date="1512425045000" expanded="true" signature="2443:2663" ph="{...}" />
+          </folding>
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/VodManageSystem/Views/Shared/_LoginPartial.cshtml">
+      <provider selected="true" editor-type-id="text-editor">
+        <state relative-caret-position="345">
+          <caret line="23" column="8" lean-forward="false" selection-start-line="23" selection-start-column="8" selection-end-line="23" selection-end-column="8" />
+          <folding>
+            <marker date="1511887241789" expanded="true" signature="35:266" ph="@{...}" />
+            <marker date="1511887241789" expanded="true" signature="58:264" ph="&lt;style.../&gt;" />
+            <marker date="1511887241789" expanded="true" signature="102:251" ph="{...}" />
+            <marker date="1511887241789" expanded="true" signature="268:1593" ph="@..." />
+            <marker date="1511887241789" expanded="true" signature="358:979" ph="{...}" />
+            <marker date="1511887241789" expanded="true" signature="365:642" ph="&lt;ul.../&gt;" />
+            <marker date="1511887241789" expanded="true" signature="414:632" ph="&lt;li.../&gt;" />
+            <marker date="1511887241789" expanded="true" signature="648:977" ph="&lt;!--...--&gt;" />
+            <marker date="1511887241789" expanded="true" signature="657:969" ph="&lt;form.../&gt;" />
+            <marker date="1511887241789" expanded="true" signature="769:957" ph="&lt;ul.../&gt;" />
+            <marker date="1511887241789" expanded="true" signature="822:943" ph="&lt;li.../&gt;" />
+            <marker date="1511887241789" expanded="true" signature="984:1593" ph="{...}" />
+            <marker date="1511887241789" expanded="true" signature="991:1196" ph="&lt;ul.../&gt;" />
+            <marker date="1511887241789" expanded="true" signature="1040:1186" ph="&lt;li.../&gt;" />
+            <marker date="1511887241789" expanded="true" signature="1202:1591" ph="&lt;!--...--&gt;" />
+            <marker date="1511887241789" expanded="true" signature="1211:1583" ph="&lt;form.../&gt;" />
+            <marker date="1511887241789" expanded="true" signature="1321:1571" ph="&lt;ul.../&gt;" />
+            <marker date="1511887241789" expanded="true" signature="1374:1557" ph="&lt;li.../&gt;" />
+            <marker date="1511887241789" expanded="true" signature="1395:1539" ph="&lt;button.../&gt;" />
+          </folding>
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/VodManageSystem/Views/Database/DataManageMenu.cshtml">
+      <provider selected="true" editor-type-id="text-editor">
+        <state relative-caret-position="255">
+          <caret line="17" column="11" lean-forward="true" selection-start-line="17" selection-start-column="11" selection-end-line="17" selection-end-column="11" />
+          <folding>
+            <marker date="1512057528174" expanded="true" signature="0:47" ph="@..." />
+            <marker date="1512057528174" expanded="true" signature="49:389" ph="&lt;style.../&gt;" />
+            <marker date="1512057528174" expanded="true" signature="66:164" ph="{...}" />
+            <marker date="1512057528174" expanded="true" signature="175:327" ph="{...}" />
+            <marker date="1512057528174" expanded="true" signature="338:380" ph="{...}" />
+            <marker date="1512057528174" expanded="true" signature="441:712" ph="&lt;table.../&gt;" />
+            <marker date="1512057528174" expanded="true" signature="453:703" ph="&lt;tr.../&gt;" />
+            <marker date="1512057528174" expanded="true" signature="466:573" ph="&lt;td.../&gt;" />
+            <marker date="1512057528174" expanded="true" signature="582:693" ph="&lt;td.../&gt;" />
+          </folding>
+        </state>
+      </provider>
+    </entry>
+  </component>
+</project>

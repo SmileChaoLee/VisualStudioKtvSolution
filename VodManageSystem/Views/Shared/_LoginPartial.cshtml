@@ -1,0 +1,52 @@
+@using Microsoft.AspNetCore.Http;
+
+@section Scripts
+{
+    <style type="text/css">
+        button
+    	{
+            color:brown;background-color:lightgrey;
+            height:26px;font-size:16px; font-weight:bold;
+            text-align:center;
+    	}
+    </style>
+}
+
+@if (@Context.Session.GetInt32("LoggedIn")==1) // use Context instead of HttpContext works
+{
+    <ul class="nav navbar-nav navbar-right">
+        <li>
+		<!-- the following only support get method and it is default -->
+            <a style="font-size:16px;font-weight:bold;" asp-area="" asp-controller="Authenticate" asp-action="LoggedOut">Log out</a>
+        </li>
+    </ul>
+
+    <!--
+    <form asp-area="" asp-controller="Authenticate" asp-action="Logout" method="post" class="navbar-right">
+        <ul class="nav navbar-nav navbar-right">
+            <li>
+                <button type="submit" class="btn btn-link navbar-btn navbar-link">Log out</button>
+            </li>
+        </ul>
+    </form>
+    -->
+}
+else
+{
+    <ul class="nav navbar-nav navbar-right">
+        <li>
+            <a style="font-size:16px;font-weight:bold;" asp-area="" asp-controller="Authenticate" asp-action="Login">Log in</a>
+        </li>
+    </ul>
+
+    <!--
+    <form asp-area="" asp-controller="Authenticate" asp-action="login" method="get" class="navbar-right">
+        <ul class="nav navbar-nav navbar-right">
+            <li>
+                <button type="submit" class="btn btn-link navbar-btn navbar-link"
+			        style="font-size:16px;font-weight:bold;color:white">Log in</button>
+            </li>
+        </ul>
+    </form>
+    -->
+}

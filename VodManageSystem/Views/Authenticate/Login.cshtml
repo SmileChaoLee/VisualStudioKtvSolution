@@ -1,0 +1,71 @@
+﻿@{
+    ViewData["Title"] = "Login";
+}
+
+@section Scripts
+{
+    <script type="text/javascript">
+        // Using jQuery.
+        $(function() {
+            // jQuery function to set focus on first input item
+            $('form input:first').focus();
+
+            $('form').each(function() {
+                $(this).find('input').keypress(function(e) {
+                    // Enter pressed?
+                    if(e.which === 10 || e.which === 13) {
+                        this.form.submit();
+                        // toSubmit();  // another option
+                    }
+                });
+            });
+        });
+        
+        function toSubmit()
+        {
+            // document.getElementById("submitButton").submit();
+            $('form').find('button').submit();
+        }
+    </script>
+}
+
+<style type="text/css">
+    body {
+            font-size:16px;
+    }
+    h1 {
+            text-align:center;
+    }
+    p {
+            font-family:"New Roman";
+            font-size:20px;
+            text-align:center;
+    }
+    input[type=submit] {
+        border: none;
+            color:brown;background-color:lightgrey;
+            height: 26px; font-size: 16px; font-weight:bold;
+            text-align:center;
+    }
+    button {
+            height:26px;font-size:16px; font-weight:bold;
+            text-align:center;
+    }
+    span.errorMsg {
+            color:red;
+    }
+</style>
+
+<br/><br/>
+
+<form asp-area="" asp-controller="Authenticate" asp-action="Login" method="post">
+    <p>
+        User Name: <input type="text" name="username" tabindex=1><br><br>
+        Password : <input type="password" name="password" tabindex=2><br><br>
+        <!-- type="submit" in button is not necessary in this case -->
+        <button id="submitButton" type="submit" onclick="toSubmit()" tabindex=3>Login</button>
+        <br><br>
+        <span class="errorMsg">@ViewData["ErrorMessage"]</span>
+    </p>
+</form>
+

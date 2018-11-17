@@ -1,0 +1,7 @@
+﻿@model DateTime?
+@if (Model.HasValue)
+{
+    // @Model.Value.ToShortDateString();
+    // @Convert.ToDateTime(Model.Value).ToString("d");
+    @Convert.ToDateTime(Model.Value).ToString("yyyy-MM-dd");
+}
