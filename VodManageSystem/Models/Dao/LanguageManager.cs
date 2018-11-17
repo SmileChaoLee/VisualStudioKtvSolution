@@ -27,11 +27,30 @@ namespace VodManageSystem.Models.Dao
         }
 
         // private methods
-
         // end of private methods
 
-
         // public methods
+        public async Task<List<Language>> GetAllLanguagesAsync(LanguageStateOfRequest languageState)
+        {
+            List<Language> totalLanguages;
+            if (languageState.OrderBy == "LangNo")
+            {
+                totalLanguages = await _context.Language
+                                          .OrderBy(x => x.LangNo)
+                                          .AsNoTracking().ToListAsync();
+            }
+            else if (languageState.OrderBy == "LangNa")
+            {
+                totalLanguages = await _context.Language
+                                          .OrderBy(x => x.LangNo).ThenBy(x => x.LangNo)
+                                          .AsNoTracking().ToListAsync();
+            }
+            else
+            {
+                totalLanguages = new List<Language>();
+            }
+            return totalLanguages;
+        }
 
         /// <summary>
         /// Gets the dictionary of languages.
@@ -129,28 +148,101 @@ namespace VodManageSystem.Models.Dao
                 languageState.OrderBy = "LangNo";
             }
 
-            int pageNo = languageState.CurrentPageNo;
-            if (pageNo < 1)
-            {
-                pageNo = 1;
-            }
-            int pageSize = languageState.PageSize;
-
             SortedDictionary<int, Language> languagesDictionary = await GetDictionaryOfLanguages(languageState);
 
+            int pageNo = languageState.CurrentPageNo;
+            int pageSize = languageState.PageSize;
             int totalCount = languagesDictionary.Count;
             int totalPages = totalCount / pageSize;
             if ((totalPages * pageSize) < totalCount)
             {
                 totalPages++;
             }
-            if (pageNo > totalPages)
+
+            if (pageNo == -1)
+            {
+                // get the last page
+                pageNo = totalPages;
+            }
+            else if (pageNo < 1)
+            {
+                pageNo = 1;
+            }
+            else if (pageNo > totalPages)
             {
                 pageNo = totalPages;
             }
 
             int recordNo = (pageNo - 1) * pageSize;
             List<Language> languages = languagesDictionary.Skip(recordNo).Take(pageSize).Select(m => m.Value).ToList();
+
+            languageState.CurrentPageNo = pageNo;
+            Language firstLanguage = languages.FirstOrDefault();
+            if (firstLanguage != null)
+            {
+                languageState.FirstId = firstLanguage.Id;
+            }
+            else
+            {
+                languageState.OrgId = 0;
+                languageState.OrgLangNo = "";
+                languageState.FirstId = 0;
+            }
+
+            return languages;
+        }
+
+        public async Task<List<Language>> GetOnePageOfLanguages(LanguageStateOfRequest languageState)
+        {
+            if (languageState == null)
+            {
+                return new List<Language>();
+            }
+            if (string.IsNullOrEmpty(languageState.OrderBy))
+            {
+                // default is order by language's No
+                languageState.OrderBy = "LangNo";
+            }
+
+            int pageNo = languageState.CurrentPageNo;
+            int pageSize = languageState.PageSize;
+            int totalPages = await GetTotalPageOfLanguageTable(pageSize);
+            if (pageNo == -1)
+            {
+                // get the last page
+                pageNo = totalPages;
+            }
+            else if (pageNo < 1)
+            {
+                pageNo = 1;
+            }
+            else if (pageNo > totalPages)
+            {
+                pageNo = totalPages;
+            }
+
+            int recordNum = (pageNo - 1) * pageSize;
+
+            List<Language> languages;
+
+            if (languageState.OrderBy == "LangNo")
+            {
+                languages = await _context.Language.OrderBy(x => x.LangNo)
+                                        .Skip(recordNum).Take(pageSize)
+                                        .AsNoTracking().ToListAsync();
+            }
+            else if (languageState.OrderBy == "LangNa")
+            {
+                languages = await _context.Language.OrderBy(x => x.LangNa).ThenBy(x => x.LangNo)
+                                        .Skip(recordNum).Take(pageSize)
+                                        .AsNoTracking().ToListAsync();
+            }
+            else
+            {
+                languages = await _context.Language
+                                        .Skip(recordNum).Take(pageSize)
+                                        .AsNoTracking().ToListAsync();
+            }
 
             languageState.CurrentPageNo = pageNo;
             Language firstLanguage = languages.FirstOrDefault();

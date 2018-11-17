@@ -47,7 +47,8 @@ namespace VodManageSystem.Controllers
         public async Task<IActionResult> LanguagesList(string language_state)
         {
             LanguageStateOfRequest languageState = JsonUtil.GetObjectFromJsonString<LanguageStateOfRequest>(language_state);
-            List<Language> languages = await _languageManager.GetOnePageOfLanguagesDictionary(languageState);
+            // List<Language> languages = await _languageManager.GetOnePageOfLanguagesDictionary(languageState);
+            List<Language> languages = await _languageManager.GetOnePageOfLanguages(languageState);
 
             ViewBag.LanguageState = JsonUtil.SetJsonStringFromObject(languageState);
             return View(languages);
@@ -152,9 +153,8 @@ namespace VodManageSystem.Controllers
 
             LanguageStateOfRequest languageState = JsonUtil.GetObjectFromJsonString<LanguageStateOfRequest>(language_state);
             languageState.StartTime = DateTime.Now;
-            // languageState.CurrentPageNo = await _languageManager.GetTotalPageOfLanguageTable();    // go to last page
-            // use the max value to make GetOnePageOfLanguagesDictionary() go to last page
-            languageState.CurrentPageNo = Int32.MaxValue / languageState.PageSize;  // default value for View
+            // languageState.CurrentPageNo = Int32.MaxValue / languageState.PageSize;  // default value for View
+            languageState.CurrentPageNo = -1;   // present last page
             string temp_state = JsonUtil.SetJsonStringFromObject(languageState);
 
             return RedirectToAction(nameof(LanguagesList), new { language_state = temp_state });
