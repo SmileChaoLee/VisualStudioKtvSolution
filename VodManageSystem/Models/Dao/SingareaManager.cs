@@ -66,11 +66,27 @@ namespace VodManageSystem.Models.Dao
                 return new SortedDictionary<int, Singarea>();
             }
 
-            List<Singarea> totalSingareas = await GetAllSingareasAsync(singareaState);
+            List<Singarea> totalSingareas = await _context.Singarea.AsNoTracking().ToListAsync();
 
-            Dictionary<int, Singarea> singareasDictionary = totalSingareas
-                .Select((m, index) => new { rowNumber = index + 1, m })
-                .ToDictionary(m => m.rowNumber, m => m.m);
+            Dictionary<int, Singarea> singareasDictionary = null;
+
+            if (singareaState.OrderBy == "AreaNo")
+            {
+                singareasDictionary = totalSingareas.OrderBy(x => x.AreaNo)
+                            .Select((m, index) => new { rowNumber = index + 1, m })
+                            .ToDictionary(m => m.rowNumber, m => m.m);
+            }
+            else if (singareaState.OrderBy == "AreaNa")
+            {
+                singareasDictionary = totalSingareas.OrderBy(x => x.AreaNa).ThenBy(x => x.AreaNo)
+                            .Select((m, index) => new { rowNumber = index + 1, m })
+                            .ToDictionary(m => m.rowNumber, m => m.m);
+            }
+            else
+            {
+                // not inside range of roder by
+                singareasDictionary = new Dictionary<int, Singarea>();    // empty lsit
+            }
 
             return new SortedDictionary<int, Singarea>(singareasDictionary);
         }
@@ -116,6 +132,66 @@ namespace VodManageSystem.Models.Dao
                 totalPages++;
             }
             return totalPages;
+        }
+
+        /// <summary>
+        /// Gets the one page of singareas dictionary.
+        /// </summary>
+        /// <returns>The one page of singareas dictionary.</returns>
+        /// <param name="singareaState">Singarea state.</param>
+        public async Task<List<Singarea>> GetOnePageOfSingareasDictionary(SingareaStateOfRequest singareaState)
+        {
+            if (singareaState == null)
+            {
+                return new List<Singarea>();
+            }
+            if (string.IsNullOrEmpty(singareaState.OrderBy))
+            {
+                singareaState.OrderBy = "AreaNo";
+            }
+
+            SortedDictionary<int, Singarea> singareasDictionary = await GetDictionaryOfSingareas(singareaState);
+
+            int pageNo = singareaState.CurrentPageNo;
+            int pageSize = singareaState.PageSize;
+            int totalCount = singareasDictionary.Count;
+            int totalPages = totalCount / pageSize;
+            if ((totalPages * pageSize) < totalCount)
+            {
+                totalPages++;
+            }
+
+            if (pageNo == -1)
+            {
+                // get the last page
+                pageNo = totalPages;
+            }
+            else if (pageNo < 1)
+            {
+                pageNo = 1;
+            }
+            else if (pageNo > totalPages)
+            {
+                pageNo = totalPages;
+            }
+
+            int recordNo = (pageNo - 1) * pageSize;
+            List<Singarea> singareas = singareasDictionary.Skip(recordNo).Take(pageSize).Select(m => m.Value).ToList();
+
+            singareaState.CurrentPageNo = pageNo;
+            Singarea firstSingarea = singareas.FirstOrDefault();
+            if (firstSingarea != null)
+            {
+                singareaState.FirstId = firstSingarea.Id;
+            }
+            else
+            {
+                singareaState.OrgId = 0;
+                singareaState.OrgAreaNo = "";
+                singareaState.FirstId = 0;
+            }
+
+            return singareas;
         }
 
         public async Task<List<Singarea>> GetOnePageOfSingareas(SingareaStateOfRequest singareaState)

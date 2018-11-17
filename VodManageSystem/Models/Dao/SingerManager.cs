@@ -54,9 +54,24 @@ namespace VodManageSystem.Models.Dao
 
 
         // public methods
-        public async Task<List<Singer>> GetAllSingersAsync() {
-            List<Singer> totalSingers = await _context.Singer.Include(x => x.Singarea)
-                                      .AsNoTracking().ToListAsync();
+        public async Task<List<Singer>> GetAllSingersAsync(SingerStateOfRequest singerState) {
+            List<Singer> totalSingers;
+            if (singerState.OrderBy == "SingNo")
+            {
+                totalSingers = await _context.Singer.Include(x => x.Singarea)
+                                          .OrderBy(x=>x.SingNo)
+                                          .AsNoTracking().ToListAsync();
+            }
+            else if (singerState.OrderBy == "SingNa")
+            {
+                totalSingers = await _context.Singer.Include(x => x.Singarea)
+                                          .OrderBy(x => x.SingNo).ThenBy(x=>x.SingNo)
+                                          .AsNoTracking().ToListAsync();
+            }
+            else
+            {
+                totalSingers = new List<Singer>();
+            }
             return totalSingers;
         }
 
@@ -72,10 +87,13 @@ namespace VodManageSystem.Models.Dao
                 return new SortedDictionary<int, Singer>();
             }
 
-            List<Singer> totalSingers = await GetAllSingersAsync();
+            List<Singer> totalSingers = await _context.Singer.Include(x => x.Singarea)
+                                      .AsNoTracking().ToListAsync();
 
             Dictionary<int, Singer> singersDictionary = null;
 
+
+            // OrderBy(x=>x.SingNo) must put the following (not above in the totalSingers)
             if (singerState.OrderBy == "SingNo")
             {
                 singersDictionary = totalSingers.OrderBy(x => x.SingNo)
@@ -157,22 +175,27 @@ namespace VodManageSystem.Models.Dao
                 singerState.OrderBy = "SingNo";
             }
 
-            int pageNo = singerState.CurrentPageNo;
-            if (pageNo < 1)
-            {
-                pageNo = 1;
-            }
-            int pageSize = singerState.PageSize;
-
             SortedDictionary<int, Singer> singersDictionary = await GetDictionaryOfSingers(singerState);
 
+            int pageNo = singerState.CurrentPageNo;
+            int pageSize = singerState.PageSize;
             int totalCount = singersDictionary.Count;
             int totalPages = totalCount / pageSize;
             if ((totalPages * pageSize) < totalCount)
             {
                 totalPages++;
             }
-            if (pageNo > totalPages)
+
+            if (pageNo == -1)
+            {
+                // get the last page
+                pageNo = totalPages;
+            }
+            else if (pageNo < 1)
+            {
+                pageNo = 1;
+            }
+            else if (pageNo > totalPages)
             {
                 pageNo = totalPages;
             }

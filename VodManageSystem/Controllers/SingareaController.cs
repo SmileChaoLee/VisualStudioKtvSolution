@@ -47,6 +47,7 @@ namespace VodManageSystem.Controllers
         public async Task<IActionResult> SingareasList(string singarea_state)
         {
             SingareaStateOfRequest singareaState = JsonUtil.GetObjectFromJsonString<SingareaStateOfRequest>(singarea_state);
+            // List<Singarea> singareas = await _singareaManager.GetOnePageOfSingareasDictionary(singareaState);
             List<Singarea> singareas = await _singareaManager.GetOnePageOfSingareas(singareaState);
 
             ViewBag.SingareaState = JsonUtil.SetJsonStringFromObject(singareaState);
@@ -152,7 +153,8 @@ namespace VodManageSystem.Controllers
 
             SingareaStateOfRequest singareaState = JsonUtil.GetObjectFromJsonString<SingareaStateOfRequest>(singarea_state);
             singareaState.StartTime = DateTime.Now;
-            singareaState.CurrentPageNo = Int32.MaxValue / singareaState.PageSize;  // default value for View
+            // singareaState.CurrentPageNo = Int32.MaxValue / singareaState.PageSize;  // default value for View
+            singareaState.CurrentPageNo = -1;   // present the last page
             string temp_state = JsonUtil.SetJsonStringFromObject(singareaState);
 
             return RedirectToAction(nameof(SingareasList), new { singarea_state = temp_state });
