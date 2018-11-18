@@ -3,6 +3,7 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
 using Microsoft.AspNetCore.Mvc;
+using Newtonsoft.Json.Linq;
 using VodManageSystem.Models;
 using VodManageSystem.Models.Dao;
 using VodManageSystem.Models.DataModels;
@@ -13,7 +14,7 @@ using VodManageSystem.Utilities;
 namespace VodManageSystem.Api.Controllers
 {
     [Route("api/[controller]")]
-    public class SingareaController : Controller
+    public class SingerTypeController : Controller
     {
         private readonly KtvSystemDBContext _context;
         private readonly SingareaManager _singareaManager;
@@ -23,7 +24,7 @@ namespace VodManageSystem.Api.Controllers
         /// </summary>
         /// <param name="context">Context.</param>
         /// <param name="singareaManager">Singarea manager.</param>
-        public SingareaController(KtvSystemDBContext context, SingareaManager singareaManager)
+        public SingerTypeController(KtvSystemDBContext context, SingareaManager singareaManager)
         {
             _context = context;
             _singareaManager = singareaManager;
@@ -36,15 +37,49 @@ namespace VodManageSystem.Api.Controllers
             // get all singarea
             SingareaStateOfRequest singareaState = new SingareaStateOfRequest();
             List<Singarea> singareas = await _singareaManager.GetAllSingareas(singareaState);
-            // convert singers object to JSON string (serializing)
+            // Convert List<Singarea> to JSON array
+            JArray jArray = new JArray();
+            JObject jObject;
+            int id;
+            string areaNo;
+            string areaNa;
+            string areaEn;
+            string sex;
             foreach(var singarea in singareas)
             {
-                // set Singers to null to keep the object small
-                // because the property, Singers, is not needed
-                singarea.Singers = null;
+                id = singarea.Id;
+                areaNo = singarea.AreaNo;
+                areaNa = singarea.AreaNa;
+                areaEn = singarea.AreaEn;
+                sex = "0";
+                jObject = new JObject();
+                jObject.Add("id", id);
+                jObject.Add("areaNo", areaNo);
+                jObject.Add("areaNa", areaNa);
+                jObject.Add("areaEn", areaEn);
+                jObject.Add("sex", sex);
+                jArray.Add(jObject);
+                sex = "1";
+                jObject = new JObject();
+                jObject.Add("id", id);
+                jObject.Add("areaNo", areaNo);
+                jObject.Add("areaNa", areaNa);
+                jObject.Add("areaEn", areaEn);
+                jObject.Add("sex", sex);
+                jArray.Add(jObject);
+                sex = "2";
+                jObject = new JObject();
+                jObject.Add("id", id);
+                jObject.Add("areaNo", areaNo);
+                jObject.Add("areaNa", areaNa);
+                jObject.Add("areaEn", areaEn);
+                jObject.Add("sex", sex);
+                jArray.Add(jObject);
             }
-            string singareasString = JsonUtil.SetJsonStringFromObject(singareas);
-            return singareasString;
+            jObject = new JObject();
+            jObject.Add("singerTypes", jArray);
+
+            return jObject.ToString();
         }
 
         // GET api/values/5
