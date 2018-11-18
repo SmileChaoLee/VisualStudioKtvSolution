@@ -156,7 +156,7 @@ namespace VodManageSystem.Models.Dao
             else
             {
                 playerscoreState.OrgId = 0;
-                playerscoreState.OrgPlayerName = "";
+                playerscoreState.OrgNo = "";
                 playerscoreState.FirstId = 0;
             }
 
@@ -219,7 +219,7 @@ namespace VodManageSystem.Models.Dao
                 {
                     // dictionary (playerscore Table) is empty
                     playerscoreState.OrgId = 0;
-                    playerscoreState.OrgPlayerName = "";
+                    playerscoreState.OrgNo = "";
                     playerscoreState.FirstId = 0;
                     // return empty list
                     return new List<Playerscore>();
@@ -245,7 +245,7 @@ namespace VodManageSystem.Models.Dao
 
             playerscoreState.CurrentPageNo = pageNo;
             playerscoreState.OrgId = playerscore.Id;
-            playerscoreState.OrgPlayerName = playerscore.PlayerName;
+            playerscoreState.OrgNo = playerscore.PlayerName;
 
             Playerscore firstPlayerscore = playerscores.FirstOrDefault();
             if (firstPlayerscore != null)

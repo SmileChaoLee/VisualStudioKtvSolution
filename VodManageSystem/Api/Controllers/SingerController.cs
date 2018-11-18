@@ -40,14 +40,6 @@ namespace VodManageSystem.Api.Controllers
             Console.WriteLine("Get all singers.");
 
             SingerStateOfRequest singerState = new SingerStateOfRequest();
-            /*
-             * 
-            // It is too many so only the first 50 records
-            singerState.PageSize = 50;
-            singerState.CurrentPageNo = 1;
-            singerState.OrgSingNo = "SingNo";   // order by singer's No
-            List<Singer> singers = await _singerManager.GetOnePageOfSingers(singerState);
-            */
 
             List<Singer> singers = await _singerManager.GetAllSingers(singerState);
 
