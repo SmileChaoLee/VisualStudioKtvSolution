@@ -39,29 +39,28 @@ namespace VodManageSystem.Api.Controllers
         {
             Console.WriteLine("Get all singers.");
 
-            // It is too many so only the first 50 records
             SingerStateOfRequest singerState = new SingerStateOfRequest();
+            /*
+             * 
+            // It is too many so only the first 50 records
             singerState.PageSize = 50;
             singerState.CurrentPageNo = 1;
             singerState.OrgSingNo = "SingNo";   // order by singer's No
             List<Singer> singers = await _singerManager.GetOnePageOfSingers(singerState);
-            foreach(var singer in singers){
-                // set the properties that are not needed to null
-                singer.Singarea = null;
-                singer.SongSinger1s = null;
-                singer.SongSinger2s = null;
+            */
+
+            List<Singer> singers = await _singerManager.GetAllSingers(singerState);
+
+            JObject jObjectForAll = new JObject();
+            JObject jObject;
+            JArray jArray = new JArray();
+            foreach (var singer in singers){
+                jObject = ConvertToJsongObject(singer);
+                jArray.Add(jObject);
             }
+            jObjectForAll.Add("singers", jArray);
 
-            // convert singers object to JSON string (serializing)
-            string singersString = JsonUtil.SetJsonStringFromObject(singers);
-
-            JObject jObject = new JObject();
-            jObject.Add("PageNo", singerState.CurrentPageNo);
-            jObject.Add("PageSize", singerState.PageSize);
-            JArray jArray = JArray.Parse(singersString);
-            jObject.Add("Singers", jArray);
-
-            return jObject.ToString();
+            return jObjectForAll.ToString();
         }
 
         // GET api/values/5
@@ -106,24 +105,20 @@ namespace VodManageSystem.Api.Controllers
             singerState.CurrentPageNo = pageNo;
             singerState.OrderBy = orderByParam;
             List<Singer> singers = await _singerManager.GetOnePageOfSingers(singerState);
+
+            JObject jObjectForAll = new JObject();
+            jObjectForAll.Add("pageNo", singerState.CurrentPageNo);
+            jObjectForAll.Add("pageSize", singerState.PageSize);
+            JObject jObject;
+            JArray jArray = new JArray();
             foreach (var singer in singers)
             {
-                // set the properties that are not needed to null
-                singer.Singarea = null;
-                singer.SongSinger1s = null;
-                singer.SongSinger2s = null;
+                jObject = ConvertToJsongObject(singer);
+                jArray.Add(jObject);
             }
+            jObjectForAll.Add("singers", jArray);
 
-            // convert singers object to JSON string (serializing)
-            string singersString = JsonUtil.SetJsonStringFromObject(singers);
-
-            JObject jObject = new JObject();
-            jObject.Add("PageNo", singerState.CurrentPageNo);
-            jObject.Add("PageSize", singerState.PageSize);
-            JArray jArray = JArray.Parse(singersString);
-            jObject.Add("Singers", jArray);
-
-            return jObject.ToString();
+            return jObjectForAll.ToString();
         }
 
         // GET api/values/5/"1"/10/1
@@ -161,24 +156,20 @@ namespace VodManageSystem.Api.Controllers
             singerState.CurrentPageNo = pageNo;
             singerState.OrderBy = orderByParam;
             List<Singer> singers = await _singerManager.GetOnePageOfSingersByAreaSex(singerState, areaId, sex);
+
+            JObject jObjectForAll = new JObject();
+            jObjectForAll.Add("pageNo", singerState.CurrentPageNo);
+            jObjectForAll.Add("pageSize", singerState.PageSize);
+            JObject jObject;
+            JArray jArray = new JArray();
             foreach (var singer in singers)
             {
-                // set the properties that are not needed to null
-                singer.Singarea = null;
-                singer.SongSinger1s = null;
-                singer.SongSinger2s = null;
+                jObject = ConvertToJsongObject(singer);
+                jArray.Add(jObject);
             }
+            jObjectForAll.Add("singers", jArray);
 
-            // convert singers object to JSON string (serializing)
-            string singersString = JsonUtil.SetJsonStringFromObject(singers);
-
-            JObject jObject = new JObject();
-            jObject.Add("PageNo",singerState.CurrentPageNo);
-            jObject.Add("PageSize", singerState.PageSize);
-            JArray jArray = JArray.Parse(singersString);
-            jObject.Add("Singers", jArray);
-
-            return jObject.ToString();
+            return jObjectForAll.ToString();
         }
 
         // POST api/values
@@ -197,6 +188,27 @@ namespace VodManageSystem.Api.Controllers
         [HttpDelete("{id}")]
         public void Delete(int id)
         {
+        }
+
+        private JObject ConvertToJsongObject(Singer singer) 
+        {
+            JObject jObject = new JObject();
+            if (singer == null)
+            {
+                return jObject;
+            }
+
+            jObject.Add("id", singer.Id);
+            jObject.Add("singNo", singer.SingNo);
+            jObject.Add("singNa", singer.SingNa);
+            jObject.Add("sex", singer.Sex);
+            jObject.Add("chor", singer.Chor);
+            jObject.Add("hot", singer.Hot);
+            jObject.Add("numFw", singer.NumFw);
+            jObject.Add("numPw", singer.NumPw);
+            jObject.Add("picFile", singer.PicFile);
+
+            return jObject;
         }
     }
 }
