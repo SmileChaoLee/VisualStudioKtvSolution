@@ -124,30 +124,58 @@ namespace VodManageSystem.Models.Dao
                 mState.OrderBy = "PlayerName";
             }
 
-            int pageNo = mState.CurrentPageNo;
-            if (pageNo < 1)
-            {
-                pageNo = 1;
-            }
-            int pageSize = mState.PageSize;
-
             SortedDictionary<int, Playerscore> playerscoresDictionary = await GetDictionaryOfPlayerscores(mState);
 
-            int totalCount = playerscoresDictionary.Count;
-            int totalPages = totalCount / pageSize;
-            if ((totalPages * pageSize) < totalCount)
+            int pageNo = mState.CurrentPageNo;
+            int pageSize = mState.PageSize;
+            int totalRecords = playerscoresDictionary.Count;
+            int totalPages = totalRecords / pageSize;
+            if ((totalPages * pageSize) < totalRecords)
             {
                 totalPages++;
             }
-            if (pageNo > totalPages)
+
+            bool getAll = false;
+            if (pageNo == -1)
             {
+                // get the last page
                 pageNo = totalPages;
+            }
+            else if (pageNo == -100)
+            {
+                // get all songs
+                getAll = true;
+                pageNo = 1; // restore pageNo to 1
+            }
+            else
+            {
+                if (pageNo < 1)
+                {
+                    pageNo = 1;
+                }
+                else if (pageNo > totalPages)
+                {
+                    pageNo = totalPages;
+                }
             }
 
             int recordNo = (pageNo - 1) * pageSize;
-            List<Playerscore> playerscores = playerscoresDictionary.Skip(recordNo).Take(pageSize).Select(m => m.Value).ToList();
+
+            List<Playerscore> playerscores;
+            if (getAll)
+            {
+                playerscores = playerscoresDictionary.Select(m => m.Value).ToList();
+            }
+            else 
+            {
+                playerscores = playerscoresDictionary.Skip(recordNo).Take(pageSize).Select(m => m.Value).ToList();
+            }
 
             mState.CurrentPageNo = pageNo;
+            mState.PageSize = pageSize;
+            mState.TotalRecords = totalRecords;
+            mState.TotalPages = totalPages;
+
             Playerscore firstPlayerscore = playerscores.FirstOrDefault();
             if (firstPlayerscore != null)
             {
@@ -243,7 +271,17 @@ namespace VodManageSystem.Models.Dao
             int recordNo = (pageNo - 1) * pageSize;
             playerscores = playerscoresDictionary.Skip(recordNo).Take(pageSize).Select(m => m.Value).ToList();
 
+            int totalRecords = playerscoresDictionary.Count;
+            int totalPages = totalRecords / pageSize;
+            if ((totalPages * pageSize) != totalRecords)
+            {
+                totalPages++;
+            }
+
             mState.CurrentPageNo = pageNo;
+            mState.PageSize = pageSize;
+            mState.TotalRecords = totalRecords;
+            mState.TotalPages = totalPages;
             mState.OrgId = playerscore.Id;
             mState.OrgNo = playerscore.PlayerName;
 

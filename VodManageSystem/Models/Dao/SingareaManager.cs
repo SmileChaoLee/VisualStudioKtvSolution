@@ -73,7 +73,9 @@ namespace VodManageSystem.Models.Dao
 
             int pageNo = mState.CurrentPageNo;
             int pageSize = mState.PageSize;
-            int totalPages = await GetTotalPageOfSingareaTable(pageSize);
+            int[] returnNumbers = await GetTotalRecordsAndPages(pageSize);
+            int totalRecords = returnNumbers[0];
+            int totalPages = returnNumbers[1];
 
             bool getAll = false;
             if (pageNo == -1)
@@ -112,6 +114,10 @@ namespace VodManageSystem.Models.Dao
             }
 
             mState.CurrentPageNo = pageNo;
+            mState.PageSize = pageSize;
+            mState.TotalRecords = totalRecords;
+            mState.TotalPages = totalPages;
+
             Singarea firstSingarea = singareas.FirstOrDefault();
             if (firstSingarea != null)
             {
@@ -188,12 +194,14 @@ namespace VodManageSystem.Models.Dao
         /// Gets the total page of singarea table.
         /// </summary>
         /// <returns>The total page of singarea table.</returns>
-        public async Task<int> GetTotalPageOfSingareaTable(int pageSize)    // by condition
+        public async Task<int[]> GetTotalRecordsAndPages(int pageSize)    // by condition
         {
+            int[] result = new int[2] { 0, 0 };
+
             if (pageSize <= 0)
             {
                 Console.WriteLine("the value of pageSize cannot be less than 0.");
-                return 0;
+                return result;
             }
             // have to define queryCondition
             // queryCondition has not been used for now
@@ -204,7 +212,11 @@ namespace VodManageSystem.Models.Dao
             {
                 totalPages++;
             }
-            return totalPages;
+
+            result[0] = count;
+            result[1] = totalPages;
+
+            return result;
         }
 
         /// <summary>
@@ -227,31 +239,54 @@ namespace VodManageSystem.Models.Dao
 
             int pageNo = mState.CurrentPageNo;
             int pageSize = mState.PageSize;
-            int totalCount = singareasDictionary.Count;
-            int totalPages = totalCount / pageSize;
-            if ((totalPages * pageSize) < totalCount)
+            int totalRecords = singareasDictionary.Count;
+            int totalPages = totalRecords / pageSize;
+            if ((totalPages * pageSize) < totalRecords)
             {
                 totalPages++;
             }
 
+            bool getAll = false;
             if (pageNo == -1)
             {
                 // get the last page
                 pageNo = totalPages;
             }
-            else if (pageNo < 1)
+            else if (pageNo == -100)
             {
-                pageNo = 1;
+                // get all songs
+                getAll = true;
+                pageNo = 1; // restore pageNo to 1
             }
-            else if (pageNo > totalPages)
+            else
             {
-                pageNo = totalPages;
+                if (pageNo < 1)
+                {
+                    pageNo = 1;
+                }
+                else if (pageNo > totalPages)
+                {
+                    pageNo = totalPages;
+                }
             }
 
             int recordNo = (pageNo - 1) * pageSize;
-            List<Singarea> singareas = singareasDictionary.Skip(recordNo).Take(pageSize).Select(m => m.Value).ToList();
+
+            List<Singarea> singareas;
+            if (getAll)
+            {
+                singareas = singareasDictionary.Select(m => m.Value).ToList();
+            }
+            else
+            {
+                singareas = singareasDictionary.Skip(recordNo).Take(pageSize).Select(m => m.Value).ToList();
+            }
 
             mState.CurrentPageNo = pageNo;
+            mState.PageSize = pageSize;
+            mState.TotalRecords = totalRecords;
+            mState.TotalPages = totalPages;
+
             Singarea firstSingarea = singareas.FirstOrDefault();
             if (firstSingarea != null)
             {
@@ -347,7 +382,17 @@ namespace VodManageSystem.Models.Dao
             int recordNo = (pageNo - 1) * pageSize;
             singareas = singareasDictionary.Skip(recordNo).Take(pageSize).Select(m=>m.Value).ToList();
 
+            int totalRecords = singareasDictionary.Count;
+            int totalPages = totalRecords / pageSize;
+            if ((totalPages * pageSize) != totalRecords)
+            {
+                totalPages++;
+            }
+
             mState.CurrentPageNo = pageNo;
+            mState.PageSize = pageSize;
+            mState.TotalRecords = totalRecords;
+            mState.TotalPages = totalPages;
             mState.OrgId = singarea.Id;
             mState.OrgNo = singarea.AreaNo;
 

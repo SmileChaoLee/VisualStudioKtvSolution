@@ -97,7 +97,9 @@ namespace VodManageSystem.Models.Dao
 
             int pageNo = mState.CurrentPageNo;
             int pageSize = mState.PageSize;
-            int totalPages = await GetTotalPageOfSingerTable(pageSize);
+            int[] returnNumbers = await GetTotalRecordsAndPages(pageSize);
+            int totalRecords = returnNumbers[0];
+            int totalPages = returnNumbers[1];
 
             bool getAll = false;
             if (pageNo == -1)
@@ -136,6 +138,10 @@ namespace VodManageSystem.Models.Dao
             }
 
             mState.CurrentPageNo = pageNo;
+            mState.PageSize = pageSize;
+            mState.TotalRecords = totalRecords;
+            mState.TotalPages = totalPages;
+
             Singer firstSinger = singers.FirstOrDefault();
             if (firstSinger != null)
             {
@@ -215,12 +221,14 @@ namespace VodManageSystem.Models.Dao
         /// Gets the total page of singer table.
         /// </summary>
         /// <returns>The total page of Singer table.</returns>
-        public async Task<int> GetTotalPageOfSingerTable(int pageSize)    // by condition
+        public async Task<int[]> GetTotalRecordsAndPages(int pageSize)    // by condition
         {
+            int[] result = new int[2] { 0, 0 };
+
             if (pageSize <= 0 )
             {
                 Console.WriteLine("The value of pageSize cannot be less than 0.");
-                return 0;
+                return result;
             }
             // have to define queryCondition
             // queryCondition has not been used for now
@@ -231,7 +239,11 @@ namespace VodManageSystem.Models.Dao
             {
                 totalPages++;
             }
-            return totalPages;
+
+            result[0] = count;
+            result[1] = totalPages;
+
+            return result;
         }
 
         /// <summary>
@@ -255,31 +267,55 @@ namespace VodManageSystem.Models.Dao
 
             int pageNo = mState.CurrentPageNo;
             int pageSize = mState.PageSize;
-            int totalCount = singersDictionary.Count;
-            int totalPages = totalCount / pageSize;
-            if ((totalPages * pageSize) < totalCount)
+            int totalRecords = singersDictionary.Count;
+            int totalPages = totalRecords / pageSize;
+            if ((totalPages * pageSize) < totalRecords)
             {
                 totalPages++;
             }
 
+            bool getAll = false;
             if (pageNo == -1)
             {
                 // get the last page
                 pageNo = totalPages;
             }
-            else if (pageNo < 1)
+            else if (pageNo == -100)
             {
-                pageNo = 1;
+                // get all songs
+                getAll = true;
+                pageNo = 1; // restore pageNo to 1
             }
-            else if (pageNo > totalPages)
+            else
             {
-                pageNo = totalPages;
+                if (pageNo < 1)
+                {
+                    pageNo = 1;
+                }
+                else if (pageNo > totalPages)
+                {
+                    pageNo = totalPages;
+                }
             }
 
             int recordNo = (pageNo - 1) * pageSize;
-            List<Singer> singers = singersDictionary.Skip(recordNo).Take(pageSize).Select(m => m.Value).ToList();
+
+            List<Singer> singers;
+            if (getAll)
+            {
+                singers = singersDictionary.Select(m => m.Value).ToList();
+            }
+            else
+            {
+
+            }
+            singers = singersDictionary.Skip(recordNo).Take(pageSize).Select(m => m.Value).ToList();
 
             mState.CurrentPageNo = pageNo;
+            mState.PageSize = pageSize;
+            mState.TotalRecords = totalRecords;
+            mState.TotalPages = totalPages;
+
             Singer firstSinger = singers.FirstOrDefault();
             if (firstSinger != null)
             {
@@ -355,9 +391,9 @@ namespace VodManageSystem.Models.Dao
 
             int pageNo = mState.CurrentPageNo;
             int pageSize = mState.PageSize;
-            int reccordCount = await singersSubTotal.CountAsync();
-            int totalPages = reccordCount / pageSize;
-            if (totalPages * pageSize != reccordCount)
+            int totalRecords = await singersSubTotal.CountAsync();
+            int totalPages = totalRecords / pageSize;
+            if (totalPages * pageSize != totalRecords)
             {
                 totalPages++;
             }
@@ -379,6 +415,10 @@ namespace VodManageSystem.Models.Dao
             List<Singer> singers = await singersSubTotal.Skip(recordNum).Take(pageSize).ToListAsync();
 
             mState.CurrentPageNo = pageNo;
+            mState.PageSize = pageSize;
+            mState.TotalRecords = totalRecords;
+            mState.TotalPages = totalPages;
+
             Singer firstSinger = singers.FirstOrDefault();
             if (firstSinger != null)
             {
@@ -475,10 +515,21 @@ namespace VodManageSystem.Models.Dao
             {
                 pageNo++;
             }
+
             int recordNo = (pageNo - 1) * pageSize;
             singers = singersDictionary.Skip(recordNo).Take(pageSize).Select(m=>m.Value).ToList();
 
+            int totalRecords = singersDictionary.Count;
+            int totalPages = totalRecords / pageSize;
+            if ((totalPages * pageSize) != totalRecords)
+            {
+                totalPages++;
+            }
+
             mState.CurrentPageNo = pageNo;
+            mState.PageSize = pageSize;
+            mState.TotalRecords = totalRecords;
+            mState.TotalPages = totalPages;
             mState.OrgId = singer.Id;
             mState.OrgNo = singer.SingNo;
 

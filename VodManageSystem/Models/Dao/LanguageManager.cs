@@ -71,7 +71,9 @@ namespace VodManageSystem.Models.Dao
 
             int pageNo = mState.CurrentPageNo;
             int pageSize = mState.PageSize;
-            int totalPages = await GetTotalPageOfLanguageTable(pageSize);
+            int[] returnNumbers = await GetTotalRecordsAndPages(pageSize);
+            int totalRecords = returnNumbers[0];
+            int totalPages = returnNumbers[1];
 
             bool getAll = false;
             if (pageNo == -1)
@@ -110,6 +112,10 @@ namespace VodManageSystem.Models.Dao
             }
 
             mState.CurrentPageNo = pageNo;
+            mState.PageSize = pageSize;
+            mState.TotalRecords = totalRecords;
+            mState.TotalPages = totalPages;
+
             Language firstLanguage = languages.FirstOrDefault();
             if (firstLanguage != null)
             {
@@ -187,12 +193,14 @@ namespace VodManageSystem.Models.Dao
         /// Gets the total page of language table.
         /// </summary>
         /// <returns>The total page of language table.</returns>
-        public async Task<int> GetTotalPageOfLanguageTable(int pageSize)    // by condition
+        public async Task<int[]> GetTotalRecordsAndPages(int pageSize)    // by condition
         {
+            int[] result = new int[2] { 0, 0 };
+
             if (pageSize <= 0)
             {
                 Console.WriteLine("The value of pageSize cannot be less than 0.");
-                return 0;
+                return result;
             }
             // have to define queryCondition
             // queryCondition has not been used for now
@@ -203,7 +211,11 @@ namespace VodManageSystem.Models.Dao
             {
                 totalPages++;
             }
-            return totalPages;
+
+            result[0] = count;
+            result[1] = totalPages;
+
+            return result;
         }
 
         /// <summary>
@@ -226,31 +238,54 @@ namespace VodManageSystem.Models.Dao
 
             int pageNo = mState.CurrentPageNo;
             int pageSize = mState.PageSize;
-            int totalCount = languagesDictionary.Count;
-            int totalPages = totalCount / pageSize;
-            if ((totalPages * pageSize) < totalCount)
+            int totalRecords = languagesDictionary.Count;
+            int totalPages = totalRecords / pageSize;
+            if ((totalPages * pageSize) < totalRecords)
             {
                 totalPages++;
             }
 
+            bool getAll = false;
             if (pageNo == -1)
             {
                 // get the last page
                 pageNo = totalPages;
             }
-            else if (pageNo < 1)
+            else if (pageNo == -100)
             {
-                pageNo = 1;
+                // get all songs
+                getAll = true;
+                pageNo = 1; // restore pageNo to 1
             }
-            else if (pageNo > totalPages)
+            else
             {
-                pageNo = totalPages;
+                if (pageNo < 1)
+                {
+                    pageNo = 1;
+                }
+                else if (pageNo > totalPages)
+                {
+                    pageNo = totalPages;
+                }
             }
 
             int recordNo = (pageNo - 1) * pageSize;
-            List<Language> languages = languagesDictionary.Skip(recordNo).Take(pageSize).Select(m => m.Value).ToList();
+
+            List<Language> languages;
+            if (getAll)
+            {
+                languages = languagesDictionary.Select(m => m.Value).ToList();
+            }
+            else
+            {
+                languages = languagesDictionary.Skip(recordNo).Take(pageSize).Select(m => m.Value).ToList();
+            }
 
             mState.CurrentPageNo = pageNo;
+            mState.PageSize = pageSize;
+            mState.TotalRecords = totalRecords;
+            mState.TotalPages = totalPages;
+
             Language firstLanguage = languages.FirstOrDefault();
             if (firstLanguage != null)
             {
@@ -346,7 +381,17 @@ namespace VodManageSystem.Models.Dao
             int recordNo = (pageNo - 1) * pageSize;
             languages = languagesDictionary.Skip(recordNo).Take(pageSize).Select(m=>m.Value).ToList();
 
+            int totalRecords = languagesDictionary.Count;
+            int totalPages = totalRecords / pageSize;
+            if ((totalPages * pageSize) != totalRecords)
+            {
+                totalPages++;
+            }
+
             mState.CurrentPageNo = pageNo;
+            mState.PageSize = pageSize;
+            mState.TotalRecords = totalRecords;
+            mState.TotalPages = totalPages;
             mState.OrgId = language.Id;
             mState.OrgNo = language.LangNo;
 
