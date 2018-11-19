@@ -46,6 +46,8 @@ namespace VodManageSystem.Api.Controllers
             JObject jObjectForAll = new JObject();
             jObjectForAll.Add("pageNo", mState.CurrentPageNo);
             jObjectForAll.Add("pageSize", mState.PageSize);
+            jObjectForAll.Add("totalRecords", mState.TotalRecords);
+            jObjectForAll.Add("totalPages", mState.TotalPages);
             JObject jObject;
             JArray jArray = new JArray();
             foreach (var singer in singers)
@@ -108,6 +110,8 @@ namespace VodManageSystem.Api.Controllers
             JObject jObjectForAll = new JObject();
             jObjectForAll.Add("pageNo", mState.CurrentPageNo);
             jObjectForAll.Add("pageSize", mState.PageSize);
+            jObjectForAll.Add("totalRecords", mState.TotalRecords);
+            jObjectForAll.Add("totalPages", mState.TotalPages);
             JObject jObject;
             JArray jArray = new JArray();
             foreach (var singer in singers)
@@ -159,6 +163,8 @@ namespace VodManageSystem.Api.Controllers
             JObject jObjectForAll = new JObject();
             jObjectForAll.Add("pageNo", mState.CurrentPageNo);
             jObjectForAll.Add("pageSize", mState.PageSize);
+            jObjectForAll.Add("totalRecords", mState.TotalRecords);
+            jObjectForAll.Add("totalPages", mState.TotalPages);
             JObject jObject;
             JArray jArray = new JArray();
             foreach (var singer in singers)
