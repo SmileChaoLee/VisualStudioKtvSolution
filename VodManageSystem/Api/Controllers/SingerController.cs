@@ -50,7 +50,7 @@ namespace VodManageSystem.Api.Controllers
             JArray jArray = new JArray();
             foreach (var singer in singers)
             {
-                jObject = ConvertToJsongObject(singer);
+                jObject = ConvertSingerToJsongObject(singer);
                 jArray.Add(jObject);
             }
             jObjectForAll.Add("singers", jArray);
@@ -60,11 +60,15 @@ namespace VodManageSystem.Api.Controllers
 
         // GET api/values/5
         [HttpGet("{id}")]
-        public async Task<Singer> Get(int id)
+        public async Task<string> Get(int id)
         {
             // get one singer
-            Console.WriteLine("[HttpGet(\"{id}\")]");
-            return await _singerManager.FindOneSingerById(id);
+            Singer singer = await _singerManager.FindOneSingerById(id);
+            JObject jObject = ConvertSingerToJsongObject(singer);
+            JObject returnJSON = new JObject();
+            returnJSON.Add("singer", jObject);
+
+            return returnJSON.ToString();
         }
 
         // GET api/values/10/1
@@ -108,7 +112,7 @@ namespace VodManageSystem.Api.Controllers
             JArray jArray = new JArray();
             foreach (var singer in singers)
             {
-                jObject = ConvertToJsongObject(singer);
+                jObject = ConvertSingerToJsongObject(singer);
                 jArray.Add(jObject);
             }
             jObjectForAll.Add("singers", jArray);
@@ -159,7 +163,7 @@ namespace VodManageSystem.Api.Controllers
             JArray jArray = new JArray();
             foreach (var singer in singers)
             {
-                jObject = ConvertToJsongObject(singer);
+                jObject = ConvertSingerToJsongObject(singer);
                 jArray.Add(jObject);
             }
             jObjectForAll.Add("singers", jArray);
@@ -185,7 +189,7 @@ namespace VodManageSystem.Api.Controllers
         {
         }
 
-        private JObject ConvertToJsongObject(Singer singer) 
+        private JObject ConvertSingerToJsongObject(Singer singer) 
         {
             JObject jObject = new JObject();
             if (singer == null)

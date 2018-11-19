@@ -44,40 +44,13 @@ namespace VodManageSystem.Api.Controllers
             jObjectForAll.Add("pageSize", mState.PageSize);
             JObject jObject;
             JArray jArray = new JArray();
-            int id;
-            string areaNo;
-            string areaNa;
-            string areaEn;
-            string sex;
             foreach (var singarea in singareas)
             {
-                id = singarea.Id;
-                areaNo = singarea.AreaNo;
-                areaNa = singarea.AreaNa;
-                areaEn = singarea.AreaEn;
-                sex = "0";
-                jObject = new JObject();
-                jObject.Add("id", id);
-                jObject.Add("areaNo", areaNo);
-                jObject.Add("areaNa", areaNa);
-                jObject.Add("areaEn", areaEn);
-                jObject.Add("sex", sex);
+                jObject = ConvertSingareaToJsongObject(singarea, "0");
                 jArray.Add(jObject);
-                sex = "1";
-                jObject = new JObject();
-                jObject.Add("id", id);
-                jObject.Add("areaNo", areaNo);
-                jObject.Add("areaNa", areaNa);
-                jObject.Add("areaEn", areaEn);
-                jObject.Add("sex", sex);
+                jObject = ConvertSingareaToJsongObject(singarea, "1");
                 jArray.Add(jObject);
-                sex = "2";
-                jObject = new JObject();
-                jObject.Add("id", id);
-                jObject.Add("areaNo", areaNo);
-                jObject.Add("areaNa", areaNa);
-                jObject.Add("areaEn", areaEn);
-                jObject.Add("sex", sex);
+                jObject = ConvertSingareaToJsongObject(singarea, "2");
                 jArray.Add(jObject);
             }
             jObjectForAll.Add("singerTypes", jArray);
@@ -87,11 +60,16 @@ namespace VodManageSystem.Api.Controllers
 
         // GET api/values/5
         [HttpGet("{id}")]
-        public async Task<Singarea> Get(int id)
+        public async Task<string> Get(int id)
         {
             // get one Singarea
-            Singarea sArea = await _singareaManager.FindOneSingareaById(id);
-            return sArea;
+            Singarea singarea = await _singareaManager.FindOneSingareaById(id);
+            JObject jObject = ConvertSingareaToJsongObject(singarea, "0");
+
+            JObject returnJSON = new JObject();
+            returnJSON.Add("singerType", jObject);
+
+            return returnJSON.ToString();
         }
 
         // POST api/values
@@ -110,6 +88,23 @@ namespace VodManageSystem.Api.Controllers
         [HttpDelete("{id}")]
         public void Delete(int id)
         {
+        }
+
+        private JObject ConvertSingareaToJsongObject(Singarea singarea, string sex)
+        {
+            JObject jObject = new JObject();
+            if (singarea == null)
+            {
+                return jObject;
+            }
+
+            jObject.Add("id", singarea.Id);
+            jObject.Add("areaNo", singarea.AreaNo);
+            jObject.Add("areaNa", singarea.AreaNa);
+            jObject.Add("areaEn", singarea.AreaEn);
+            jObject.Add("sex", sex);
+
+            return jObject;
         }
     }
 }
