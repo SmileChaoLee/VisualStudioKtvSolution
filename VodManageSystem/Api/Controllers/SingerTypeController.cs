@@ -38,14 +38,18 @@ namespace VodManageSystem.Api.Controllers
             StateOfRequest mState = new StateOfRequest("AreaNo");
             List<Singarea> singareas = await _singareaManager.GetAllSingareas(mState);
             // Convert List<Singarea> to JSON array
-            JArray jArray = new JArray();
+
+            JObject jObjectForAll = new JObject();
+            jObjectForAll.Add("pageNo", mState.CurrentPageNo);
+            jObjectForAll.Add("pageSize", mState.PageSize);
             JObject jObject;
+            JArray jArray = new JArray();
             int id;
             string areaNo;
             string areaNa;
             string areaEn;
             string sex;
-            foreach(var singarea in singareas)
+            foreach (var singarea in singareas)
             {
                 id = singarea.Id;
                 areaNo = singarea.AreaNo;
@@ -76,10 +80,9 @@ namespace VodManageSystem.Api.Controllers
                 jObject.Add("sex", sex);
                 jArray.Add(jObject);
             }
-            jObject = new JObject();
-            jObject.Add("singerTypes", jArray);
+            jObjectForAll.Add("singerTypes", jArray);
 
-            return jObject.ToString();
+            return jObjectForAll.ToString();
         }
 
         // GET api/values/5

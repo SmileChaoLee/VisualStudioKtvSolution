@@ -44,9 +44,12 @@ namespace VodManageSystem.Api.Controllers
             List<Singer> singers = await _singerManager.GetAllSingers(mState);
 
             JObject jObjectForAll = new JObject();
+            jObjectForAll.Add("pageNo", mState.CurrentPageNo);
+            jObjectForAll.Add("pageSize", mState.PageSize);
             JObject jObject;
             JArray jArray = new JArray();
-            foreach (var singer in singers){
+            foreach (var singer in singers)
+            {
                 jObject = ConvertToJsongObject(singer);
                 jArray.Add(jObject);
             }
