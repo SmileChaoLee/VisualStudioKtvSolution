@@ -39,9 +39,9 @@ namespace VodManageSystem.Api.Controllers
         {
             Console.WriteLine("Get all singers.");
 
-            SingerStateOfRequest singerState = new SingerStateOfRequest();
+            StateOfRequest mState = new StateOfRequest("SingNo");
 
-            List<Singer> singers = await _singerManager.GetAllSingers(singerState);
+            List<Singer> singers = await _singerManager.GetAllSingers(mState);
 
             JObject jObjectForAll = new JObject();
             JObject jObject;
@@ -92,15 +92,15 @@ namespace VodManageSystem.Api.Controllers
                 }
             }
 
-            SingerStateOfRequest singerState = new SingerStateOfRequest();
-            singerState.PageSize = pageSize;
-            singerState.CurrentPageNo = pageNo;
-            singerState.OrderBy = orderByParam;
-            List<Singer> singers = await _singerManager.GetOnePageOfSingers(singerState);
+            StateOfRequest mState = new StateOfRequest(orderByParam);
+            mState.PageSize = pageSize;
+            mState.CurrentPageNo = pageNo;
+            // mState.OrderBy = orderByParam;
+            List<Singer> singers = await _singerManager.GetOnePageOfSingers(mState);
 
             JObject jObjectForAll = new JObject();
-            jObjectForAll.Add("pageNo", singerState.CurrentPageNo);
-            jObjectForAll.Add("pageSize", singerState.PageSize);
+            jObjectForAll.Add("pageNo", mState.CurrentPageNo);
+            jObjectForAll.Add("pageSize", mState.PageSize);
             JObject jObject;
             JArray jArray = new JArray();
             foreach (var singer in singers)
@@ -143,15 +143,15 @@ namespace VodManageSystem.Api.Controllers
                 }
             }
 
-            SingerStateOfRequest singerState = new SingerStateOfRequest();
-            singerState.PageSize = pageSize;
-            singerState.CurrentPageNo = pageNo;
-            singerState.OrderBy = orderByParam;
-            List<Singer> singers = await _singerManager.GetOnePageOfSingersByAreaSex(singerState, areaId, sex);
+            StateOfRequest mState = new StateOfRequest(orderByParam);
+            mState.PageSize = pageSize;
+            mState.CurrentPageNo = pageNo;
+            // mState.OrderBy = orderByParam;
+            List<Singer> singers = await _singerManager.GetOnePageOfSingersByAreaSex(mState, areaId, sex);
 
             JObject jObjectForAll = new JObject();
-            jObjectForAll.Add("pageNo", singerState.CurrentPageNo);
-            jObjectForAll.Add("pageSize", singerState.PageSize);
+            jObjectForAll.Add("pageNo", mState.CurrentPageNo);
+            jObjectForAll.Add("pageSize", mState.PageSize);
             JObject jObject;
             JArray jArray = new JArray();
             foreach (var singer in singers)

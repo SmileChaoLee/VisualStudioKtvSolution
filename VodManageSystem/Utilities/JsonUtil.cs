@@ -18,22 +18,13 @@ namespace VodManageSystem.Utilities
         /// <param name="createYn">If set to <c>true</c> create yn.</param>
         /// <typeparam name="T">true--Create new instance if string is null or empty
         /// false--use default value if string is null or empty </typeparam>
-        public static T GetObjectFromJsonString<T>(string song_state, bool createYn=true) where T : class
+        public static T GetObjectFromJsonString<T>(string song_state) where T : class
         {
             T obj = default(T);
 
             if (!string.IsNullOrEmpty(song_state) )
             {
                 obj = JsonConvert.DeserializeObject<T>(song_state);
-            }
-            else
-            {
-                // return a new object of SongStateOfRequest or others
-                if (createYn)
-                {
-                    // create a new instance
-                    obj = Activator.CreateInstance<T>();
-                }
             }
 
             return obj;

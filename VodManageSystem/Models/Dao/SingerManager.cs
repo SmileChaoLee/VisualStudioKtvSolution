@@ -54,60 +54,38 @@ namespace VodManageSystem.Models.Dao
 
 
         // public methods
-        public async Task<List<Singer>> GetAllSingers(SingerStateOfRequest singerState) {
-            if (singerState == null)
+        public async Task<List<Singer>> GetAllSingers(StateOfRequest mState) {
+            if (mState == null)
             {
                 return new List<Singer>();  // return empty list
             }
 
-            singerState.CurrentPageNo = -100;   // present to get all singers
-            List<Singer> totalSingers = await GetOnePageOfSingers(singerState);
+            mState.CurrentPageNo = -100;   // present to get all singers
+            List<Singer> totalSingers = await GetOnePageOfSingers(mState);
 
             return totalSingers;
-
-            /*
-            List<Singer> totalSingers;
-            if (singerState.OrderBy == "SingNo")
-            {
-                totalSingers = await _context.Singer.Include(x => x.Singarea)
-                                          .OrderBy(x=>x.SingNo)
-                                          .AsNoTracking().ToListAsync();
-            }
-            else if (singerState.OrderBy == "SingNa")
-            {
-                totalSingers = await _context.Singer.Include(x => x.Singarea)
-                                          .OrderBy(x => x.SingNa).ThenBy(x=>x.SingNo)
-                                          .AsNoTracking().ToListAsync();
-            }
-            else
-            {
-                totalSingers = new List<Singer>();
-            }
-
-            return totalSingers;
-            */
         }
 
-        public async Task<List<Singer>> GetOnePageOfSingers(SingerStateOfRequest singerState)
+        public async Task<List<Singer>> GetOnePageOfSingers(StateOfRequest mState)
         {
-            if (singerState == null)
+            if (mState == null)
             {
                 return new List<Singer>();
             }
 
-            if (string.IsNullOrEmpty(singerState.OrderBy))
+            if (string.IsNullOrEmpty(mState.OrderBy))
             {
                 // default is order by singer's No
-                singerState.OrderBy = "SingNo";
+                mState.OrderBy = "SingNo";
             }
 
             var singersList = _context.Singer.Where(x => x.Id == 0);
-            if (singerState.OrderBy == "SingNo")
+            if (mState.OrderBy == "SingNo")
             {
                 singersList = _context.Singer.Include(x => x.Singarea)
                                       .OrderBy(x => x.SingNo);
             }
-            else if (singerState.OrderBy == "SingNa")
+            else if (mState.OrderBy == "SingNa")
             {
                 singersList = _context.Singer.Include(x => x.Singarea)
                                       .OrderBy(x => x.SingNa).ThenBy(x => x.SingNo);
@@ -117,8 +95,8 @@ namespace VodManageSystem.Models.Dao
                 singersList = _context.Singer.Include(x => x.Singarea);
             }
 
-            int pageNo = singerState.CurrentPageNo;
-            int pageSize = singerState.PageSize;
+            int pageNo = mState.CurrentPageNo;
+            int pageSize = mState.PageSize;
             int totalPages = await GetTotalPageOfSingerTable(pageSize);
 
             bool getAll = false;
@@ -157,17 +135,17 @@ namespace VodManageSystem.Models.Dao
                 singers = await singersList.Skip(recordNum).Take(pageSize).AsNoTracking().ToListAsync();
             }
 
-            singerState.CurrentPageNo = pageNo;
+            mState.CurrentPageNo = pageNo;
             Singer firstSinger = singers.FirstOrDefault();
             if (firstSinger != null)
             {
-                singerState.FirstId = firstSinger.Id;
+                mState.FirstId = firstSinger.Id;
             }
             else
             {
-                singerState.OrgId = 0;
-                singerState.OrgSingNo = "";
-                singerState.FirstId = 0;
+                mState.OrgId = 0;
+                mState.OrgNo = "";
+                mState.FirstId = 0;
             }
 
             return singers;
@@ -177,10 +155,10 @@ namespace VodManageSystem.Models.Dao
         /// Gets the dictionary of singers.
         /// </summary>
         /// <returns>The dictionary of singers.</returns>
-        /// <param name="singerState">Singer state.</param>
-        public async Task<SortedDictionary<int, Singer>> GetDictionaryOfSingers(SingerStateOfRequest singerState)
+        /// <param name="mState">Singer state.</param>
+        public async Task<SortedDictionary<int, Singer>> GetDictionaryOfSingers(StateOfRequest mState)
         {
-            if (singerState == null)
+            if (mState == null)
             {
                 return new SortedDictionary<int, Singer>();
             }
@@ -192,13 +170,13 @@ namespace VodManageSystem.Models.Dao
 
 
             // OrderBy(x=>x.SingNo) must put the following (not above in the totalSingers)
-            if (singerState.OrderBy == "SingNo")
+            if (mState.OrderBy == "SingNo")
             {
                 singersDictionary = totalSingers.OrderBy(x => x.SingNo)
                             .Select((m, index) => new { rowNumber = index + 1, m })
                             .ToDictionary(m => m.rowNumber, m => m.m);
             }
-            else if (singerState.OrderBy == "SingNa")
+            else if (mState.OrderBy == "SingNa")
             {
                 singersDictionary = totalSingers.OrderBy(x => x.SingNa).ThenBy(x => x.SingNo)
                             .Select((m, index) => new { rowNumber = index + 1, m })
@@ -217,12 +195,12 @@ namespace VodManageSystem.Models.Dao
         /// Gets the select list from a SortedDictionary of singers.
         /// </summary>
         /// <returns>The select list of singers.</returns>
-        /// <param name="singerState">Singer state.</param>
-        public async Task<List<SelectListItem>> GetSelectListOfSingers(SingerStateOfRequest singerState)
+        /// <param name="mState">Singer state.</param>
+        public async Task<List<SelectListItem>> GetSelectListOfSingers(StateOfRequest mState)
         {
             List<SelectListItem> selectList = new List<SelectListItem>();
-            SortedDictionary<int, Singer> singerDict = await GetDictionaryOfSingers(singerState);
-            foreach (Singer sing in singerDict.Values)
+            List<Singer> singers = await GetAllSingers(mState);
+            foreach (Singer sing in singers)
             {
                 selectList.Add(new SelectListItem
                 {
@@ -260,23 +238,23 @@ namespace VodManageSystem.Models.Dao
         /// Gets the one page of singers dictionary.
         /// </summary>
         /// <returns>The one page of singers dictionary.</returns>
-        /// <param name="singerState">Singer state.</param>
-        public async Task<List<Singer>> GetOnePageOfSingersDictionary(SingerStateOfRequest singerState)
+        /// <param name="mState">Singer state.</param>
+        public async Task<List<Singer>> GetOnePageOfSingersDictionary(StateOfRequest mState)
         {
-            if (singerState == null)
+            if (mState == null)
             {
                 return new List<Singer>();
             }
-            if (string.IsNullOrEmpty(singerState.OrderBy))
+            if (string.IsNullOrEmpty(mState.OrderBy))
             {
                 // default is order by singer's No
-                singerState.OrderBy = "SingNo";
+                mState.OrderBy = "SingNo";
             }
 
-            SortedDictionary<int, Singer> singersDictionary = await GetDictionaryOfSingers(singerState);
+            SortedDictionary<int, Singer> singersDictionary = await GetDictionaryOfSingers(mState);
 
-            int pageNo = singerState.CurrentPageNo;
-            int pageSize = singerState.PageSize;
+            int pageNo = mState.CurrentPageNo;
+            int pageSize = mState.PageSize;
             int totalCount = singersDictionary.Count;
             int totalPages = totalCount / pageSize;
             if ((totalPages * pageSize) < totalCount)
@@ -301,17 +279,17 @@ namespace VodManageSystem.Models.Dao
             int recordNo = (pageNo - 1) * pageSize;
             List<Singer> singers = singersDictionary.Skip(recordNo).Take(pageSize).Select(m => m.Value).ToList();
 
-            singerState.CurrentPageNo = pageNo;
+            mState.CurrentPageNo = pageNo;
             Singer firstSinger = singers.FirstOrDefault();
             if (firstSinger != null)
             {
-                singerState.FirstId = firstSinger.Id;
+                mState.FirstId = firstSinger.Id;
             }
             else
             {
-                singerState.OrgId = 0;
-                singerState.OrgSingNo = "";
-                singerState.FirstId = 0;
+                mState.OrgId = 0;
+                mState.OrgNo = "";
+                mState.FirstId = 0;
             }
 
             return singers;
@@ -321,23 +299,23 @@ namespace VodManageSystem.Models.Dao
         /// Gets the one page of singers by Singarea No and singer sex.
         /// </summary>
         /// <returns>The one page of singers dictionary.</returns>
-        /// <param name="singerState">Singer state.</param>
+        /// <param name="mState">Singer state.</param>
         /// <param name="areaId">Singer area No.</param>
         /// <param name="sex">Singer sex.</param>
-        public async Task<List<Singer>> GetOnePageOfSingersByAreaSex(SingerStateOfRequest singerState, int areaId, string sex)
+        public async Task<List<Singer>> GetOnePageOfSingersByAreaSex(StateOfRequest mState, int areaId, string sex)
         {
-            if (singerState == null)
+            if (mState == null)
             {
                 return new List<Singer>();
             }
-            if (string.IsNullOrEmpty(singerState.OrderBy))
+            if (string.IsNullOrEmpty(mState.OrderBy))
             {
                 // default is order by singer's No
-                singerState.OrderBy = "SingNo";
+                mState.OrderBy = "SingNo";
             }
 
             var singersSubTotal = _context.Singer.Where(x=>x.AreaId == -1);
-            if (singerState.OrderBy=="SingNo")
+            if (mState.OrderBy=="SingNo")
             {
                 if (sex == "0")
                 {
@@ -350,7 +328,7 @@ namespace VodManageSystem.Models.Dao
                                                 .OrderBy(x => x.SingNo);
                 }
             }
-            else if (singerState.OrderBy=="SingNa")
+            else if (mState.OrderBy=="SingNa")
             {
                 if (sex == "0")
                 {
@@ -375,8 +353,8 @@ namespace VodManageSystem.Models.Dao
                 }
             }
 
-            int pageNo = singerState.CurrentPageNo;
-            int pageSize = singerState.PageSize;
+            int pageNo = mState.CurrentPageNo;
+            int pageSize = mState.PageSize;
             int reccordCount = await singersSubTotal.CountAsync();
             int totalPages = reccordCount / pageSize;
             if (totalPages * pageSize != reccordCount)
@@ -400,17 +378,17 @@ namespace VodManageSystem.Models.Dao
 
             List<Singer> singers = await singersSubTotal.Skip(recordNum).Take(pageSize).ToListAsync();
 
-            singerState.CurrentPageNo = pageNo;
+            mState.CurrentPageNo = pageNo;
             Singer firstSinger = singers.FirstOrDefault();
             if (firstSinger != null)
             {
-                singerState.FirstId = firstSinger.Id;
+                mState.FirstId = firstSinger.Id;
             }
             else
             {
-                singerState.OrgId = 0;
-                singerState.OrgSingNo = "";
-                singerState.FirstId = 0;
+                mState.OrgId = 0;
+                mState.OrgNo = "";
+                mState.FirstId = 0;
             }
 
             return singers;
@@ -421,27 +399,27 @@ namespace VodManageSystem.Models.Dao
         /// Finds the one page of singers for one singer.
         /// </summary>
         /// <returns>The one page of singers for one singer.</returns>
-        /// <param name="singerState">Singer state.</param>
+        /// <param name="mState">Singer state.</param>
         /// <param name="singer">Singer.</param>
         /// <param name="id">Identifier.</param>
-        public async Task<List<Singer>> FindOnePageOfSingersForOneSinger(SingerStateOfRequest singerState, Singer singer, int id)
+        public async Task<List<Singer>> FindOnePageOfSingersForOneSinger(StateOfRequest mState, Singer singer, int id)
         {
-            if ( (singerState == null) || (singer == null) )
+            if ( (mState == null) || (singer == null) )
             {
                 return new List<Singer>();
             }
-            if (string.IsNullOrEmpty(singerState.OrderBy))
+            if (string.IsNullOrEmpty(mState.OrderBy))
             {
                 // default is order by singer's No
-                singerState.OrderBy = "SingNo";
+                mState.OrderBy = "SingNo";
             }
 
-            int pageSize = singerState.PageSize;
+            int pageSize = mState.PageSize;
 
             List<Singer> singers = null;
             KeyValuePair<int,Singer> singerWithIndex = new KeyValuePair<int, Singer>(-1,null);
 
-            SortedDictionary<int, Singer> singersDictionary = await GetDictionaryOfSingers(singerState);
+            SortedDictionary<int, Singer> singersDictionary = await GetDictionaryOfSingers(mState);
 
             if (id > 0)
             {
@@ -451,13 +429,13 @@ namespace VodManageSystem.Models.Dao
             else
             {
                 // No selected anguage
-                if (singerState.OrderBy == "SingNo")
+                if (mState.OrderBy == "SingNo")
                 {
                     string sing_no = singer.SingNo;
                     singerWithIndex = singersDictionary
                         .Where(x=>(String.Compare(x.Value.SingNo,sing_no, false) >= 0)).FirstOrDefault();
                 }
-                else if (singerState.OrderBy == "SingNa")
+                else if (mState.OrderBy == "SingNa")
                 {
                     string sing_na = singer.SingNa;
                     singerWithIndex = singersDictionary
@@ -475,9 +453,9 @@ namespace VodManageSystem.Models.Dao
                 if (singersDictionary.Count == 0)
                 {
                     // dictionary (Singer Table) is empty
-                    singerState.OrgId = 0;
-                    singerState.OrgSingNo = "";
-                    singerState.FirstId = 0;
+                    mState.OrgId = 0;
+                    mState.OrgNo = "";
+                    mState.FirstId = 0;
                     // return empty list
                     return new List<Singer>();
                 }
@@ -500,18 +478,18 @@ namespace VodManageSystem.Models.Dao
             int recordNo = (pageNo - 1) * pageSize;
             singers = singersDictionary.Skip(recordNo).Take(pageSize).Select(m=>m.Value).ToList();
 
-            singerState.CurrentPageNo = pageNo;
-            singerState.OrgId = singer.Id;
-            singerState.OrgSingNo = singer.SingNo;
+            mState.CurrentPageNo = pageNo;
+            mState.OrgId = singer.Id;
+            mState.OrgNo = singer.SingNo;
 
             Singer firstSinger = singers.FirstOrDefault();
             if(firstSinger != null)
             {
-                singerState.FirstId = firstSinger.Id;
+                mState.FirstId = firstSinger.Id;
             }
             else
             {
-                singerState.FirstId = 0;
+                mState.FirstId = 0;
             }
                
             return singers;

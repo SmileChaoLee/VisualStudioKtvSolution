@@ -5,7 +5,7 @@
 @model IEnumerable<VodManageSystem.Models.DataModels.Language>
 
 @{
-    LanguageStateOfRequest languageState = JsonUtil.GetObjectFromJsonString<LanguageStateOfRequest>(ViewBag.LanguageState as string);
+    StateOfRequest languageState = JsonUtil.GetObjectFromJsonString<StateOfRequest>(ViewBag.LanguageState as string);
     DateTime endTime = DateTime.Now;
     double diff = ( (TimeSpan)(endTime - languageState.StartTime) ).TotalMilliseconds;
     ViewData["Title"] = "Languages Management ---- elapsed time = " + diff;

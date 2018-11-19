@@ -5,7 +5,7 @@
 @model IEnumerable<VodManageSystem.Models.DataModels.Singer>
 
 @{
-    SingerStateOfRequest singerState = JsonUtil.GetObjectFromJsonString<SingerStateOfRequest>(ViewBag.SingerState as string);
+    StateOfRequest singerState = JsonUtil.GetObjectFromJsonString<StateOfRequest>(ViewBag.SingerState as string);
     DateTime endTime = DateTime.Now;
     double diff = ( (TimeSpan)(endTime - singerState.StartTime) ).TotalMilliseconds;
     ViewData["Title"] = "Singers Management ---- elapsed time = " + diff;

@@ -36,8 +36,16 @@ namespace VodManageSystem.Controllers
             // new Index.cshtml
             if (!LoginUtil.CheckIfLoggedIn(HttpContext)) return View();
 
-            LanguageStateOfRequest languageState = JsonUtil.GetObjectFromJsonString<LanguageStateOfRequest>(language_state);
-            string temp_state = JsonUtil.SetJsonStringFromObject(languageState);
+            StateOfRequest mState;
+            if (string.IsNullOrEmpty(language_state))
+            {
+                mState = new StateOfRequest("LangNo");
+            }
+            else
+            {
+                mState = JsonUtil.GetObjectFromJsonString<StateOfRequest>(language_state);
+            }
+            string temp_state = JsonUtil.SetJsonStringFromObject(mState);
             // go to languages management main menu
             return RedirectToAction(nameof(LanguagesList), new { language_state = temp_state });    // (action, parameters)
         }
@@ -46,11 +54,19 @@ namespace VodManageSystem.Controllers
         [HttpGet, ActionName("LanguagesList")]
         public async Task<IActionResult> LanguagesList(string language_state)
         {
-            LanguageStateOfRequest languageState = JsonUtil.GetObjectFromJsonString<LanguageStateOfRequest>(language_state);
-            // List<Language> languages = await _languageManager.GetOnePageOfLanguagesDictionary(languageState);
-            List<Language> languages = await _languageManager.GetOnePageOfLanguages(languageState);
+            StateOfRequest mState;
+            if (string.IsNullOrEmpty(language_state))
+            {
+                mState = new StateOfRequest("LangNo");
+            }
+            else
+            {
+                mState = JsonUtil.GetObjectFromJsonString<StateOfRequest>(language_state);
+            }
+            // List<Language> languages = await _languageManager.GetOnePageOfLanguagesDictionary(mState);
+            List<Language> languages = await _languageManager.GetOnePageOfLanguages(mState);
 
-            ViewBag.LanguageState = JsonUtil.SetJsonStringFromObject(languageState);
+            ViewBag.LanguageState = JsonUtil.SetJsonStringFromObject(mState);
             return View(languages);
         }
 
@@ -70,9 +86,17 @@ namespace VodManageSystem.Controllers
         {
             if (!LoginUtil.CheckIfLoggedIn(HttpContext)) return View(nameof(Index));
 
-            LanguageStateOfRequest languageState = JsonUtil.GetObjectFromJsonString<LanguageStateOfRequest>(language_state);
-            languageState.StartTime = DateTime.Now;
-            string temp_state = JsonUtil.SetJsonStringFromObject(languageState);
+            StateOfRequest mState;
+            if (string.IsNullOrEmpty(language_state))
+            {
+                mState = new StateOfRequest("LangNo");
+            }
+            else
+            {
+                mState = JsonUtil.GetObjectFromJsonString<StateOfRequest>(language_state);
+            }
+            mState.StartTime = DateTime.Now;
+            string temp_state = JsonUtil.SetJsonStringFromObject(mState);
 
             if (string.IsNullOrEmpty(lang_no))
             {
@@ -90,7 +114,7 @@ namespace VodManageSystem.Controllers
 
             if (sButton == "CANCEL")
             {
-                temp_state = JsonUtil.SetJsonStringFromObject(languageState);
+                temp_state = JsonUtil.SetJsonStringFromObject(mState);
                 return RedirectToAction(nameof(LanguagesList), new { language_state = temp_state });
             }
 
@@ -99,13 +123,13 @@ namespace VodManageSystem.Controllers
             if (searchType == "LANGUAGE_NO")
             {
                 // find one language by lang_no
-                languageState.OrderBy = "LangNo";
+                mState.OrderBy = "LangNo";
                 language.LangNo = lang_no;
             }
             else if (searchType == "LANGUAGE_NA")
             {
                 // find one language by lang_na
-                languageState.OrderBy = "LangNa";
+                mState.OrderBy = "LangNa";
                 language.LangNa = lang_na;
             }
             else
@@ -114,8 +138,8 @@ namespace VodManageSystem.Controllers
                 return View();
             }
 
-            List<Language> languagesTemp = await _languageManager.FindOnePageOfLanguagesForOneLanguage(languageState, language, 0);
-            temp_state = JsonUtil.SetJsonStringFromObject(languageState);
+            List<Language> languagesTemp = await _languageManager.FindOnePageOfLanguagesForOneLanguage(mState, language, 0);
+            temp_state = JsonUtil.SetJsonStringFromObject(mState);
 
             ViewBag.LanguageState = temp_state;
             return View(nameof(LanguagesList), languagesTemp);
@@ -137,11 +161,19 @@ namespace VodManageSystem.Controllers
         {
             if (!LoginUtil.CheckIfLoggedIn(HttpContext)) return View(nameof(Index));
 
-            LanguageStateOfRequest languageState = JsonUtil.GetObjectFromJsonString<LanguageStateOfRequest>(language_state);
-            languageState.CurrentPageNo = 1;    // go to first page
-            languageState.StartTime = DateTime.Now;
+            StateOfRequest mState;
+            if (string.IsNullOrEmpty(language_state))
+            {
+                mState = new StateOfRequest("LangNo");
+            }
+            else
+            {
+                mState = JsonUtil.GetObjectFromJsonString<StateOfRequest>(language_state);
+            }
+            mState.CurrentPageNo = 1;    // go to first page
+            mState.StartTime = DateTime.Now;
 
-            string temp_state = JsonUtil.SetJsonStringFromObject(languageState);
+            string temp_state = JsonUtil.SetJsonStringFromObject(mState);
             return RedirectToAction(nameof(LanguagesList), new { language_state = temp_state });
         }
 
@@ -151,11 +183,19 @@ namespace VodManageSystem.Controllers
         {
             if (!LoginUtil.CheckIfLoggedIn(HttpContext)) return View(nameof(Index));
 
-            LanguageStateOfRequest languageState = JsonUtil.GetObjectFromJsonString<LanguageStateOfRequest>(language_state);
-            languageState.StartTime = DateTime.Now;
-            // languageState.CurrentPageNo = Int32.MaxValue / languageState.PageSize;  // default value for View
-            languageState.CurrentPageNo = -1;   // present last page
-            string temp_state = JsonUtil.SetJsonStringFromObject(languageState);
+            StateOfRequest mState;
+            if (string.IsNullOrEmpty(language_state))
+            {
+                mState = new StateOfRequest("LangNo");
+            }
+            else
+            {
+                mState = JsonUtil.GetObjectFromJsonString<StateOfRequest>(language_state);
+            }
+            mState.StartTime = DateTime.Now;
+            // mState.CurrentPageNo = Int32.MaxValue / mState.PageSize;  // default value for View
+            mState.CurrentPageNo = -1;   // present last page
+            string temp_state = JsonUtil.SetJsonStringFromObject(mState);
 
             return RedirectToAction(nameof(LanguagesList), new { language_state = temp_state });
         }
@@ -166,10 +206,18 @@ namespace VodManageSystem.Controllers
         {
             if (!LoginUtil.CheckIfLoggedIn(HttpContext)) return View(nameof(Index));
 
-            LanguageStateOfRequest languageState = JsonUtil.GetObjectFromJsonString<LanguageStateOfRequest>(language_state);
-            languageState.StartTime = DateTime.Now;
-            languageState.CurrentPageNo--;    // go to previous page
-            string temp_state = JsonUtil.SetJsonStringFromObject(languageState);
+            StateOfRequest mState;
+            if (string.IsNullOrEmpty(language_state))
+            {
+                mState = new StateOfRequest("LangNo");
+            }
+            else
+            {
+                mState = JsonUtil.GetObjectFromJsonString<StateOfRequest>(language_state);
+            }
+            mState.StartTime = DateTime.Now;
+            mState.CurrentPageNo--;    // go to previous page
+            string temp_state = JsonUtil.SetJsonStringFromObject(mState);
 
             return RedirectToAction(nameof(LanguagesList), new { language_state = temp_state });
         }
@@ -180,10 +228,18 @@ namespace VodManageSystem.Controllers
         {
             if (!LoginUtil.CheckIfLoggedIn(HttpContext)) return View(nameof(Index));
 
-            LanguageStateOfRequest languageState = JsonUtil.GetObjectFromJsonString<LanguageStateOfRequest>(language_state);
-            languageState.StartTime = DateTime.Now;
-            languageState.CurrentPageNo++;    // go to next page
-            string temp_state = JsonUtil.SetJsonStringFromObject(languageState);
+            StateOfRequest mState;
+            if (string.IsNullOrEmpty(language_state))
+            {
+                mState = new StateOfRequest("LangNo");
+            }
+            else
+            {
+                mState = JsonUtil.GetObjectFromJsonString<StateOfRequest>(language_state);
+            }
+            mState.StartTime = DateTime.Now;
+            mState.CurrentPageNo++;    // go to next page
+            string temp_state = JsonUtil.SetJsonStringFromObject(mState);
 
             return RedirectToAction(nameof(LanguagesList), new { language_state = temp_state });
         }
@@ -208,17 +264,25 @@ namespace VodManageSystem.Controllers
         {
             if (!LoginUtil.CheckIfLoggedIn(HttpContext)) return View(nameof(Index));
 
-            LanguageStateOfRequest languageState = JsonUtil.GetObjectFromJsonString<LanguageStateOfRequest>(language_state);
-            languageState.StartTime = DateTime.Now;
-            string temp_state = JsonUtil.SetJsonStringFromObject(languageState);
+            StateOfRequest mState;
+            if (string.IsNullOrEmpty(language_state))
+            {
+                mState = new StateOfRequest("LangNo");
+            }
+            else
+            {
+                mState = JsonUtil.GetObjectFromJsonString<StateOfRequest>(language_state);
+            }
+            mState.StartTime = DateTime.Now;
+            string temp_state = JsonUtil.SetJsonStringFromObject(mState);
 
-            int orgId = languageState.OrgId;
+            int orgId = mState.OrgId;
             string sButton = submitbutton.ToUpper();
             if (sButton == "CANCEL")
             {
                 Language newLanguage = new Language();
-                List<Language> languagesTemp = await _languageManager.FindOnePageOfLanguagesForOneLanguage(languageState, newLanguage, orgId);
-                temp_state = JsonUtil.SetJsonStringFromObject(languageState);
+                List<Language> languagesTemp = await _languageManager.FindOnePageOfLanguagesForOneLanguage(mState, newLanguage, orgId);
+                temp_state = JsonUtil.SetJsonStringFromObject(mState);
 
                 ViewBag.LanguageState = temp_state;
                 return View(nameof(LanguagesList), languagesTemp);
@@ -229,10 +293,10 @@ namespace VodManageSystem.Controllers
                 if (result == ErrorCodeModel.Succeeded)
                 {
                     // succeeded to add the language
-                    languageState.OrgId = language.Id;
-                    languageState.OrgLangNo = language.LangNo;
+                    mState.OrgId = language.Id;
+                    mState.OrgNo = language.LangNo;
 
-                    temp_state = JsonUtil.SetJsonStringFromObject(languageState);
+                    temp_state = JsonUtil.SetJsonStringFromObject(mState);
                     return RedirectToAction(nameof(Add), new { language_state = temp_state });
                 }
                 else
@@ -255,9 +319,17 @@ namespace VodManageSystem.Controllers
         {
             if (!LoginUtil.CheckIfLoggedIn(HttpContext)) return View(nameof(Index));
 
-            LanguageStateOfRequest languageState = JsonUtil.GetObjectFromJsonString<LanguageStateOfRequest>(language_state);
+            StateOfRequest mState;
+            if (string.IsNullOrEmpty(language_state))
+            {
+                mState = new StateOfRequest("LangNo");
+            }
+            else
+            {
+                mState = JsonUtil.GetObjectFromJsonString<StateOfRequest>(language_state);
+            }
 
-            int id = languageState.OrgId;
+            int id = mState.OrgId;
             Language language = await _languageManager.FindOneLanguageById(id);
 
             if (language == null)
@@ -267,9 +339,9 @@ namespace VodManageSystem.Controllers
             }
             else
             {
-                languageState.OrgId = language.Id;
-                languageState.OrgLangNo = language.LangNo;
-                string temp_state = JsonUtil.SetJsonStringFromObject(languageState);
+                mState.OrgId = language.Id;
+                mState.OrgNo = language.LangNo;
+                string temp_state = JsonUtil.SetJsonStringFromObject(mState);
 
                 ViewBag.LanguageState = temp_state;
                 return View(language);
@@ -283,15 +355,23 @@ namespace VodManageSystem.Controllers
         {
             if (!LoginUtil.CheckIfLoggedIn(HttpContext)) return View(nameof(Index));
 
-            LanguageStateOfRequest languageState = JsonUtil.GetObjectFromJsonString<LanguageStateOfRequest>(language_state);
-            languageState.StartTime = DateTime.Now;
-            string temp_state = JsonUtil.SetJsonStringFromObject(languageState);
+            StateOfRequest mState;
+            if (string.IsNullOrEmpty(language_state))
+            {
+                mState = new StateOfRequest("LangNo");
+            }
+            else
+            {
+                mState = JsonUtil.GetObjectFromJsonString<StateOfRequest>(language_state);
+            }
+            mState.StartTime = DateTime.Now;
+            string temp_state = JsonUtil.SetJsonStringFromObject(mState);
 
-            int orgId = languageState.OrgId;    // = language.Id
+            int orgId = mState.OrgId;    // = language.Id
             string sButton = submitbutton.ToUpper();
             if (sButton == "CANCEL")
             {
-                temp_state = JsonUtil.SetJsonStringFromObject(languageState);
+                temp_state = JsonUtil.SetJsonStringFromObject(mState);
                 return RedirectToAction(nameof(LanguagesList), new { language_state = temp_state });
             }
             if (ModelState.IsValid)
@@ -302,8 +382,8 @@ namespace VodManageSystem.Controllers
                 {
                     // succeeded to update
                     Language newLanguage = new Language();
-                    List<Language> languagesTemp = await _languageManager.FindOnePageOfLanguagesForOneLanguage(languageState, newLanguage, orgId);
-                    temp_state = JsonUtil.SetJsonStringFromObject(languageState);
+                    List<Language> languagesTemp = await _languageManager.FindOnePageOfLanguagesForOneLanguage(mState, newLanguage, orgId);
+                    temp_state = JsonUtil.SetJsonStringFromObject(mState);
 
                     ViewBag.LanguageState = temp_state;
                     return View(nameof(LanguagesList), languagesTemp);
@@ -328,8 +408,16 @@ namespace VodManageSystem.Controllers
         {
             if (!LoginUtil.CheckIfLoggedIn(HttpContext)) return View(nameof(Index));
 
-            LanguageStateOfRequest languageState = JsonUtil.GetObjectFromJsonString<LanguageStateOfRequest>(language_state);
-            int id = languageState.OrgId;
+            StateOfRequest mState;
+            if (string.IsNullOrEmpty(language_state))
+            {
+                mState = new StateOfRequest("LangNo");
+            }
+            else
+            {
+                mState = JsonUtil.GetObjectFromJsonString<StateOfRequest>(language_state);
+            }
+            int id = mState.OrgId;
             Language language = await _languageManager.FindOneLanguageById(id);
 
             if (language == null)
@@ -339,9 +427,9 @@ namespace VodManageSystem.Controllers
             }
             else
             {
-                languageState.OrgId = id;
-                languageState.OrgLangNo = language.LangNo;
-                string temp_state = JsonUtil.SetJsonStringFromObject(languageState);
+                mState.OrgId = id;
+                mState.OrgNo = language.LangNo;
+                string temp_state = JsonUtil.SetJsonStringFromObject(mState);
 
                 ViewBag.LanguageState = temp_state;
                 return View(language);
@@ -355,15 +443,23 @@ namespace VodManageSystem.Controllers
         {
             if (!LoginUtil.CheckIfLoggedIn(HttpContext)) return View(nameof(Index));
 
-            LanguageStateOfRequest languageState = JsonUtil.GetObjectFromJsonString<LanguageStateOfRequest>(language_state);
-            languageState.StartTime = DateTime.Now;
-            string temp_state = JsonUtil.SetJsonStringFromObject(languageState);
+            StateOfRequest mState;
+            if (string.IsNullOrEmpty(language_state))
+            {
+                mState = new StateOfRequest("LangNo");
+            }
+            else
+            {
+                mState = JsonUtil.GetObjectFromJsonString<StateOfRequest>(language_state);
+            }
+            mState.StartTime = DateTime.Now;
+            string temp_state = JsonUtil.SetJsonStringFromObject(mState);
 
-            int orgId = languageState.OrgId;
+            int orgId = mState.OrgId;
             string sButton = submitbutton.ToUpper();
             if (sButton == "CANCEL")
             {
-                temp_state = JsonUtil.SetJsonStringFromObject(languageState);
+                temp_state = JsonUtil.SetJsonStringFromObject(mState);
                 return RedirectToAction(nameof(LanguagesList), new { language_state = temp_state });
             }
 
@@ -374,8 +470,8 @@ namespace VodManageSystem.Controllers
                 if (result == ErrorCodeModel.Succeeded)
                 {
                     // succeeded to delete a language
-                    List<Language> languagesTemp = await _languageManager.FindOnePageOfLanguagesForOneLanguage(languageState, language, 0);
-                    temp_state = JsonUtil.SetJsonStringFromObject(languageState);
+                    List<Language> languagesTemp = await _languageManager.FindOnePageOfLanguagesForOneLanguage(mState, language, 0);
+                    temp_state = JsonUtil.SetJsonStringFromObject(mState);
 
                     ViewBag.LanguageState = temp_state;
                     return View(nameof(LanguagesList), languagesTemp);
@@ -401,8 +497,16 @@ namespace VodManageSystem.Controllers
         {
             if (!LoginUtil.CheckIfLoggedIn(HttpContext)) return View(nameof(Index));
 
-            LanguageStateOfRequest languageState = JsonUtil.GetObjectFromJsonString<LanguageStateOfRequest>(language_state);
-            Language language = await _languageManager.FindOneLanguageById(languageState.OrgId);
+            StateOfRequest mState;
+            if (string.IsNullOrEmpty(language_state))
+            {
+                mState = new StateOfRequest("LangNo");
+            }
+            else
+            {
+                mState = JsonUtil.GetObjectFromJsonString<StateOfRequest>(language_state);
+            }
+            Language language = await _languageManager.FindOneLanguageById(mState.OrgId);
 
             if (language == null)
             {
@@ -411,9 +515,9 @@ namespace VodManageSystem.Controllers
             }
             else
             {
-                languageState.OrgId = language.Id;
-                languageState.OrgLangNo = language.LangNo;
-                string temp_state = JsonUtil.SetJsonStringFromObject(languageState);
+                mState.OrgId = language.Id;
+                mState.OrgNo = language.LangNo;
+                string temp_state = JsonUtil.SetJsonStringFromObject(mState);
 
                 ViewBag.LanguageState = temp_state;
                 return View(language);
@@ -426,13 +530,21 @@ namespace VodManageSystem.Controllers
         {
             if (!LoginUtil.CheckIfLoggedIn(HttpContext)) return View(nameof(Index));
 
-            LanguageStateOfRequest languageState = JsonUtil.GetObjectFromJsonString<LanguageStateOfRequest>(language_state);
-            languageState.StartTime = DateTime.Now;
+            StateOfRequest mState;
+            if (string.IsNullOrEmpty(language_state))
+            {
+                mState = new StateOfRequest("LangNo");
+            }
+            else
+            {
+                mState = JsonUtil.GetObjectFromJsonString<StateOfRequest>(language_state);
+            }
+            mState.StartTime = DateTime.Now;
 
-            int orgId = languageState.OrgId;
+            int orgId = mState.OrgId;
             Language language = new Language();
-            List<Language> languagesTemp = await _languageManager.FindOnePageOfLanguagesForOneLanguage(languageState, language, orgId);
-            string temp_state = JsonUtil.SetJsonStringFromObject(languageState);
+            List<Language> languagesTemp = await _languageManager.FindOnePageOfLanguagesForOneLanguage(mState, language, orgId);
+            string temp_state = JsonUtil.SetJsonStringFromObject(mState);
 
             ViewBag.LanguageState = temp_state;
             return View(nameof(LanguagesList), languagesTemp);
@@ -444,26 +556,34 @@ namespace VodManageSystem.Controllers
         {
             if (!LoginUtil.CheckIfLoggedIn(HttpContext)) return View(nameof(Index));
 
-            LanguageStateOfRequest languageState = JsonUtil.GetObjectFromJsonString<LanguageStateOfRequest>(language_state);
-            languageState.StartTime = DateTime.Now;
-
-            int orgId = 0;
-            if (languageState.OrgId == 0)
+            StateOfRequest mState;
+            if (string.IsNullOrEmpty(language_state))
             {
-                // no language found or selected in this page
-                // then use the first language of this page
-                orgId = languageState.FirstId;
+                mState = new StateOfRequest("LangNo");
             }
             else
             {
-                orgId = languageState.OrgId;
+                mState = JsonUtil.GetObjectFromJsonString<StateOfRequest>(language_state);
+            }
+            mState.StartTime = DateTime.Now;
+
+            int orgId = 0;
+            if (mState.OrgId == 0)
+            {
+                // no language found or selected in this page
+                // then use the first language of this page
+                orgId = mState.FirstId;
+            }
+            else
+            {
+                orgId = mState.OrgId;
             }
 
             if (orgId != 0)
             {
                 Language language = new Language();
-                List<Language> languagesTemp = await _languageManager.FindOnePageOfLanguagesForOneLanguage(languageState, language, orgId);
-                string temp_state = JsonUtil.SetJsonStringFromObject(languageState);
+                List<Language> languagesTemp = await _languageManager.FindOnePageOfLanguagesForOneLanguage(mState, language, orgId);
+                string temp_state = JsonUtil.SetJsonStringFromObject(mState);
 
                 ViewBag.LanguageState = temp_state;
                 return View(nameof(LanguagesList), languagesTemp);

@@ -32,10 +32,10 @@ namespace VodManageSystem.Models.Dao
         /// Gets the dictionary of playerscores.
         /// </summary>
         /// <returns>The dictionary of playerscores.</returns>
-        /// <param name="playerscoreState">Playerscore state.</param>
-        public async Task<SortedDictionary<int, Playerscore>> GetDictionaryOfPlayerscores(PlayerscoreStateOfRequest playerscoreState)
+        /// <param name="mState">Playerscore state.</param>
+        public async Task<SortedDictionary<int, Playerscore>> GetDictionaryOfPlayerscores(StateOfRequest mState)
         {
-            if (playerscoreState == null)
+            if (mState == null)
             {
                 return new SortedDictionary<int, Playerscore>();
             }
@@ -44,13 +44,13 @@ namespace VodManageSystem.Models.Dao
 
             Dictionary<int, Playerscore> playerscoresDictionary = null;
 
-            if (playerscoreState.OrderBy == "PlayerName")
+            if (mState.OrderBy == "PlayerName")
             {
                 playerscoresDictionary = totalPlayerscores.OrderBy(x => x.PlayerName)
                             .Select((m, index) => new { rowNumber = index + 1, m })
                             .ToDictionary(m => m.rowNumber, m => m.m);
             }
-            else if (playerscoreState.OrderBy == "Score")
+            else if (mState.OrderBy == "Score")
             {
                 playerscoresDictionary = totalPlayerscores.OrderBy(x => x.Score).ThenBy(x => x.PlayerName)
                             .Select((m, index) => new { rowNumber = index + 1, m })
@@ -69,11 +69,11 @@ namespace VodManageSystem.Models.Dao
         /// Gets the select list from a SortedDictionary of playerscores.
         /// </summary>
         /// <returns>The select list of playerscores.</returns>
-        /// <param name="playerscoreState">Playerscore state.</param>
-        public async Task<List<SelectListItem>> GetSelectListOfPlayerscores(PlayerscoreStateOfRequest playerscoreState)
+        /// <param name="mState">Playerscore state.</param>
+        public async Task<List<SelectListItem>> GetSelectListOfPlayerscores(StateOfRequest mState)
         {
             List<SelectListItem> selectList = new List<SelectListItem>();
-            SortedDictionary<int, Playerscore> playerscoreDict = await GetDictionaryOfPlayerscores(playerscoreState);
+            SortedDictionary<int, Playerscore> playerscoreDict = await GetDictionaryOfPlayerscores(mState);
             foreach (Playerscore playerscore in playerscoreDict.Values)
             {
                 selectList.Add(new SelectListItem
@@ -112,26 +112,26 @@ namespace VodManageSystem.Models.Dao
         /// Gets the one page of playerscores dictionary.
         /// </summary>
         /// <returns>The one page of playerscores dictionary.</returns>
-        /// <param name="playerscoreState">Playerscore state.</param>
-        public async Task<List<Playerscore>> GetOnePageOfPlayerscoresDictionary(PlayerscoreStateOfRequest playerscoreState)
+        /// <param name="mState">Playerscore state.</param>
+        public async Task<List<Playerscore>> GetOnePageOfPlayerscoresDictionary(StateOfRequest mState)
         {
-            if (playerscoreState == null)
+            if (mState == null)
             {
                 return new List<Playerscore>();
             }
-            if (string.IsNullOrEmpty(playerscoreState.OrderBy))
+            if (string.IsNullOrEmpty(mState.OrderBy))
             {
-                playerscoreState.OrderBy = "PlayerName";
+                mState.OrderBy = "PlayerName";
             }
 
-            int pageNo = playerscoreState.CurrentPageNo;
+            int pageNo = mState.CurrentPageNo;
             if (pageNo < 1)
             {
                 pageNo = 1;
             }
-            int pageSize = playerscoreState.PageSize;
+            int pageSize = mState.PageSize;
 
-            SortedDictionary<int, Playerscore> playerscoresDictionary = await GetDictionaryOfPlayerscores(playerscoreState);
+            SortedDictionary<int, Playerscore> playerscoresDictionary = await GetDictionaryOfPlayerscores(mState);
 
             int totalCount = playerscoresDictionary.Count;
             int totalPages = totalCount / pageSize;
@@ -147,17 +147,17 @@ namespace VodManageSystem.Models.Dao
             int recordNo = (pageNo - 1) * pageSize;
             List<Playerscore> playerscores = playerscoresDictionary.Skip(recordNo).Take(pageSize).Select(m => m.Value).ToList();
 
-            playerscoreState.CurrentPageNo = pageNo;
+            mState.CurrentPageNo = pageNo;
             Playerscore firstPlayerscore = playerscores.FirstOrDefault();
             if (firstPlayerscore != null)
             {
-                playerscoreState.FirstId = firstPlayerscore.Id;
+                mState.FirstId = firstPlayerscore.Id;
             }
             else
             {
-                playerscoreState.OrgId = 0;
-                playerscoreState.OrgNo = "";
-                playerscoreState.FirstId = 0;
+                mState.OrgId = 0;
+                mState.OrgNo = "";
+                mState.FirstId = 0;
             }
 
             return playerscores;
@@ -167,26 +167,26 @@ namespace VodManageSystem.Models.Dao
         /// Finds the one page of playerscores for one playerscore.
         /// </summary>
         /// <returns>The one page of playerscores for one playerscore.</returns>
-        /// <param name="playerscoreState">Playerscore state.</param>
+        /// <param name="mState">Playerscore state.</param>
         /// <param name="playerscore">Playerscore.</param>
         /// <param name="id">Identifier.</param>
-        public async Task<List<Playerscore>> FindOnePageOfPlayerscoresForOnePlayerscore(PlayerscoreStateOfRequest playerscoreState, Playerscore playerscore, int id)
+        public async Task<List<Playerscore>> FindOnePageOfPlayerscoresForOnePlayerscore(StateOfRequest mState, Playerscore playerscore, int id)
         {
-            if ((playerscoreState == null) || (playerscore == null))
+            if ((mState == null) || (playerscore == null))
             {
                 return new List<Playerscore>();
             }
-            if (string.IsNullOrEmpty(playerscoreState.OrderBy))
+            if (string.IsNullOrEmpty(mState.OrderBy))
             {
-                playerscoreState.OrderBy = "PlayerName";
+                mState.OrderBy = "PlayerName";
             }
 
-            int pageSize = playerscoreState.PageSize;
+            int pageSize = mState.PageSize;
 
             List<Playerscore> playerscores = null;
             KeyValuePair<int, Playerscore> playerscoreWithIndex = new KeyValuePair<int, Playerscore>(-1, null);
 
-            SortedDictionary<int, Playerscore> playerscoresDictionary = await GetDictionaryOfPlayerscores(playerscoreState);
+            SortedDictionary<int, Playerscore> playerscoresDictionary = await GetDictionaryOfPlayerscores(mState);
 
             if (id > 0)
             {
@@ -196,12 +196,12 @@ namespace VodManageSystem.Models.Dao
             else
             {
                 // No selected anguage
-                if (playerscoreState.OrderBy == "PlayerName")
+                if (mState.OrderBy == "PlayerName")
                 {
                     string playerName = playerscore.PlayerName;
                     playerscoreWithIndex = playerscoresDictionary.Where(x => (String.Compare(x.Value.PlayerName, playerName) >= 0)).FirstOrDefault();
                 }
-                else if (playerscoreState.OrderBy == "Score")
+                else if (mState.OrderBy == "Score")
                 {
                     int score = playerscore.Score;
                     playerscoreWithIndex = playerscoresDictionary.Where(x =>x.Value.Score >= score).FirstOrDefault();
@@ -218,9 +218,9 @@ namespace VodManageSystem.Models.Dao
                 if (playerscoresDictionary.Count == 0)
                 {
                     // dictionary (playerscore Table) is empty
-                    playerscoreState.OrgId = 0;
-                    playerscoreState.OrgNo = "";
-                    playerscoreState.FirstId = 0;
+                    mState.OrgId = 0;
+                    mState.OrgNo = "";
+                    mState.FirstId = 0;
                     // return empty list
                     return new List<Playerscore>();
                 }
@@ -243,18 +243,18 @@ namespace VodManageSystem.Models.Dao
             int recordNo = (pageNo - 1) * pageSize;
             playerscores = playerscoresDictionary.Skip(recordNo).Take(pageSize).Select(m => m.Value).ToList();
 
-            playerscoreState.CurrentPageNo = pageNo;
-            playerscoreState.OrgId = playerscore.Id;
-            playerscoreState.OrgNo = playerscore.PlayerName;
+            mState.CurrentPageNo = pageNo;
+            mState.OrgId = playerscore.Id;
+            mState.OrgNo = playerscore.PlayerName;
 
             Playerscore firstPlayerscore = playerscores.FirstOrDefault();
             if (firstPlayerscore != null)
             {
-                playerscoreState.FirstId = firstPlayerscore.Id;
+                mState.FirstId = firstPlayerscore.Id;
             }
             else
             {
-                playerscoreState.FirstId = 0;
+                mState.FirstId = 0;
             }
 
             return playerscores;

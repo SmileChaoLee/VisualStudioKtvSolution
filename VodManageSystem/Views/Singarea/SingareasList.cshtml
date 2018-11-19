@@ -5,7 +5,7 @@
 @model IEnumerable<VodManageSystem.Models.DataModels.Singarea>
 
 @{
-    SingareaStateOfRequest singareaState = JsonUtil.GetObjectFromJsonString<SingareaStateOfRequest>(ViewBag.SingareaState as string);
+    StateOfRequest singareaState = JsonUtil.GetObjectFromJsonString<StateOfRequest>(ViewBag.SingareaState as string);
     DateTime endTime = DateTime.Now;
     double diff = ( (TimeSpan)(endTime - singareaState.StartTime) ).TotalMilliseconds;
     ViewData["Title"] = "Singer Areas Management ---- elapsed time = " + diff;

@@ -14,7 +14,7 @@ namespace VodManageSystem.Models
         public int FirstId { get; set; }
         public DateTime StartTime { get; set; }
 
-        public StateOfRequest()
+        public StateOfRequest(string orderBy)
         {
             CurrentPageNo = 1;
             PageSize = 15;  // default value for View
@@ -22,7 +22,7 @@ namespace VodManageSystem.Models
             TotalPages = 0;
             OrgId = 0;  // there is no Id = 0 in Singer table
             OrgNo = "";
-            OrderBy = "PlayerName";
+            this.OrderBy = orderBy;
             QueryCondition = "";
             FirstId = 0;    // record the Id of first Singer in this page
             StartTime = DateTime.Now;

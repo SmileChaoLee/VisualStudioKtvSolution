@@ -30,58 +30,37 @@ namespace VodManageSystem.Models.Dao
         // end of private methods
 
         // public methods
-        public async Task<List<Language>> GetAllLanguages(LanguageStateOfRequest languageState)
+        public async Task<List<Language>> GetAllLanguages(StateOfRequest mState)
         {
-            if (languageState == null)
+            if (mState == null)
             {
                 return new List<Language>();    // return empty list
             }
 
-            languageState.CurrentPageNo = -100;  // represnt to get all languages
-            List<Language> totalLanguages = await GetOnePageOfLanguages(languageState);
+            mState.CurrentPageNo = -100;  // represnt to get all languages
+            List<Language> totalLanguages = await GetOnePageOfLanguages(mState);
 
             return totalLanguages;
-
-            /*
-            List<Language> totalLanguages;
-            if (languageState.OrderBy == "LangNo")
-            {
-                totalLanguages = await _context.Language
-                                          .OrderBy(x => x.LangNo)
-                                          .AsNoTracking().ToListAsync();
-            }
-            else if (languageState.OrderBy == "LangNa")
-            {
-                totalLanguages = await _context.Language
-                                          .OrderBy(x => x.LangNa).ThenBy(x => x.LangNo)
-                                          .AsNoTracking().ToListAsync();
-            }
-            else
-            {
-                totalLanguages = new List<Language>();
-            }
-            return totalLanguages;
-            */
         }
 
-        public async Task<List<Language>> GetOnePageOfLanguages(LanguageStateOfRequest languageState)
+        public async Task<List<Language>> GetOnePageOfLanguages(StateOfRequest mState)
         {
-            if (languageState == null)
+            if (mState == null)
             {
                 return new List<Language>();
             }
-            if (string.IsNullOrEmpty(languageState.OrderBy))
+            if (string.IsNullOrEmpty(mState.OrderBy))
             {
                 // default is order by language's No
-                languageState.OrderBy = "LangNo";
+                mState.OrderBy = "LangNo";
             }
 
             var languagesList = _context.Language.Where(x => x.Id == 0);
-            if (languageState.OrderBy == "LangNo")
+            if (mState.OrderBy == "LangNo")
             {
                 languagesList = _context.Language.OrderBy(x => x.LangNo);
             }
-            else if (languageState.OrderBy == "LangNa")
+            else if (mState.OrderBy == "LangNa")
             {
                 languagesList = _context.Language.OrderBy(x => x.LangNa).ThenBy(x => x.LangNo);
             }
@@ -90,8 +69,8 @@ namespace VodManageSystem.Models.Dao
                 languagesList = _context.Language;
             }
 
-            int pageNo = languageState.CurrentPageNo;
-            int pageSize = languageState.PageSize;
+            int pageNo = mState.CurrentPageNo;
+            int pageSize = mState.PageSize;
             int totalPages = await GetTotalPageOfLanguageTable(pageSize);
 
             bool getAll = false;
@@ -130,17 +109,17 @@ namespace VodManageSystem.Models.Dao
                 languages = await languagesList.Skip(recordNum).Take(pageSize).AsNoTracking().ToListAsync();
             }
 
-            languageState.CurrentPageNo = pageNo;
+            mState.CurrentPageNo = pageNo;
             Language firstLanguage = languages.FirstOrDefault();
             if (firstLanguage != null)
             {
-                languageState.FirstId = firstLanguage.Id;
+                mState.FirstId = firstLanguage.Id;
             }
             else
             {
-                languageState.OrgId = 0;
-                languageState.OrgLangNo = "";
-                languageState.FirstId = 0;
+                mState.OrgId = 0;
+                mState.OrgNo = "";
+                mState.FirstId = 0;
             }
 
             return languages;
@@ -151,10 +130,10 @@ namespace VodManageSystem.Models.Dao
         /// Gets the dictionary of languages.
         /// </summary>
         /// <returns>The dictionary of languages.</returns>
-        /// <param name="languageState">Language state.</param>
-        public async Task<SortedDictionary<int, Language>> GetDictionaryOfLanguages(LanguageStateOfRequest languageState)
+        /// <param name="mState">Language state.</param>
+        public async Task<SortedDictionary<int, Language>> GetDictionaryOfLanguages(StateOfRequest mState)
         {
-            if (languageState == null)
+            if (mState == null)
             {
                 return new SortedDictionary<int, Language>();
             }
@@ -163,13 +142,13 @@ namespace VodManageSystem.Models.Dao
 
             Dictionary<int, Language> languagesDictionary = null;
 
-            if (languageState.OrderBy == "LangNo")
+            if (mState.OrderBy == "LangNo")
             {
                 languagesDictionary = totalLanguages.OrderBy(x => x.LangNo)
                             .Select((m, index) => new { rowNumber = index + 1, m })
                             .ToDictionary(m => m.rowNumber, m => m.m);
             }
-            else if (languageState.OrderBy == "LangNa")
+            else if (mState.OrderBy == "LangNa")
             {
                 languagesDictionary = totalLanguages.OrderBy(x => x.LangNa).ThenBy(x => x.LangNo)
                             .Select((m, index) => new { rowNumber = index + 1, m })
@@ -188,12 +167,12 @@ namespace VodManageSystem.Models.Dao
         /// Gets the select list from a SortedDictionary of languages.
         /// </summary>
         /// <returns>The select list of languages.</returns>
-        /// <param name="languageState">Language state.</param>
-        public async Task<List<SelectListItem>> GetSelectListOfLanguages(LanguageStateOfRequest languageState)
+        /// <param name="mState">Language state.</param>
+        public async Task<List<SelectListItem>> GetSelectListOfLanguages(StateOfRequest mState)
         {
             List<SelectListItem> selectList = new List<SelectListItem>();
-            SortedDictionary<int, Language> languageDict = await GetDictionaryOfLanguages(languageState);
-            foreach (Language lang in languageDict.Values)
+            List<Language> languages = await GetAllLanguages(mState);
+            foreach (Language lang in languages)
             {
                 selectList.Add(new SelectListItem
                 {
@@ -231,22 +210,22 @@ namespace VodManageSystem.Models.Dao
         /// Gets the one page of languages dictionary.
         /// </summary>
         /// <returns>The one page of languages dictionary.</returns>
-        /// <param name="languageState">Language state.</param>
-        public async Task<List<Language>> GetOnePageOfLanguagesDictionary(LanguageStateOfRequest languageState)
+        /// <param name="mState">Language state.</param>
+        public async Task<List<Language>> GetOnePageOfLanguagesDictionary(StateOfRequest mState)
         {
-            if (languageState == null)
+            if (mState == null)
             {
                 return new List<Language>();
             }
-            if (string.IsNullOrEmpty(languageState.OrderBy))
+            if (string.IsNullOrEmpty(mState.OrderBy))
             {
-                languageState.OrderBy = "LangNo";
+                mState.OrderBy = "LangNo";
             }
 
-            SortedDictionary<int, Language> languagesDictionary = await GetDictionaryOfLanguages(languageState);
+            SortedDictionary<int, Language> languagesDictionary = await GetDictionaryOfLanguages(mState);
 
-            int pageNo = languageState.CurrentPageNo;
-            int pageSize = languageState.PageSize;
+            int pageNo = mState.CurrentPageNo;
+            int pageSize = mState.PageSize;
             int totalCount = languagesDictionary.Count;
             int totalPages = totalCount / pageSize;
             if ((totalPages * pageSize) < totalCount)
@@ -271,17 +250,17 @@ namespace VodManageSystem.Models.Dao
             int recordNo = (pageNo - 1) * pageSize;
             List<Language> languages = languagesDictionary.Skip(recordNo).Take(pageSize).Select(m => m.Value).ToList();
 
-            languageState.CurrentPageNo = pageNo;
+            mState.CurrentPageNo = pageNo;
             Language firstLanguage = languages.FirstOrDefault();
             if (firstLanguage != null)
             {
-                languageState.FirstId = firstLanguage.Id;
+                mState.FirstId = firstLanguage.Id;
             }
             else
             {
-                languageState.OrgId = 0;
-                languageState.OrgLangNo = "";
-                languageState.FirstId = 0;
+                mState.OrgId = 0;
+                mState.OrgNo = "";
+                mState.FirstId = 0;
             }
 
             return languages;
@@ -291,26 +270,26 @@ namespace VodManageSystem.Models.Dao
         /// Finds the one page of languages for one language.
         /// </summary>
         /// <returns>The one page of languages for one language.</returns>
-        /// <param name="languageState">Language state.</param>
+        /// <param name="mState">Language state.</param>
         /// <param name="language">Language.</param>
         /// <param name="id">Identifier.</param>
-        public async Task<List<Language>> FindOnePageOfLanguagesForOneLanguage(LanguageStateOfRequest languageState, Language language, int id)
+        public async Task<List<Language>> FindOnePageOfLanguagesForOneLanguage(StateOfRequest mState, Language language, int id)
         {
-            if ( (languageState == null) || (language == null) )
+            if ( (mState == null) || (language == null) )
             {
                 return new List<Language>();
             }
-            if (string.IsNullOrEmpty(languageState.OrderBy))
+            if (string.IsNullOrEmpty(mState.OrderBy))
             {
-                languageState.OrderBy = "LangNo";
+                mState.OrderBy = "LangNo";
             }
 
-            int pageSize = languageState.PageSize;
+            int pageSize = mState.PageSize;
 
             List<Language> languages = null;
             KeyValuePair<int,Language> languageWithIndex = new KeyValuePair<int, Language>(-1,null);
 
-            SortedDictionary<int, Language> languagesDictionary = await GetDictionaryOfLanguages(languageState);
+            SortedDictionary<int, Language> languagesDictionary = await GetDictionaryOfLanguages(mState);
 
             if (id > 0)
             {
@@ -320,12 +299,12 @@ namespace VodManageSystem.Models.Dao
             else
             {
                 // No selected anguage
-                if (languageState.OrderBy == "LangNo")
+                if (mState.OrderBy == "LangNo")
                 {
                     string lang_no = language.LangNo;
                     languageWithIndex = languagesDictionary.Where(x=>(String.Compare(x.Value.LangNo,lang_no)>=0)).FirstOrDefault();
                 }
-                else if (languageState.OrderBy == "LangNa")
+                else if (mState.OrderBy == "LangNa")
                 {
                     string lang_na = language.LangNa;
                     languageWithIndex = languagesDictionary.Where(x=>(String.Compare(x.Value.LangNa,lang_na)>=0)).FirstOrDefault();
@@ -342,9 +321,9 @@ namespace VodManageSystem.Models.Dao
                 if (languagesDictionary.Count == 0)
                 {
                     // dictionary (Language Table) is empty
-                    languageState.OrgId = 0;
-                    languageState.OrgLangNo = "";
-                    languageState.FirstId = 0;
+                    mState.OrgId = 0;
+                    mState.OrgNo = "";
+                    mState.FirstId = 0;
                     // return empty list
                     return new List<Language>();
                 }
@@ -367,18 +346,18 @@ namespace VodManageSystem.Models.Dao
             int recordNo = (pageNo - 1) * pageSize;
             languages = languagesDictionary.Skip(recordNo).Take(pageSize).Select(m=>m.Value).ToList();
 
-            languageState.CurrentPageNo = pageNo;
-            languageState.OrgId = language.Id;
-            languageState.OrgLangNo = language.LangNo;
+            mState.CurrentPageNo = pageNo;
+            mState.OrgId = language.Id;
+            mState.OrgNo = language.LangNo;
 
             Language firstLanguage = languages.FirstOrDefault();
             if(firstLanguage != null)
             {
-                languageState.FirstId = firstLanguage.Id;
+                mState.FirstId = firstLanguage.Id;
             }
             else
             {
-                languageState.FirstId = 0;
+                mState.FirstId = 0;
             }
                
             return languages;

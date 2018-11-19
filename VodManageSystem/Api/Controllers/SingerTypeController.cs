@@ -35,8 +35,8 @@ namespace VodManageSystem.Api.Controllers
         public async Task<string> Get()
         {
             // get all singarea
-            SingareaStateOfRequest singareaState = new SingareaStateOfRequest();
-            List<Singarea> singareas = await _singareaManager.GetAllSingareas(singareaState);
+            StateOfRequest mState = new StateOfRequest("AreaNo");
+            List<Singarea> singareas = await _singareaManager.GetAllSingareas(mState);
             // Convert List<Singarea> to JSON array
             JArray jArray = new JArray();
             JObject jObject;

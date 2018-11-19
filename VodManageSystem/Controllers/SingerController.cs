@@ -39,8 +39,16 @@ namespace VodManageSystem.Controllers
             // new Index.cshtml
             if (!LoginUtil.CheckIfLoggedIn(HttpContext)) return View();
 
-            SingerStateOfRequest singerState = JsonUtil.GetObjectFromJsonString<SingerStateOfRequest>(singer_state);
-            string temp_state = JsonUtil.SetJsonStringFromObject(singerState);
+            StateOfRequest mState;
+            if (string.IsNullOrEmpty(singer_state))
+            {
+                mState = new StateOfRequest("SingNo");
+            }
+            else
+            {
+                mState = JsonUtil.GetObjectFromJsonString<StateOfRequest>(singer_state);
+            }
+            string temp_state = JsonUtil.SetJsonStringFromObject(mState);
             // go to singers management main menu
             return RedirectToAction(nameof(SingersList), new { singer_state = temp_state });    // (action, parameters)
         }
@@ -49,11 +57,19 @@ namespace VodManageSystem.Controllers
         [HttpGet, ActionName("SingersList")]
         public async Task<IActionResult> SingersList(string singer_state)
         {
-            SingerStateOfRequest singerState = JsonUtil.GetObjectFromJsonString<SingerStateOfRequest>(singer_state);
-            // List<Singer> singers = await _singerManager.GetOnePageOfSingersDictionary(singerState);
-            List<Singer> singers = await _singerManager.GetOnePageOfSingers(singerState);
+            StateOfRequest mState;
+            if (string.IsNullOrEmpty(singer_state))
+            {
+                mState = new StateOfRequest("SingNo");
+            }
+            else
+            {
+                mState = JsonUtil.GetObjectFromJsonString<StateOfRequest>(singer_state);
+            }
+            // List<Singer> singers = await _singerManager.GetOnePageOfSingersDictionary(mState);
+            List<Singer> singers = await _singerManager.GetOnePageOfSingers(mState);
 
-            ViewBag.SingerState = JsonUtil.SetJsonStringFromObject(singerState);
+            ViewBag.SingerState = JsonUtil.SetJsonStringFromObject(mState);
             return View(singers);
         }
 
@@ -73,9 +89,17 @@ namespace VodManageSystem.Controllers
         {
             if (!LoginUtil.CheckIfLoggedIn(HttpContext)) return View(nameof(Index));
 
-            SingerStateOfRequest singerState = JsonUtil.GetObjectFromJsonString<SingerStateOfRequest>(singer_state);
-            singerState.StartTime = DateTime.Now;
-            string temp_state = JsonUtil.SetJsonStringFromObject(singerState);
+            StateOfRequest mState;
+            if (string.IsNullOrEmpty(singer_state))
+            {
+                mState = new StateOfRequest("SingNo");
+            }
+            else
+            {
+                mState = JsonUtil.GetObjectFromJsonString<StateOfRequest>(singer_state);
+            }
+            mState.StartTime = DateTime.Now;
+            string temp_state = JsonUtil.SetJsonStringFromObject(mState);
 
             if (string.IsNullOrEmpty(sing_no))
             {
@@ -93,7 +117,7 @@ namespace VodManageSystem.Controllers
 
             if (sButton == "CANCEL")
             {
-                temp_state = JsonUtil.SetJsonStringFromObject(singerState);
+                temp_state = JsonUtil.SetJsonStringFromObject(mState);
                 return RedirectToAction(nameof(SingersList), new { singer_state = temp_state });
             }
 
@@ -102,13 +126,13 @@ namespace VodManageSystem.Controllers
             if (searchType == "SINGER_NO")
             {
                 // find one singer by sing_no
-                singerState.OrderBy = "SingNo";
+                mState.OrderBy = "SingNo";
                 singer.SingNo = sing_no;
             }
             else if (searchType == "SINGER_NA")
             {
                 // find one singer by sing_na
-                singerState.OrderBy = "SingNa";
+                mState.OrderBy = "SingNa";
                 singer.SingNa = sing_na;
             }
             else
@@ -117,8 +141,8 @@ namespace VodManageSystem.Controllers
                 return View();
             }
 
-            List<Singer> singersTemp = await _singerManager.FindOnePageOfSingersForOneSinger(singerState, singer, 0);
-            temp_state = JsonUtil.SetJsonStringFromObject(singerState);
+            List<Singer> singersTemp = await _singerManager.FindOnePageOfSingersForOneSinger(mState, singer, 0);
+            temp_state = JsonUtil.SetJsonStringFromObject(mState);
 
             ViewBag.SingerState = temp_state;
             return View(nameof(SingersList), singersTemp);
@@ -140,11 +164,19 @@ namespace VodManageSystem.Controllers
         {
             if (!LoginUtil.CheckIfLoggedIn(HttpContext)) return View(nameof(Index));
 
-            SingerStateOfRequest singerState = JsonUtil.GetObjectFromJsonString<SingerStateOfRequest>(singer_state);
-            singerState.CurrentPageNo = 1;    // go to first page
-            singerState.StartTime = DateTime.Now;
+            StateOfRequest mState;
+            if (string.IsNullOrEmpty(singer_state))
+            {
+                mState = new StateOfRequest("SingNo");
+            }
+            else
+            {
+                mState = JsonUtil.GetObjectFromJsonString<StateOfRequest>(singer_state);
+            }
+            mState.CurrentPageNo = 1;    // go to first page
+            mState.StartTime = DateTime.Now;
 
-            string temp_state = JsonUtil.SetJsonStringFromObject(singerState);
+            string temp_state = JsonUtil.SetJsonStringFromObject(mState);
             return RedirectToAction(nameof(SingersList), new { singer_state = temp_state });
         }
 
@@ -154,11 +186,19 @@ namespace VodManageSystem.Controllers
         {
             if (!LoginUtil.CheckIfLoggedIn(HttpContext)) return View(nameof(Index));
 
-            SingerStateOfRequest singerState = JsonUtil.GetObjectFromJsonString<SingerStateOfRequest>(singer_state);
-            singerState.StartTime = DateTime.Now;
-            // singerState.CurrentPageNo = Int32.MaxValue / singerState.PageSize;  // default  value for View
-            singerState.CurrentPageNo = -1; // present the last page
-            string temp_state = JsonUtil.SetJsonStringFromObject(singerState);
+            StateOfRequest mState;
+            if (string.IsNullOrEmpty(singer_state))
+            {
+                mState = new StateOfRequest("SingNo");
+            }
+            else
+            {
+                mState = JsonUtil.GetObjectFromJsonString<StateOfRequest>(singer_state);
+            }
+            mState.StartTime = DateTime.Now;
+            // mState.CurrentPageNo = Int32.MaxValue / mState.PageSize;  // default  value for View
+            mState.CurrentPageNo = -1; // present the last page
+            string temp_state = JsonUtil.SetJsonStringFromObject(mState);
             return RedirectToAction(nameof(SingersList), new { singer_state = temp_state });
         }
 
@@ -168,11 +208,19 @@ namespace VodManageSystem.Controllers
         {
             if (!LoginUtil.CheckIfLoggedIn(HttpContext)) return View(nameof(Index));
 
-            SingerStateOfRequest singerState = JsonUtil.GetObjectFromJsonString<SingerStateOfRequest>(singer_state);
-            singerState.StartTime = DateTime.Now;
-            singerState.CurrentPageNo--;    // go to previous page
+            StateOfRequest mState;
+            if (string.IsNullOrEmpty(singer_state))
+            {
+                mState = new StateOfRequest("SingNo");
+            }
+            else
+            {
+                mState = JsonUtil.GetObjectFromJsonString<StateOfRequest>(singer_state);
+            }
+            mState.StartTime = DateTime.Now;
+            mState.CurrentPageNo--;    // go to previous page
 
-            string temp_state = JsonUtil.SetJsonStringFromObject(singerState);
+            string temp_state = JsonUtil.SetJsonStringFromObject(mState);
             return RedirectToAction(nameof(SingersList), new { singer_state = temp_state });
         }
 
@@ -182,11 +230,19 @@ namespace VodManageSystem.Controllers
         {
             if (!LoginUtil.CheckIfLoggedIn(HttpContext)) return View(nameof(Index));
 
-            SingerStateOfRequest singerState = JsonUtil.GetObjectFromJsonString<SingerStateOfRequest>(singer_state);
-            singerState.StartTime = DateTime.Now;
-            singerState.CurrentPageNo++;    // go to next page
+            StateOfRequest mState;
+            if (string.IsNullOrEmpty(singer_state))
+            {
+                mState = new StateOfRequest("SingNo");
+            }
+            else
+            {
+                mState = JsonUtil.GetObjectFromJsonString<StateOfRequest>(singer_state);
+            }
+            mState.StartTime = DateTime.Now;
+            mState.CurrentPageNo++;    // go to next page
 
-            string temp_state = JsonUtil.SetJsonStringFromObject(singerState);
+            string temp_state = JsonUtil.SetJsonStringFromObject(mState);
             return RedirectToAction(nameof(SingersList), new { singer_state = temp_state });
         }
 
@@ -198,7 +254,7 @@ namespace VodManageSystem.Controllers
 
             Singer singer = new Singer(); // create a new Singer object
 
-            List<SelectListItem> singareaSelectList = await _singareaManager.GetSelectListOfSingareas(new SingareaStateOfRequest());
+            List<SelectListItem> singareaSelectList = await _singareaManager.GetSelectListOfSingareas(new StateOfRequest("AreaNa"));
 
             ViewBag.SingareaList = singareaSelectList;
             ViewBag.SingerState = singer_state; // pass the Json string to View
@@ -213,17 +269,25 @@ namespace VodManageSystem.Controllers
         {
             if (!LoginUtil.CheckIfLoggedIn(HttpContext)) return View(nameof(Index));
 
-            SingerStateOfRequest singerState = JsonUtil.GetObjectFromJsonString<SingerStateOfRequest>(singer_state);
-            singerState.StartTime = DateTime.Now;
-            string temp_state = JsonUtil.SetJsonStringFromObject(singerState);
+            StateOfRequest mState;
+            if (string.IsNullOrEmpty(singer_state))
+            {
+                mState = new StateOfRequest("SingNo");
+            }
+            else
+            {
+                mState = JsonUtil.GetObjectFromJsonString<StateOfRequest>(singer_state);
+            }
+            mState.StartTime = DateTime.Now;
+            string temp_state = JsonUtil.SetJsonStringFromObject(mState);
 
-            int orgId = singerState.OrgId;
+            int orgId = mState.OrgId;
             string sButton = submitbutton.ToUpper();
             if (sButton == "CANCEL")
             {
                 Singer newSinger = new Singer();
-                List<Singer> singersTemp = await _singerManager.FindOnePageOfSingersForOneSinger(singerState, newSinger, orgId);
-                temp_state = JsonUtil.SetJsonStringFromObject(singerState);
+                List<Singer> singersTemp = await _singerManager.FindOnePageOfSingersForOneSinger(mState, newSinger, orgId);
+                temp_state = JsonUtil.SetJsonStringFromObject(mState);
 
                 ViewBag.SingerState = temp_state;
                 return View(nameof(SingersList), singersTemp);
@@ -234,10 +298,10 @@ namespace VodManageSystem.Controllers
                 if (result == ErrorCodeModel.Succeeded)
                 {
                     // succeeded to add the singer
-                    singerState.OrgId = singer.Id;
-                    singerState.OrgSingNo = singer.SingNo;
+                    mState.OrgId = singer.Id;
+                    mState.OrgNo = singer.SingNo;
 
-                    temp_state = JsonUtil.SetJsonStringFromObject(singerState);
+                    temp_state = JsonUtil.SetJsonStringFromObject(mState);
                     return RedirectToAction(nameof(Add), new { singer_state = temp_state });
                 }
                 else
@@ -260,9 +324,16 @@ namespace VodManageSystem.Controllers
         {
             if (!LoginUtil.CheckIfLoggedIn(HttpContext)) return View(nameof(Index));
 
-            SingerStateOfRequest singerState = JsonUtil.GetObjectFromJsonString<SingerStateOfRequest>(singer_state);
-
-            int id = singerState.OrgId;
+            StateOfRequest mState;
+            if (string.IsNullOrEmpty(singer_state))
+            {
+                mState = new StateOfRequest("SingNo");
+            }
+            else
+            {
+                mState = JsonUtil.GetObjectFromJsonString<StateOfRequest>(singer_state);
+            }
+            int id = mState.OrgId;
             Singer singer = await _singerManager.FindOneSingerById(id);
 
             if (singer == null)
@@ -272,11 +343,11 @@ namespace VodManageSystem.Controllers
             }
             else
             {
-                singerState.OrgId = singer.Id;
-                singerState.OrgSingNo = singer.SingNo;
-                string temp_state = JsonUtil.SetJsonStringFromObject(singerState);
+                mState.OrgId = singer.Id;
+                mState.OrgNo = singer.SingNo;
+                string temp_state = JsonUtil.SetJsonStringFromObject(mState);
 
-                List<SelectListItem> singareaSelectList = await _singareaManager.GetSelectListOfSingareas(new SingareaStateOfRequest());
+                List<SelectListItem> singareaSelectList = await _singareaManager.GetSelectListOfSingareas(new StateOfRequest("AreaNo"));
 
                 ViewBag.SingareaList = singareaSelectList;
                 ViewBag.SingerState = temp_state;
@@ -291,15 +362,23 @@ namespace VodManageSystem.Controllers
         {
             if (!LoginUtil.CheckIfLoggedIn(HttpContext)) return View(nameof(Index));
 
-            SingerStateOfRequest singerState = JsonUtil.GetObjectFromJsonString<SingerStateOfRequest>(singer_state);
-            singerState.StartTime = DateTime.Now;
-            string temp_state = JsonUtil.SetJsonStringFromObject(singerState);
+            StateOfRequest mState;
+            if (string.IsNullOrEmpty(singer_state))
+            {
+                mState = new StateOfRequest("SingNo");
+            }
+            else
+            {
+                mState = JsonUtil.GetObjectFromJsonString<StateOfRequest>(singer_state);
+            }
+            mState.StartTime = DateTime.Now;
+            string temp_state = JsonUtil.SetJsonStringFromObject(mState);
 
-            int orgId = singerState.OrgId;    // = singer.Id
+            int orgId = mState.OrgId;    // = singer.Id
             string sButton = submitbutton.ToUpper();
             if (sButton == "CANCEL")
             {
-                temp_state = JsonUtil.SetJsonStringFromObject(singerState);
+                temp_state = JsonUtil.SetJsonStringFromObject(mState);
                 return RedirectToAction(nameof(SingersList), new { singer_state = temp_state });
             }
             if (ModelState.IsValid)
@@ -313,8 +392,8 @@ namespace VodManageSystem.Controllers
                 {
                     // succeeded to update
                     Singer newSinger = new Singer();
-                    List<Singer> singersTemp = await _singerManager.FindOnePageOfSingersForOneSinger(singerState, newSinger, orgId);
-                    temp_state = JsonUtil.SetJsonStringFromObject(singerState);
+                    List<Singer> singersTemp = await _singerManager.FindOnePageOfSingersForOneSinger(mState, newSinger, orgId);
+                    temp_state = JsonUtil.SetJsonStringFromObject(mState);
 
                     ViewBag.SingerState = temp_state;
                     return View(nameof(SingersList), singersTemp);
@@ -339,8 +418,16 @@ namespace VodManageSystem.Controllers
         {
             if (!LoginUtil.CheckIfLoggedIn(HttpContext)) return View(nameof(Index));
 
-            SingerStateOfRequest singerState = JsonUtil.GetObjectFromJsonString<SingerStateOfRequest>(singer_state);
-            int id = singerState.OrgId;
+            StateOfRequest mState;
+            if (string.IsNullOrEmpty(singer_state))
+            {
+                mState = new StateOfRequest("SingNo");
+            }
+            else
+            {
+                mState = JsonUtil.GetObjectFromJsonString<StateOfRequest>(singer_state);
+            }
+            int id = mState.OrgId;
             Singer singer = await _singerManager.FindOneSingerById(id);
 
             if (singer == null)
@@ -350,11 +437,11 @@ namespace VodManageSystem.Controllers
             }
             else
             {
-                singerState.OrgId = id;
-                singerState.OrgSingNo = singer.SingNo;
-                string temp_state = JsonUtil.SetJsonStringFromObject(singerState);
+                mState.OrgId = id;
+                mState.OrgNo = singer.SingNo;
+                string temp_state = JsonUtil.SetJsonStringFromObject(mState);
 
-                List<SelectListItem> singareaSelectList = await _singareaManager.GetSelectListOfSingareas(new SingareaStateOfRequest());
+                List<SelectListItem> singareaSelectList = await _singareaManager.GetSelectListOfSingareas(new StateOfRequest("AreaNa"));
 
                 ViewBag.SingareaList = singareaSelectList;
                 ViewBag.SingerState = temp_state;
@@ -369,15 +456,23 @@ namespace VodManageSystem.Controllers
         {
             if (!LoginUtil.CheckIfLoggedIn(HttpContext)) return View(nameof(Index));
 
-            SingerStateOfRequest singerState = JsonUtil.GetObjectFromJsonString<SingerStateOfRequest>(singer_state);
-            singerState.StartTime = DateTime.Now;
-            string temp_state = JsonUtil.SetJsonStringFromObject(singerState);
+            StateOfRequest mState;
+            if (string.IsNullOrEmpty(singer_state))
+            {
+                mState = new StateOfRequest("SingNo");
+            }
+            else
+            {
+                mState = JsonUtil.GetObjectFromJsonString<StateOfRequest>(singer_state);
+            }
+            mState.StartTime = DateTime.Now;
+            string temp_state = JsonUtil.SetJsonStringFromObject(mState);
 
-            int orgId = singerState.OrgId;
+            int orgId = mState.OrgId;
             string sButton = submitbutton.ToUpper();
             if (sButton == "CANCEL")
             {
-                temp_state = JsonUtil.SetJsonStringFromObject(singerState);
+                temp_state = JsonUtil.SetJsonStringFromObject(mState);
                 return RedirectToAction(nameof(SingersList), new { singer_state = temp_state });
             }
 
@@ -388,8 +483,8 @@ namespace VodManageSystem.Controllers
                 if (result == ErrorCodeModel.Succeeded)
                 {
                     // succeeded to delete a singer
-                    List<Singer> singersTemp = await _singerManager.FindOnePageOfSingersForOneSinger(singerState, singer, 0);
-                    temp_state = JsonUtil.SetJsonStringFromObject(singerState);
+                    List<Singer> singersTemp = await _singerManager.FindOnePageOfSingersForOneSinger(mState, singer, 0);
+                    temp_state = JsonUtil.SetJsonStringFromObject(mState);
 
                     ViewBag.SingerState = temp_state;
                     return View(nameof(SingersList), singersTemp);
@@ -415,8 +510,16 @@ namespace VodManageSystem.Controllers
         {
             if (!LoginUtil.CheckIfLoggedIn(HttpContext)) return View(nameof(Index));
 
-            SingerStateOfRequest singerState = JsonUtil.GetObjectFromJsonString<SingerStateOfRequest>(singer_state);
-            Singer singer = await _singerManager.FindOneSingerById(singerState.OrgId);
+            StateOfRequest mState;
+            if (string.IsNullOrEmpty(singer_state))
+            {
+                mState = new StateOfRequest("SingNo");
+            }
+            else
+            {
+                mState = JsonUtil.GetObjectFromJsonString<StateOfRequest>(singer_state);
+            }
+            Singer singer = await _singerManager.FindOneSingerById(mState.OrgId);
 
             if (singer == null)
             {
@@ -425,11 +528,11 @@ namespace VodManageSystem.Controllers
             }
             else
             {
-                singerState.OrgId = singer.Id;
-                singerState.OrgSingNo = singer.SingNo;
-                string temp_state = JsonUtil.SetJsonStringFromObject(singerState);
+                mState.OrgId = singer.Id;
+                mState.OrgNo = singer.SingNo;
+                string temp_state = JsonUtil.SetJsonStringFromObject(mState);
 
-                List<SelectListItem> singareaSelectList = await _singareaManager.GetSelectListOfSingareas(new SingareaStateOfRequest());
+                List<SelectListItem> singareaSelectList = await _singareaManager.GetSelectListOfSingareas(new StateOfRequest("AreaNo"));
 
                 ViewBag.SingareaList = singareaSelectList;
                 ViewBag.SingerState = temp_state;
@@ -443,13 +546,21 @@ namespace VodManageSystem.Controllers
         {
             if (!LoginUtil.CheckIfLoggedIn(HttpContext)) return View(nameof(Index));
 
-            SingerStateOfRequest singerState = JsonUtil.GetObjectFromJsonString<SingerStateOfRequest>(singer_state);
-            singerState.StartTime = DateTime.Now;
+            StateOfRequest mState;
+            if (string.IsNullOrEmpty(singer_state))
+            {
+                mState = new StateOfRequest("SingNo");
+            }
+            else
+            {
+                mState = JsonUtil.GetObjectFromJsonString<StateOfRequest>(singer_state);
+            }
+            mState.StartTime = DateTime.Now;
 
-            int orgId = singerState.OrgId;
+            int orgId = mState.OrgId;
             Singer singer = new Singer();
-            List<Singer> singersTemp = await _singerManager.FindOnePageOfSingersForOneSinger(singerState, singer, orgId);
-            string temp_state = JsonUtil.SetJsonStringFromObject(singerState);
+            List<Singer> singersTemp = await _singerManager.FindOnePageOfSingersForOneSinger(mState, singer, orgId);
+            string temp_state = JsonUtil.SetJsonStringFromObject(mState);
 
             ViewBag.SingerState = temp_state;
             return View(nameof(SingersList), singersTemp);
@@ -461,26 +572,34 @@ namespace VodManageSystem.Controllers
         {
             if (!LoginUtil.CheckIfLoggedIn(HttpContext)) return View(nameof(Index));
 
-            SingerStateOfRequest singerState = JsonUtil.GetObjectFromJsonString<SingerStateOfRequest>(singer_state);
-            singerState.StartTime = DateTime.Now;
-
-            int orgId = 0;
-            if (singerState.OrgId == 0)
+            StateOfRequest mState;
+            if (string.IsNullOrEmpty(singer_state))
             {
-                // no singer found or selected in this page
-                // then use the first singer of this page
-                orgId = singerState.FirstId;
+                mState = new StateOfRequest("SingNo");
             }
             else
             {
-                orgId = singerState.OrgId;
+                mState = JsonUtil.GetObjectFromJsonString<StateOfRequest>(singer_state);
+            }
+            mState.StartTime = DateTime.Now;
+
+            int orgId = 0;
+            if (mState.OrgId == 0)
+            {
+                // no singer found or selected in this page
+                // then use the first singer of this page
+                orgId = mState.FirstId;
+            }
+            else
+            {
+                orgId = mState.OrgId;
             }
 
             if (orgId != 0)
             {
                 Singer singer = new Singer();
-                List<Singer> singersTemp = await _singerManager.FindOnePageOfSingersForOneSinger(singerState, singer, orgId);
-                string temp_state = JsonUtil.SetJsonStringFromObject(singerState);
+                List<Singer> singersTemp = await _singerManager.FindOnePageOfSingersForOneSinger(mState, singer, orgId);
+                string temp_state = JsonUtil.SetJsonStringFromObject(mState);
 
                 ViewBag.SingerState = temp_state;
                 return View(nameof(SingersList), singersTemp);
