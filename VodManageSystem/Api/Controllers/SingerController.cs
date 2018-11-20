@@ -73,6 +73,35 @@ namespace VodManageSystem.Api.Controllers
             return returnJSON.ToString();
         }
 
+        // GET api/values/10/1
+        [HttpGet("{pageSize}/{pageNo}")]
+        public async Task<string> Get(int pageSize, int pageNo)
+        {
+            Console.WriteLine("HttpGet[\"{ pageSize}/{ pageNo}\")]");
+
+            StateOfRequest mState = new StateOfRequest("");
+            mState.PageSize = pageSize;
+            mState.CurrentPageNo = pageNo;
+            // mState.OrderBy = orderByParam;
+            List<Singer> singers = await _singerManager.GetOnePageOfSingers(mState);
+
+            JObject jObjectForAll = new JObject();
+            jObjectForAll.Add("pageNo", mState.CurrentPageNo);
+            jObjectForAll.Add("pageSize", mState.PageSize);
+            jObjectForAll.Add("totalRecords", mState.TotalRecords);
+            jObjectForAll.Add("totalPages", mState.TotalPages);
+            JObject jObject;
+            JArray jArray = new JArray();
+            foreach (var singer in singers)
+            {
+                jObject = ConvertSingerToJsongObject(singer);
+                jArray.Add(jObject);
+            }
+            jObjectForAll.Add("singers", jArray);
+
+            return jObjectForAll.ToString();
+        }
+
         // GET api/values/10/1/orderBy
         [HttpGet("{pageSize}/{pageNo}/{orderBy}")]
         public async Task<string> Get(int pageSize, int pageNo, string orderBy) {
@@ -80,25 +109,18 @@ namespace VodManageSystem.Api.Controllers
 
             // orderBy is either "SingNo" or "SingNa"
             string orderByParam;
-            if (string.IsNullOrEmpty(orderBy))
+            string orderByTemp = orderBy.ToUpper();
+            if (orderByTemp == "SINGNO")
             {
-                orderByParam = "SingNo"; // default value is "SingNo"
+                orderByParam = "SingNo";
+            }
+            else if (orderByTemp == "SINGNA")
+            {
+                orderByParam = "SingNa";
             }
             else
             {
-                string orderByTemp = orderBy.ToUpper();
-                if (orderByTemp == "SINGNO")
-                {
-                    orderByParam = "SingNo";
-                }
-                else if (orderByTemp == "SINGNA")
-                {
-                    orderByParam = "SingNa";
-                }
-                else
-                {
-                    orderByParam = "SingNo";
-                }
+                orderByParam = "ReturnEmptyList";  // has to return empty list
             }
 
             StateOfRequest mState = new StateOfRequest(orderByParam);
