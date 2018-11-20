@@ -51,13 +51,8 @@ namespace VodManageSystem.Models.Dao
             {
                 return new List<Singarea>();
             }
-            if (string.IsNullOrEmpty(mState.OrderBy))
-            {
-                // default is order by Singarea's No
-                mState.OrderBy = "AreaNo";
-            }
 
-            var singareasList = _context.Singarea.Where(x => x.Id == 0);
+            var singareasList = _context.Singarea.Where(x => x.Id == -1);
             if (mState.OrderBy == "AreaNo")
             {
                 singareasList = _context.Singarea.OrderBy(x => x.AreaNo);
@@ -66,9 +61,13 @@ namespace VodManageSystem.Models.Dao
             {
                 singareasList = _context.Singarea.OrderBy(x => x.AreaNa).ThenBy(x => x.AreaNo);
             }
-            else
+            else if (mState.OrderBy == "")
             {
                 singareasList = _context.Singarea;
+            }
+            else
+            {
+                // invalid order by then return empty list
             }
 
             int pageNo = mState.CurrentPageNo;

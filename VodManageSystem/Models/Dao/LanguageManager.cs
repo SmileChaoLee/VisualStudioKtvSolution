@@ -49,13 +49,8 @@ namespace VodManageSystem.Models.Dao
             {
                 return new List<Language>();
             }
-            if (string.IsNullOrEmpty(mState.OrderBy))
-            {
-                // default is order by language's No
-                mState.OrderBy = "LangNo";
-            }
 
-            var languagesList = _context.Language.Where(x => x.Id == 0);
+            var languagesList = _context.Language.Where(x => x.Id == -1);
             if (mState.OrderBy == "LangNo")
             {
                 languagesList = _context.Language.OrderBy(x => x.LangNo);
@@ -64,9 +59,13 @@ namespace VodManageSystem.Models.Dao
             {
                 languagesList = _context.Language.OrderBy(x => x.LangNa).ThenBy(x => x.LangNo);
             }
-            else
+            else if (mState.OrderBy == "")
             {
                 languagesList = _context.Language;
+            }
+            else
+            {
+                // invalid order by then return empty list
             }
 
             int pageNo = mState.CurrentPageNo;

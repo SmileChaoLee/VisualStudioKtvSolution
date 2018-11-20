@@ -73,13 +73,7 @@ namespace VodManageSystem.Models.Dao
                 return new List<Singer>();
             }
 
-            if (string.IsNullOrEmpty(mState.OrderBy))
-            {
-                // default is order by singer's No
-                mState.OrderBy = "SingNo";
-            }
-
-            var singersList = _context.Singer.Where(x => x.Id == 0);
+            var singersList = _context.Singer.Where(x => x.Id == -1);
             if (mState.OrderBy == "SingNo")
             {
                 singersList = _context.Singer.Include(x => x.Singarea)
@@ -90,9 +84,13 @@ namespace VodManageSystem.Models.Dao
                 singersList = _context.Singer.Include(x => x.Singarea)
                                       .OrderBy(x => x.SingNa).ThenBy(x => x.SingNo);
             }
-            else
+            else if (mState.OrderBy == "")
             {
                 singersList = _context.Singer.Include(x => x.Singarea);
+            }
+            else
+            {
+                // invalid order by then return empty list
             }
 
             int pageNo = mState.CurrentPageNo;
