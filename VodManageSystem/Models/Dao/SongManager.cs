@@ -30,6 +30,7 @@ namespace VodManageSystem.Models.Dao
             _context = context;
         }
 
+        /*
         // private methods
         /// <summary>
         /// Copies the song from exist one.
@@ -46,7 +47,7 @@ namespace VodManageSystem.Models.Dao
                 {
                     existSong.Language = lang;
                     existSong.LangNo = lang.LangNo;
-                    existSong.LangNa = lang.LangNa;
+                    // existSong.LangNa = lang.LangNa;
                 }
                 Singer sing1 = await _context.Singer.Where(x=>x.Id==existSong.Singer1Id).SingleOrDefaultAsync();
                 if (sing1 != null)
@@ -65,6 +66,7 @@ namespace VodManageSystem.Models.Dao
                 song.CopyFrom(existSong);
             }
         }
+        */
 
         /// <summary>
         /// Verifies the song.
@@ -74,29 +76,26 @@ namespace VodManageSystem.Models.Dao
         private async Task<int> VerifySong(Song song)
         {
             int result = 1; // valid by verification 
-            if (string.IsNullOrEmpty(song.LangNo))
+            if (song.LanguageId >= 0)
             {
-                // language no. has to be specified
-                result = ErrorCodeModel.LanguageNoIsEmpty;
-                return result;
-            }
-            else
-            {
-                Language lang = await _context.Language.Where(x => x.LangNo == song.LangNo).SingleOrDefaultAsync();
-                if (lang != null)
+                Language lang = await _context.Language.Where(x => x.Id == song.LanguageId).SingleOrDefaultAsync();
+                if (lang == null)
                 {
-                    song.LanguageId = lang.Id;
-                }
-                else
-                {
-                    // no Language.LangNo found
+                    // no Language.Id found
                     result = ErrorCodeModel.LanguageNoNotFound;
                     return result;
                 }
+                song.LanguageId = lang.Id;
             }
-            if (!string.IsNullOrEmpty(song.Singer1No))
+            else
             {
-                Singer sing1 = await _context.Singer.Where(x => x.SingNo == song.Singer1No).SingleOrDefaultAsync();
+                // language id. has to be specified
+                result = ErrorCodeModel.LanguageIdIsSpecified;
+                return result;
+            }
+            if (song.Singer1Id >= 0)
+            {
+                Singer sing1 = await _context.Singer.Where(x => x.Id == song.Singer1Id).SingleOrDefaultAsync();
                 if (sing1 == null)
                 {
                     // no Singer.SingNo for singer1 found
@@ -107,17 +106,17 @@ namespace VodManageSystem.Models.Dao
             }
             else
             {
-                // no Singer.SingNo for singer1 found
-                result = ErrorCodeModel.Singer1NoNotFound;
+                // song.Singer1Id not specified
+                result = ErrorCodeModel.Singer1IdIsNotSpecified;
                 return result;
             }
-            if (!string.IsNullOrEmpty(song.Singer2No))
+            if (song.Singer2Id >= 0)
             {
-                Singer sing2 = await _context.Singer.Where(x => x.SingNo == song.Singer2No).SingleOrDefaultAsync();
+                Singer sing2 = await _context.Singer.Where(x => x.Id == song.Singer2Id).SingleOrDefaultAsync();
                 if (sing2 == null)
                 {
-                    // no Singer.SingNo for singer2 found
-                    result = ErrorCodeModel.Singer2NoNotFound;
+                    // song.Singer2Id not specified
+                    result = ErrorCodeModel.Singer2IdIsNotSpecified;
                     return result;
                 }
                 song.Singer2Id = sing2.Id;
@@ -147,6 +146,36 @@ namespace VodManageSystem.Models.Dao
             return result;
         }
 
+        /*
+        private void SetExtendedValues(Song song)
+        {
+            if (song != null)
+            {
+                // store extended values associated with this song
+                song.LangNo = "";
+                song.LangNa = "";
+                if (song.Language != null)
+                {
+                    song.LangNo = song.Language.LangNo;
+                    song.LangNa = song.Language.LangNa;
+                }
+                song.Singer1No = "";
+                song.Singer1Na = "";
+                if (song.Singer1 != null)
+                {
+                    song.Singer1No = song.Singer1.SingNo;
+                    song.Singer1Na = song.Singer1.SingNa;
+                }
+                song.Singer2No = "";
+                song.Singer2Na = "";
+                if (song.Singer2 != null)
+                {
+                    song.Singer2No = song.Singer2.SingNo;
+                    song.Singer2Na = song.Singer2.SingNa;
+                }
+            }
+        }
+        */
         // end of private methods
 
         // public methods
@@ -514,7 +543,7 @@ namespace VodManageSystem.Models.Dao
                 }
                 else if (mState.OrderBy == "LangSongNa")
                 {
-                    string lang_no = song.LangNo;
+                    string lang_no = song.Language.LangNo;
                     string song_na = song.SongNa;
                     songWithIndex = songsDictionary.Where( x => {
                             bool YN = true;
@@ -534,7 +563,7 @@ namespace VodManageSystem.Models.Dao
                 }
                 else if (mState.OrderBy == "Singer1Na")
                 {
-                    string singer1Na = song.Singer1Na;
+                    string singer1Na = song.Singer1.SingNa;
                     songWithIndex = songsDictionary.Where( x => {
                             bool YN = true;
                             if (!string.IsNullOrEmpty(singer1Na))
@@ -553,7 +582,7 @@ namespace VodManageSystem.Models.Dao
                 }
                 else if (mState.OrderBy == "Singer2Na")
                 {
-                    string singer2Na = song.Singer2Na;
+                    string singer2Na = song.Singer2.SingNa;
                     songWithIndex = songsDictionary.Where( x => {
                             bool YN = true;
                             if (!string.IsNullOrEmpty(singer2Na))
@@ -644,31 +673,7 @@ namespace VodManageSystem.Models.Dao
         {
             Song song = await _context.Song.Where(x=>x.SongNo == song_no).Include(x=>x.Language)
                             .Include(x=>x.Singer1).Include(x=>x.Singer2).SingleOrDefaultAsync();
-                if (song != null)
-                {
-                    // store other values associated with this song
-                    song.LangNo = "";
-                    song.LangNa = "";
-                    if (song.Language != null)
-                    {
-                        song.LangNo = song.Language.LangNo;
-                        song.LangNa = song.Language.LangNa;
-                    }
-                    song.Singer1No = "";
-                    song.Singer1Na = "";
-                    if (song.Singer1 != null)
-                    {
-                        song.Singer1No = song.Singer1.SingNo;
-                        song.Singer1Na = song.Singer1.SingNa;
-                    }
-                    song.Singer2No = "";
-                    song.Singer2Na = "";
-                    if (song.Singer2 != null)
-                    {
-                        song.Singer2No = song.Singer2.SingNo;
-                        song.Singer2Na = song.Singer2.SingNa;
-                    }
-                }
+            // SetExtendedValues(song);
 
             return song;
         }
@@ -680,36 +685,10 @@ namespace VodManageSystem.Models.Dao
         /// <param name="id">the id of the song.</param>
         public async Task<Song> FindOneSongById(int id)
         {
-            Song song = null;
-                // find a song from context
-            song = await _context.Song.Where(x=>x.Id == id).Include(x=>x.Language)
+            // find a song from context
+            Song song = await _context.Song.Where(x=>x.Id == id).Include(x=>x.Language)
                         .Include(x=>x.Singer1).Include(x=>x.Singer2).SingleOrDefaultAsync();
-            
-            if (song != null)
-            {
-                // store other values associated with this song
-                song.LangNo = "";
-                song.LangNa = "";
-                if (song.Language != null)
-                {
-                    song.LangNo = song.Language.LangNo;
-                    song.LangNa = song.Language.LangNa;
-                }
-                song.Singer1No = "";
-                song.Singer1Na = "";
-                if (song.Singer1 != null)
-                {
-                    song.Singer1No = song.Singer1.SingNo;
-                    song.Singer1Na = song.Singer1.SingNa;
-                }
-                song.Singer2No = "";
-                song.Singer2Na = "";
-                if (song.Singer2 != null)
-                {
-                    song.Singer2No = song.Singer2.SingNo;
-                    song.Singer2Na = song.Singer2.SingNa;
-                }
-            }
+            // SetExtendedValues(song);
 
             return song;
         }
@@ -816,23 +795,6 @@ namespace VodManageSystem.Models.Dao
                 }
                 else
                 {
-                    /*
-                    orgSong.SongNo = song.SongNo;
-                    orgSong.SongNa = song.SongNa;
-                    orgSong.MMpeg = song.MMpeg;
-                    orgSong.NMpeg = song.NMpeg;
-                    orgSong.NumFw = song.NumFw;
-                    orgSong.NumPw = song.NumPw;
-                    orgSong.Chor = song.Chor;
-                    orgSong.VodYn = song.VodYn;
-                    orgSong.VodNo = song.VodNo;
-                    orgSong.Pathname = song.Pathname;
-                    orgSong.InDate = song.InDate;
-                    orgSong.LangNo = song.LangNo;
-                    orgSong.Singer1No = song.Singer1No;
-                    orgSong.Singer2No = song.Singer2No;
-                    */
-
                     orgSong.CopyColumnsFrom(song);
                     
                     // verifying the validation for Song data

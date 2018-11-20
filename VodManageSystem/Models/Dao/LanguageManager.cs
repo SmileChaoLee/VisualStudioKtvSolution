@@ -183,7 +183,8 @@ namespace VodManageSystem.Models.Dao
                 selectList.Add(new SelectListItem
                 {
                     Text = lang.LangNa,
-                    Value = lang.LangNo
+                    // Value = lang.LangNo
+                    Value = Convert.ToString(lang.Id)
                 });
             }
             return selectList;

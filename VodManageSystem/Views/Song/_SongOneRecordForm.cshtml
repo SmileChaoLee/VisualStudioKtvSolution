@@ -4,14 +4,6 @@
 @using System
 @using Microsoft.AspNetCore.Html
 
-@*
-    @foreach (SelectListItem item in ViewBag.LanguageList)
-    {
-        @item.Text
-        @item.Value
-    }
-*@
-
 <link rel="stylesheet" style="text/css" href="~/css/OneRecordStyle.css" />
 
 <form id="OneSongForm" asp-controller="Song" asp-action="@ViewBag.Action" method="post">
@@ -40,13 +32,7 @@
         <tr>
             <td class="labelname">Language</td>
             <td>
-                <!--
-                <input asp-for="LangNo" maxlength="2" style="width:100px;"/>
-                <span asp-validation-for="LangNo" class="text-danger"></span>
-                <span>@Html.DisplayFor(model=>model.Language.LangNa)</span>
-                -->
-                <!-- select asp-for="LangNo" asp-items="@ViewBag.LanguageList" style="width:100px;" / -->
-                <select asp-for="LangNo" asp-items="@ViewBag.LanguageList"></select>
+                <select asp-for="LanguageId" asp-items="@ViewBag.LanguageList"></select>
             </td>
             <td class="labelname">Num_Of_word</td>
             <td>
@@ -69,21 +55,11 @@
         <tr>
             <td class="labelname">Singer1 No.</td>
             <td>
-                <!--
-                <input asp-for="Singer1No" maxlength="5" style="width:100px;"/>
-                <span asp-validation-for="Singer1No" class="text-danger"></span>
-                <span>@Html.DisplayFor(model=>model.Singer1.SingNa)</span>
-                -->
-                <select asp-for="Singer1No" asp-items="@ViewBag.SingerList"></select>
+                <select asp-for="Singer1Id" asp-items="@ViewBag.SingerList"></select>
             </td>
             <td class="labelname">Singer 2</td>
             <td>
-                <!--
-                <input asp-for="Singer2No" maxlength="5" style="width:100px;"/>
-                <span asp-validation-for="Singer2No" class="text-danger"></span>
-                <span>@Html.DisplayFor(model=>model.Singer2.SingNa)</span>
-                -->
-                <select asp-for="Singer2No" asp-items="@ViewBag.SingerList"></select>
+                <select asp-for="Singer2Id" asp-items="@ViewBag.SingerList"></select>
             </td>
         </tr>
         <tr>

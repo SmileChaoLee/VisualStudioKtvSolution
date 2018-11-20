@@ -22,11 +22,11 @@ namespace VodManageSystem.Models.DataModels
             NumFw = 0;      // the behua of the first word of the song
             NumPw = "A";    // the pinyin of the first word of the song 
             LanguageId = 1;
-            LangNo = "01";   // for madarin song
+            // LangNo = "01";   // for madarin song
             Singer1Id = 0;
-            Singer1No = "09201"; // singer is unknown. for the first singer
+            // Singer1No = "09201"; // singer is unknown. for the first singer
             Singer2Id = 0;
-            Singer2No = "09201"; // singer is unknown. for the second singer
+            // Singer2No = "09201"; // singer is unknown. for the second singer
             Chor = "N";     // default
             MMpeg = "12";
             NMpeg = "11";
@@ -54,6 +54,7 @@ namespace VodManageSystem.Models.DataModels
             NumPw = song.NumPw;
             SeleTf = song.SeleTf;
 
+            /*
             LanguageId = song.LanguageId;
             if (song.Language != null)
             {
@@ -74,6 +75,7 @@ namespace VodManageSystem.Models.DataModels
                 song.Singer2No = song.Singer2.SingNo;
             }
             Singer2No = song.Singer2No;
+            */
 
             Chor = song.Chor;
             MMpeg = song.MMpeg;
@@ -86,6 +88,11 @@ namespace VodManageSystem.Models.DataModels
             OrdNo = song.OrdNo;
             OrdOldN = song.OrdOldN;
             OrderNum = song.OrderNum;
+
+            // the tables that relating to song
+            LanguageId = song.LanguageId;
+            Singer1Id = song.Singer1Id;
+            Singer2Id = song.Singer2Id;
         }
 
         /// <summary>
@@ -109,42 +116,42 @@ namespace VodManageSystem.Models.DataModels
         /// Gets lang_no of the language.
         /// </summary>
         /// <value>The value of the lang_no.</value>
-        [NotMapped]
-        public string LangNo { get; set; }
+        // [NotMapped]
+        // public string LangNo { get; set; }
 
         /// <summary>
         /// Gets lang_na of the language.
         /// </summary>
         /// <value>The value of the lang_na.</value>
-        [NotMapped]
-        public string LangNa { get; set; }
+        // [NotMapped]
+        // public string LangNa { get; set; }
 
         /// <summary>
         /// Gets the sing_no of the first singer
         /// </summary>
         /// <value>The value of sing_no.</value>
-        [NotMapped]
-        public string Singer1No { get; set; }
+        // [NotMapped]
+        // public string Singer1No { get; set; }
 
         /// <summary>
         /// Gets the sing_na of the first singer
         /// </summary>
         /// <value>The value of sing_na.</value>
-        [NotMapped]
-        public string Singer1Na { get; set; }
+        // [NotMapped]
+        // public string Singer1Na { get; set; }
 
         /// <summary>
         /// the name sing_no of the second singer.
         /// </summary>
         /// <value>The value of the sing_no.</value>
-        [NotMapped]
-        public string Singer2No { get; set; }
+        // [NotMapped]
+        // public string Singer2No { get; set; }
 
         /// <summary>
         /// the name sing_na of the second singer.
         /// </summary>
         /// <value>The value of the sing_na.</value>
-        [NotMapped]
-        public string Singer2Na { get; set; }
+        // [NotMapped]
+        // public string Singer2Na { get; set; }
     }
 }

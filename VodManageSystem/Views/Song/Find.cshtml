@@ -1,5 +1,4 @@
-﻿@model VodManageSystem.Models.DataModels.Language
-@using VodManageSystem.Utilities
+﻿@using VodManageSystem.Utilities
 @using Microsoft.AspNetCore.Html
 
 @{
@@ -104,8 +103,9 @@
             <label class="radio">Language+Song Name</label>
             <form asp-area="" asp-controller="Song" asp-action="Find" method="POST" data-search='lang_songna'>
                 <label >Language:
-                    <select id="langSelect" name="lang_no" asp-items="@ViewBag.LanguageList"></select>
+                <select name="languageId" asp-items="@ViewBag.LanguageList"></select>
                     @*
+                    <select id="langSelect" name="lang_no" asp-items="@ViewBag.LanguageList"></select>
                     <!-- use jQuery to do the dropdown list (function in script block) -->
                     <select id="langSelect" name="lang_no"></select>
 

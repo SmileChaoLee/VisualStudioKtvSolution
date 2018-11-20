@@ -211,7 +211,7 @@ namespace VodManageSystem.Models.Dao
                 selectList.Add(new SelectListItem
                 {
                     Text = sing.SingNa,
-                    Value = sing.SingNo
+                    Value = Convert.ToString(sing.Id)
                 });
             }
             return selectList;
@@ -473,13 +473,13 @@ namespace VodManageSystem.Models.Dao
                 {
                     string sing_no = singer.SingNo;
                     singerWithIndex = singersDictionary
-                        .Where(x=>(String.Compare(x.Value.SingNo,sing_no, false) >= 0)).FirstOrDefault();
+                        .Where(x=>(String.Compare(x.Value.SingNo,sing_no) >= 0)).FirstOrDefault();
                 }
                 else if (mState.OrderBy == "SingNa")
                 {
                     string sing_na = singer.SingNa;
                     singerWithIndex = singersDictionary
-                        .Where(x => String.Compare(x.Value.SingNa, sing_na, false) >= 0).FirstOrDefault();
+                        .Where(x => String.Compare(x.Value.SingNa, sing_na) >= 0).FirstOrDefault();
                 }
                 else
                 {

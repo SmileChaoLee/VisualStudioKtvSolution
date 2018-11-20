@@ -17,6 +17,8 @@ namespace VodManageSystem.Models
         public const int OriginalSongNotExist = -12;
         public const int VodNoOfSongIsEmpty = -21;
         public const int PathnameOfVodNoIsEmpty = -22;
+        public const int Singer1IdIsNotSpecified = -23;
+        public const int Singer2IdIsNotSpecified = -24;
 
         public const int LanguageNotChanged = -30;
         public const int LanguageIsNull = -32;
@@ -25,6 +27,7 @@ namespace VodManageSystem.Models
         public const int LanguageNoNotFound = -35;
         public const int OriginalLanguageNoIsEmpty = -36;
         public const int OriginalLanguageNotExist = -37;
+        public const int LanguageIdIsSpecified = -38;
 
         public const int SingareaNotChanged = -40;
         public const int SingareaIsNull = -42;
@@ -104,6 +107,12 @@ namespace VodManageSystem.Models
                 case PathnameOfVodNoIsEmpty:
                     errorMsg = "Path name for this Vod video was empty.";
                     break;
+                case Singer1IdIsNotSpecified:
+                    errorMsg = "Id for first singer is not specified.";
+                    break;
+                case Singer2IdIsNotSpecified:
+                    errorMsg = "Id for second singer is not specified.";
+                    break;
                 case LanguageNotChanged:
                     errorMsg = "Language was unchanged.";
                     break;
@@ -111,7 +120,10 @@ namespace VodManageSystem.Models
                     errorMsg = "The object of Language was null.";
                     break;
                 case LanguageNoIsEmpty:
-                    errorMsg = "Language No. was empty or noll.";
+                    errorMsg = "Language No. was empty or null.";
+                    break;
+                case LanguageIdIsSpecified:
+                    errorMsg = "Language Id. was empty or null.";
                     break;
                 case LanguageNoNotFound:
                     errorMsg = "Language No. was found.";

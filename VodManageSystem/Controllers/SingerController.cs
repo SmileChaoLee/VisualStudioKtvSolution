@@ -384,9 +384,6 @@ namespace VodManageSystem.Controllers
             if (ModelState.IsValid)
             {
                 // start updating table
-                Console.WriteLine("Edit --> Post --> Id = " + singer.Id);
-                Console.WriteLine("Edit --> Post --> AreaId = " + singer.AreaId);
-
                 int result = await _singerManager.UpdateOneSingerById(orgId, singer);
                 if (result == ErrorCodeModel.Succeeded)
                 {

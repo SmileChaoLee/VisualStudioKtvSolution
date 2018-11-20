@@ -103,7 +103,7 @@ namespace VodManageSystem.Controllers
 
         // Post
         [HttpPost, ActionName("Find")]
-        public async Task<IActionResult> Find(string song_no, string vod_no, string song_na, string lang_no, string sing_na1, string sing_na2, string search_type, string submitbutton, string song_state)
+        public async Task<IActionResult> Find(string song_no, string vod_no, string song_na, int languageId, string sing_na1, string sing_na2, string search_type, string submitbutton, string song_state)
         {
             if (!LoginUtil.CheckIfLoggedIn(HttpContext)) return View(nameof(Index));
 
@@ -137,11 +137,15 @@ namespace VodManageSystem.Controllers
             }
             song_na = song_na.Trim();
 
-            if (string.IsNullOrEmpty(lang_no))
+            string lang_no = "";
+            if (languageId >= 0)
             {
-                lang_no = string.Empty;
+                Language language = await _languageManager.FindOneLanguageById(languageId);
+                if (language != null)
+                {
+                    lang_no = language.LangNo;
+                }
             }
-            lang_no = lang_no.Trim();
 
             if (string.IsNullOrEmpty(sing_na1))
             {
@@ -185,22 +189,25 @@ namespace VodManageSystem.Controllers
             }
             else if (searchType == "LANG_SONGNA")
             {
-                // find one song by vod_no
+                // find one song by Language + Song.SongNa
                 mState.OrderBy = "LangSongNa";   // lang_no + song name
-                song.LangNo = lang_no;
+                song.Language = new Language();
+                song.Language.LangNo = lang_no;
                 song.SongNa = song_na;
             }
             else if (searchType == "SINGER1_NA")
             {
-                // find one song by vod_no
+                // find one song by Singer1Na
                 mState.OrderBy = "Singer1Na";   // the name of first singer
-                song.Singer1Na = sing_na1;
+                song.Singer1 = new Singer();
+                song.Singer1.SingNa = sing_na1;
             }
             else if (searchType == "SINGER2_NA")
             {
-                // find one song by vod_no
+                // find one song by Singer2Na
                 mState.OrderBy = "Singer2Na";   // the name of second singer
-                song.Singer2Na = sing_na2;
+                song.Singer2 = new Singer();
+                song.Singer2.SingNa = sing_na2;
             }
 
             List<Song> songsTemp = await _songManager.FindOnePageOfSongsForOneSong(mState, song, 0);
@@ -330,7 +337,7 @@ namespace VodManageSystem.Controllers
         // Adds a song to Song table
         [HttpPost]
         [ValidateAntiForgeryToken]
-        public async Task<IActionResult> Add(string submitbutton, string song_state, [Bind("Id","SongNo,SongNa,SNumWord,NumFw,NumPw,Chor,NMpeg,MMpeg,VodYn,VodNo,Pathname,InDate,LangNo,Singer1No,Singer2No")] Song song)
+        public async Task<IActionResult> Add(string submitbutton, string song_state, [Bind("Id","SongNo,SongNa,SNumWord,NumFw,NumPw,Chor,NMpeg,MMpeg,VodYn,VodNo,Pathname,InDate,LanguageId,Singer1Id,Singer2Id")] Song song)
         {
             if (!LoginUtil.CheckIfLoggedIn(HttpContext)) return View(nameof(Index));
 
@@ -388,7 +395,6 @@ namespace VodManageSystem.Controllers
         }
 
         // GET: Song/Edit/5
-        // public async Task<IActionResult> Edit(string song_state, IEnumerable<VodManageSystem.Models.DataModels.Song> model)
         public async Task<IActionResult> Edit(string song_state)
         {
             if (!LoginUtil.CheckIfLoggedIn(HttpContext)) return View(nameof(Index));
@@ -430,7 +436,7 @@ namespace VodManageSystem.Controllers
         // POST: Song/Edit/5
         [HttpPost]
         [ValidateAntiForgeryToken]
-        public async Task<IActionResult> Edit(string submitbutton, string song_state, [Bind("Id","SongNo,SongNa,SNumWord,NumFw,NumPw,Chor,NMpeg,MMpeg,VodYn,VodNo,Pathname,InDate,LangNo,Singer1No,Singer2No")] Song song)
+        public async Task<IActionResult> Edit(string submitbutton, string song_state, [Bind("Id","SongNo,SongNa,SNumWord,NumFw,NumPw,Chor,NMpeg,MMpeg,VodYn,VodNo,Pathname,InDate,LanguageId,Singer1Id,Singer2Id")] Song song)
         {
             if (!LoginUtil.CheckIfLoggedIn(HttpContext)) return View(nameof(Index));
 
@@ -478,7 +484,12 @@ namespace VodManageSystem.Controllers
                 ViewData["ErrorMessage"] = ErrorCodeModel.GetErrorMessage(ErrorCodeModel.ModelBindingFailed);
             }
 
+            List<SelectListItem> languageSelectList = await _languageManager.GetSelectListOfLanguages(new StateOfRequest("LangNa"));
+            List<SelectListItem> singerSelectList = await _singerManager.GetSelectListOfSingers(new StateOfRequest("SingNa"));
+            ViewBag.LanguageList = languageSelectList;
+            ViewBag.SingerList = singerSelectList;
             ViewBag.SongState = temp_state;
+
             return View(song);
         }
 
@@ -523,7 +534,7 @@ namespace VodManageSystem.Controllers
         // POST: Song/Delete/5
         [HttpPost, ActionName("Delete")]
         [ValidateAntiForgeryToken]
-        public async Task<IActionResult> DeleteConfirmed(string submitbutton, string song_state, [Bind("Id","SongNo,SongNa,SNumWord,NumFw,NumPw,Chor,NMpeg,MMpeg,VodYn,VodNo,Pathname,InDate,LangNo,Singer1No,Singer2No")] Song song)
+        public async Task<IActionResult> DeleteConfirmed(string submitbutton, string song_state, [Bind("Id","SongNo,SongNa,SNumWord,NumFw,NumPw,Chor,NMpeg,MMpeg,VodYn,VodNo,Pathname,InDate,LanguageId,Singer1Id,Singer2Id")] Song song)
         {
             if (!LoginUtil.CheckIfLoggedIn(HttpContext)) return View(nameof(Index));
 
@@ -572,7 +583,12 @@ namespace VodManageSystem.Controllers
             }
 
             // failed
+            List<SelectListItem> languageSelectList = await _languageManager.GetSelectListOfLanguages(new StateOfRequest("LangNa"));
+            List<SelectListItem> singerSelectList = await _singerManager.GetSelectListOfSingers(new StateOfRequest("SingNa"));
+            ViewBag.LanguageList = languageSelectList;
+            ViewBag.SingerList = singerSelectList;
             ViewBag.SongState = temp_state;
+
             return View(song);
         }
 
