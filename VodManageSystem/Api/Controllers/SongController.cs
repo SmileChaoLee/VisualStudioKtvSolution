@@ -103,7 +103,6 @@ namespace VodManageSystem.Api.Controllers
             jObject.Add("id", song.Id);
             jObject.Add("songNo", song.SongNo);
             jObject.Add("songNa", song.SongNa);
-            jObject.Add("languageId", song.LanguageId);
             jObject.Add("sNumWord", song.SNumWord);
             jObject.Add("numFw", song.NumFw);
             jObject.Add("numPw", song.NumPw);
@@ -119,12 +118,13 @@ namespace VodManageSystem.Api.Controllers
             jObject.Add("languageId", song.LanguageId);
             if (song.Language != null)
             {
-                jObject.Add("langNo", song.Language.LangNo);
-                jObject.Add("langNa", song.Language.LangNa);
+                jObject.Add("languageNo", song.Language.LangNo);
+                jObject.Add("languageNa", song.Language.LangNa);
             }
             else 
             {
-                jObject.Add("langNa", "");
+                jObject.Add("languageNo", "");
+                jObject.Add("languageNa", "");
             }
             jObject.Add("singer1Id", song.Singer1Id);
             if (song.Singer1 != null)
