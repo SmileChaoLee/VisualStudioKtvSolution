@@ -80,6 +80,94 @@ namespace VodManageSystem.Api.Controllers
             return returnJSON.ToString();
         }
 
+        // GET api/values/10/1
+        [HttpGet("{pageSize}/{pageNo}")]
+        public async Task<string> Get(int pageSize, int pageNo)
+        {
+            Console.WriteLine("HttpGet[\"{ pageSize}/{ pageNo}\")]");
+
+            StateOfRequest mState = new StateOfRequest("");
+            mState.PageSize = pageSize;
+            mState.CurrentPageNo = pageNo;
+            List<Song> songs = await _songManager.GetOnePageOfSongs(mState);
+
+            JObject jObjectForAll = new JObject();
+            jObjectForAll.Add("pageNo", mState.CurrentPageNo);
+            jObjectForAll.Add("pageSize", mState.PageSize);
+            jObjectForAll.Add("totalRecords", mState.TotalRecords);
+            jObjectForAll.Add("totalPages", mState.TotalPages);
+            JObject jObject;
+            JArray jArray = new JArray();
+            foreach (var song in songs)
+            {
+                jObject = ConvertSongToJsongObject(song);
+                jArray.Add(jObject);
+            }
+            jObjectForAll.Add("songs", jArray);
+
+            return jObjectForAll.ToString();
+        }
+
+        // GET api/values/10/1/orderBy
+        [HttpGet("{pageSize}/{pageNo}/{orderBy}")]
+        public async Task<string> Get(int pageSize, int pageNo, string orderBy)
+        {
+            Console.WriteLine("HttpGet[\"{ pageSize}/{ pageNo}/{orderBy}\")]");
+
+            string orderByParam;
+
+            string orderByTemp = orderBy.ToUpper().Trim();
+            if (orderByTemp == "SONGNO")
+            {
+                orderByParam = "SongNo";
+            }
+            else if (orderByTemp == "SONGNA")
+            {
+                orderByParam = "SongNa";
+            }
+            else if (orderByTemp == "VODNO")
+            {
+                orderByParam = "VodNo";
+            }
+            else if (orderBy == "LANG_SONGNA")
+            {
+                orderByParam = "LangSongNa";
+            }
+            else if (orderBy == "SINGER1_NA")
+            {
+                orderByParam = "Singer1Na";
+            }
+            else if (orderBy == "SINGER1_NA")
+            {
+                orderByParam = "Singer2Na";
+            }
+            else
+            {
+                orderByParam = "ReturnEmptyList";  // has to return empty list
+            }
+
+            StateOfRequest mState = new StateOfRequest(orderByParam);
+            mState.PageSize = pageSize;
+            mState.CurrentPageNo = pageNo;
+            List<Song> songs = await _songManager.GetOnePageOfSongs(mState);
+
+            JObject jObjectForAll = new JObject();
+            jObjectForAll.Add("pageNo", mState.CurrentPageNo);
+            jObjectForAll.Add("pageSize", mState.PageSize);
+            jObjectForAll.Add("totalRecords", mState.TotalRecords);
+            jObjectForAll.Add("totalPages", mState.TotalPages);
+            JObject jObject;
+            JArray jArray = new JArray();
+            foreach (var song in songs)
+            {
+                jObject = ConvertSongToJsongObject(song);
+                jArray.Add(jObject);
+            }
+            jObjectForAll.Add("songs", jArray);
+
+            return jObjectForAll.ToString();
+        }
+
         // POST api/values
         [HttpPost]
         public void Post([FromBody]string value)

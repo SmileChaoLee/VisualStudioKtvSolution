@@ -73,7 +73,7 @@ namespace VodManageSystem.Api.Controllers
             return returnJSON.ToString();
         }
 
-        // GET api/values/10/1
+        // GET api/values/10/1/orderBy
         [HttpGet("{pageSize}/{pageNo}/{orderBy}")]
         public async Task<string> Get(int pageSize, int pageNo, string orderBy) {
             Console.WriteLine("HttpGet[\"{ pageSize}/{ pageNo}/{orderBy}\")]");
@@ -139,7 +139,7 @@ namespace VodManageSystem.Api.Controllers
             }
             else
             {
-                string orderByTemp = orderBy.ToUpper();
+                string orderByTemp = orderBy.ToUpper().Trim();
                 if (orderByTemp == "SINGNO")
                 {
                     orderByParam = "SingNo";

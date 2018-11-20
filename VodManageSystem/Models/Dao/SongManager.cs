@@ -200,13 +200,7 @@ namespace VodManageSystem.Models.Dao
                 return new List<Song>();
             }
 
-            if (string.IsNullOrEmpty(mState.OrderBy))
-            {
-                // default is order by singer's No
-                mState.OrderBy = "SongNo";
-            }
-
-            var songsList = _context.Song.Where(x => x.Id == 0);
+            var songsList = _context.Song.Where(x => x.Id == -1);
             if (mState.OrderBy == "SongNo")
             {
                 songsList = _context.Song.Include(x => x.Language)
@@ -246,10 +240,15 @@ namespace VodManageSystem.Models.Dao
                                     .OrderBy(x => x.Singer2 == null)
                                     .ThenBy(x => x.Singer2.SingNa).ThenBy(x => x.SongNo);
             }
-            else
+            else if (mState.OrderBy == "")
             {
+                // no order by (just from the top of database
                 songsList = _context.Song.Include(x => x.Language)
                                     .Include(x => x.Singer1).Include(x => x.Singer2);
+            }
+            else
+            {
+                // invalid order by then return empty list
             }
 
             int pageNo = mState.CurrentPageNo;
