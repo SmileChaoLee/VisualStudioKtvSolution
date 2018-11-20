@@ -69,9 +69,15 @@ namespace VodManageSystem.Api.Controllers
 
         // GET api/values/5
         [HttpGet("{id}")]
-        public string Get(int id)
+        public async Task<string> Get(int id)
         {
-            return "value";
+            // get one song
+            Song song = await _songManager.FindOneSongById(id);
+            JObject jObject = ConvertSongToJsongObject(song);
+            JObject returnJSON = new JObject();
+            returnJSON.Add("song", jObject);
+
+            return returnJSON.ToString();
         }
 
         // POST api/values
