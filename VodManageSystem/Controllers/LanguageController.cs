@@ -250,6 +250,23 @@ namespace VodManageSystem.Controllers
         {
             if (!LoginUtil.CheckIfLoggedIn(HttpContext)) return View(nameof(Index));
 
+            StateOfRequest mState;
+            if (string.IsNullOrEmpty(language_state))
+            {
+                mState = new StateOfRequest("LangNo");
+            }
+            else
+            {
+                mState = JsonUtil.GetObjectFromJsonString<StateOfRequest>(language_state);
+            }
+
+            if ((mState.IsFirstAddRecord) || (mState.OrgId == 0))
+            {
+                // the first id of this page became the selected original id
+                // or SateOfRequest.OrgId = 0
+                mState.OrgId = mState.FirstId;
+            }
+
             Language language = new Language(); // create a new Language object
 
             ViewBag.LanguageState = language_state; // pass the Json string to View
@@ -282,9 +299,10 @@ namespace VodManageSystem.Controllers
             {
                 Language newLanguage = new Language();
                 List<Language> languagesTemp = await _languageManager.FindOnePageOfLanguagesForOneLanguage(mState, newLanguage, orgId);
+                mState.IsFirstAddRecord = true;
                 temp_state = JsonUtil.SetJsonStringFromObject(mState);
-
                 ViewBag.LanguageState = temp_state;
+
                 return View(nameof(LanguagesList), languagesTemp);
             }
             if (ModelState.IsValid)
@@ -295,8 +313,9 @@ namespace VodManageSystem.Controllers
                     // succeeded to add the language
                     mState.OrgId = language.Id;
                     mState.OrgNo = language.LangNo;
-
+                    mState.IsFirstAddRecord = false;
                     temp_state = JsonUtil.SetJsonStringFromObject(mState);
+
                     return RedirectToAction(nameof(Add), new { language_state = temp_state });
                 }
                 else

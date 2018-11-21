@@ -141,7 +141,7 @@ namespace VodManageSystem.Controllers
                 return View();
             }
 
-            List<Singer> singersTemp = await _singerManager.FindOnePageOfSingersForOneSinger(mState, singer, 0);
+            List<Singer> singersTemp = await _singerManager.FindOnePageOfSingersForOneSinger(mState, singer, -1);
             temp_state = JsonUtil.SetJsonStringFromObject(mState);
 
             ViewBag.SingerState = temp_state;
@@ -252,12 +252,29 @@ namespace VodManageSystem.Controllers
         {
             if (!LoginUtil.CheckIfLoggedIn(HttpContext)) return View(nameof(Index));
 
-            Singer singer = new Singer(); // create a new Singer object
+            StateOfRequest mState;
+            if (string.IsNullOrEmpty(singer_state))
+            {
+                mState = new StateOfRequest("SingNo");
+            }
+            else
+            {
+                mState = JsonUtil.GetObjectFromJsonString<StateOfRequest>(singer_state);
+            }
+
+            if ((mState.IsFirstAddRecord) || (mState.OrgId == 0))
+            {
+                // the first id of this page became the selected original id
+                // or SateOfRequest.OrgId = 0
+                mState.OrgId = mState.FirstId;
+            }
 
             List<SelectListItem> singareaSelectList = await _singareaManager.GetSelectListOfSingareas(new StateOfRequest("AreaNa"));
-
             ViewBag.SingareaList = singareaSelectList;
             ViewBag.SingerState = singer_state; // pass the Json string to View
+
+            Singer singer = new Singer(); // create a new Singer object
+
             return View(singer);
         }
 
@@ -287,9 +304,10 @@ namespace VodManageSystem.Controllers
             {
                 Singer newSinger = new Singer();
                 List<Singer> singersTemp = await _singerManager.FindOnePageOfSingersForOneSinger(mState, newSinger, orgId);
+                mState.IsFirstAddRecord = true;
                 temp_state = JsonUtil.SetJsonStringFromObject(mState);
-
                 ViewBag.SingerState = temp_state;
+
                 return View(nameof(SingersList), singersTemp);
             }
             if (ModelState.IsValid)
@@ -300,8 +318,9 @@ namespace VodManageSystem.Controllers
                     // succeeded to add the singer
                     mState.OrgId = singer.Id;
                     mState.OrgNo = singer.SingNo;
-
+                    mState.IsFirstAddRecord = false;
                     temp_state = JsonUtil.SetJsonStringFromObject(mState);
+
                     return RedirectToAction(nameof(Add), new { singer_state = temp_state });
                 }
                 else
@@ -315,7 +334,10 @@ namespace VodManageSystem.Controllers
                 ViewData["ErrorMessage"] = ErrorCodeModel.GetErrorMessage(ErrorCodeModel.ModelBindingFailed);
             }
 
+            List<SelectListItem> singareaSelectList = await _singareaManager.GetSelectListOfSingareas(new StateOfRequest("AreaNa"));
+            ViewBag.SingareaList = singareaSelectList;
             ViewBag.SingerState = temp_state;
+
             return View(singer);
         }
 
@@ -348,9 +370,9 @@ namespace VodManageSystem.Controllers
                 string temp_state = JsonUtil.SetJsonStringFromObject(mState);
 
                 List<SelectListItem> singareaSelectList = await _singareaManager.GetSelectListOfSingareas(new StateOfRequest("AreaNo"));
-
                 ViewBag.SingareaList = singareaSelectList;
                 ViewBag.SingerState = temp_state;
+
                 return View(singer);
             }
         }
@@ -406,7 +428,10 @@ namespace VodManageSystem.Controllers
                 ViewData["ErrorMessage"] = ErrorCodeModel.GetErrorMessage(ErrorCodeModel.ModelBindingFailed);
             }
 
+            List<SelectListItem> singareaSelectList = await _singareaManager.GetSelectListOfSingareas(new StateOfRequest("AreaNa"));
+            ViewBag.SingareaList = singareaSelectList;
             ViewBag.SingerState = temp_state;
+
             return View(singer);
         }
 
@@ -439,9 +464,9 @@ namespace VodManageSystem.Controllers
                 string temp_state = JsonUtil.SetJsonStringFromObject(mState);
 
                 List<SelectListItem> singareaSelectList = await _singareaManager.GetSelectListOfSingareas(new StateOfRequest("AreaNa"));
-
                 ViewBag.SingareaList = singareaSelectList;
                 ViewBag.SingerState = temp_state;
+
                 return View(singer);
             }
         }
@@ -480,7 +505,7 @@ namespace VodManageSystem.Controllers
                 if (result == ErrorCodeModel.Succeeded)
                 {
                     // succeeded to delete a singer
-                    List<Singer> singersTemp = await _singerManager.FindOnePageOfSingersForOneSinger(mState, singer, 0);
+                    List<Singer> singersTemp = await _singerManager.FindOnePageOfSingersForOneSinger(mState, singer, -1);
                     temp_state = JsonUtil.SetJsonStringFromObject(mState);
 
                     ViewBag.SingerState = temp_state;
@@ -498,7 +523,10 @@ namespace VodManageSystem.Controllers
             }
 
             // failed
+            List<SelectListItem> singareaSelectList = await _singareaManager.GetSelectListOfSingareas(new StateOfRequest("AreaNa"));
+            ViewBag.SingareaList = singareaSelectList;
             ViewBag.SingerState = temp_state;
+
             return View(singer);
         }
 
@@ -530,9 +558,9 @@ namespace VodManageSystem.Controllers
                 string temp_state = JsonUtil.SetJsonStringFromObject(mState);
 
                 List<SelectListItem> singareaSelectList = await _singareaManager.GetSelectListOfSingareas(new StateOfRequest("AreaNo"));
-
                 ViewBag.SingareaList = singareaSelectList;
                 ViewBag.SingerState = temp_state;
+
                 return View(singer);
             }
         }
@@ -560,6 +588,7 @@ namespace VodManageSystem.Controllers
             string temp_state = JsonUtil.SetJsonStringFromObject(mState);
 
             ViewBag.SingerState = temp_state;
+
             return View(nameof(SingersList), singersTemp);
         }
 

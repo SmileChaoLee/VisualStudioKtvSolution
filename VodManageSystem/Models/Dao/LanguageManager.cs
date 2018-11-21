@@ -147,7 +147,14 @@ namespace VodManageSystem.Models.Dao
 
             Dictionary<int, Language> languagesDictionary = null;
 
-            if (mState.OrderBy == "LangNo")
+            // No language selected
+            if (mState.OrderBy == "")
+            {
+                languagesDictionary = totalLanguages
+                            .Select((m, index) => new { rowNumber = index + 1, m })
+                            .ToDictionary(m => m.rowNumber, m => m.m);
+            }
+            else if (mState.OrderBy == "LangNo")
             {
                 languagesDictionary = totalLanguages.OrderBy(x => x.LangNo)
                             .Select((m, index) => new { rowNumber = index + 1, m })
@@ -326,15 +333,20 @@ namespace VodManageSystem.Models.Dao
 
             SortedDictionary<int, Language> languagesDictionary = await GetDictionaryOfLanguages(mState);
 
-            if (id > 0)
+            if (id >= 0)
             {
                 // There was a selected language
                 languageWithIndex = languagesDictionary.Where(x=>x.Value.Id == id).SingleOrDefault();
             }
             else
             {
-                // No selected anguage
-                if (mState.OrderBy == "LangNo")
+                // No language selected
+                if (mState.OrderBy == "")
+                {
+                    int lang_id = language.Id;
+                    languageWithIndex = languagesDictionary.Where(x => (x.Value.Id >= lang_id)).FirstOrDefault();
+                }
+                else if (mState.OrderBy == "LangNo")
                 {
                     string lang_no = language.LangNo;
                     languageWithIndex = languagesDictionary.Where(x=>(String.Compare(x.Value.LangNo,lang_no)>=0)).FirstOrDefault();

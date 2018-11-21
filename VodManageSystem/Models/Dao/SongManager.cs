@@ -332,7 +332,13 @@ namespace VodManageSystem.Models.Dao
             
             Dictionary<int,Song> songsDictionary = null;
 
-            if (mState.OrderBy == "SongNo")
+            if (mState.OrderBy == "")
+            {
+                songsDictionary = totalSongs
+                            .Select((m, index) => new { rowNumber = index + 1, m })
+                            .ToDictionary(m => m.rowNumber, m => m.m);
+            }
+            else if (mState.OrderBy == "SongNo")
             {
                 songsDictionary = totalSongs.OrderBy(x => x.SongNo)
                             .Select( (m,index) => new {rowNumber = index+1, m})

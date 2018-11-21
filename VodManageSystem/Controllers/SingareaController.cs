@@ -138,7 +138,7 @@ namespace VodManageSystem.Controllers
                 return View();
             }
 
-            List<Singarea> singareasTemp = await _singareaManager.FindOnePageOfSingareasForOneSingarea(mState, singarea, 0);
+            List<Singarea> singareasTemp = await _singareaManager.FindOnePageOfSingareasForOneSingarea(mState, singarea, -1);
             temp_state = JsonUtil.SetJsonStringFromObject(mState);
 
             ViewBag.SingareaState = temp_state;
@@ -250,6 +250,23 @@ namespace VodManageSystem.Controllers
         {
             if (!LoginUtil.CheckIfLoggedIn(HttpContext)) return View(nameof(Index));
 
+            StateOfRequest mState;
+            if (string.IsNullOrEmpty(singarea_state))
+            {
+                mState = new StateOfRequest("AreaNo");
+            }
+            else
+            {
+                mState = JsonUtil.GetObjectFromJsonString<StateOfRequest>(singarea_state);
+            }
+
+            if ((mState.IsFirstAddRecord) || (mState.OrgId == 0))
+            {
+                // the first id of this page became the selected original id
+                // or SateOfRequest.OrgId = 0
+                mState.OrgId = mState.FirstId;
+            }
+
             Singarea singarea = new Singarea(); // create a new Singarea object
 
             ViewBag.SingareaState = singarea_state; // pass the Json string to View
@@ -282,9 +299,10 @@ namespace VodManageSystem.Controllers
             {
                 Singarea newSingarea = new Singarea();
                 List<Singarea> singareasTemp = await _singareaManager.FindOnePageOfSingareasForOneSingarea(mState, newSingarea, orgId);
+                mState.IsFirstAddRecord = true;
                 temp_state = JsonUtil.SetJsonStringFromObject(mState);
-
                 ViewBag.SingareaState = temp_state;
+
                 return View(nameof(SingareasList), singareasTemp);
             }
             if (ModelState.IsValid)
@@ -295,8 +313,9 @@ namespace VodManageSystem.Controllers
                     // succeeded to add the singarea
                     mState.OrgId = singarea.Id;
                     mState.OrgNo = singarea.AreaNo;
-
+                    mState.IsFirstAddRecord = false;
                     temp_state = JsonUtil.SetJsonStringFromObject(mState);
+
                     return RedirectToAction(nameof(Add), new { singarea_state = temp_state });
                 }
                 else
@@ -469,7 +488,7 @@ namespace VodManageSystem.Controllers
                 if (result == ErrorCodeModel.Succeeded)
                 {
                     // succeeded to delete a singarea
-                    List<Singarea> singareasTemp = await _singareaManager.FindOnePageOfSingareasForOneSingarea(mState, singarea, 0);
+                    List<Singarea> singareasTemp = await _singareaManager.FindOnePageOfSingareasForOneSingarea(mState, singarea, -1);
                     temp_state = JsonUtil.SetJsonStringFromObject(mState);
 
                     ViewBag.SingareaState = temp_state;

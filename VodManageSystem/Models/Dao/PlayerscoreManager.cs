@@ -44,7 +44,14 @@ namespace VodManageSystem.Models.Dao
 
             Dictionary<int, Playerscore> playerscoresDictionary = null;
 
-            if (mState.OrderBy == "PlayerName")
+            // No playerscore selected
+            if (mState.OrderBy == "")
+            {
+                playerscoresDictionary = totalPlayerscores
+                            .Select((m, index) => new { rowNumber = index + 1, m })
+                            .ToDictionary(m => m.rowNumber, m => m.m);
+            }
+            else if (mState.OrderBy == "PlayerName")
             {
                 playerscoresDictionary = totalPlayerscores.OrderBy(x => x.PlayerName)
                             .Select((m, index) => new { rowNumber = index + 1, m })
@@ -216,15 +223,20 @@ namespace VodManageSystem.Models.Dao
 
             SortedDictionary<int, Playerscore> playerscoresDictionary = await GetDictionaryOfPlayerscores(mState);
 
-            if (id > 0)
+            if (id >= 0)
             {
                 // There was a selected playerscore
                 playerscoreWithIndex = playerscoresDictionary.Where(x => x.Value.Id == id).SingleOrDefault();
             }
             else
             {
-                // No selected anguage
-                if (mState.OrderBy == "PlayerName")
+                // No playerscore selected
+                if (mState.OrderBy == "")
+                {
+                    int player_id = playerscore.Id;
+                    playerscoreWithIndex = playerscoresDictionary.Where(x => (x.Value.Id >= player_id)).FirstOrDefault();
+                }
+                else if (mState.OrderBy == "PlayerName")
                 {
                     string playerName = playerscore.PlayerName;
                     playerscoreWithIndex = playerscoresDictionary.Where(x => (String.Compare(x.Value.PlayerName, playerName) >= 0)).FirstOrDefault();

@@ -12,6 +12,7 @@ namespace VodManageSystem.Models
         public string OrderBy { get; set; }
         public string QueryCondition { get; set; }
         public int FirstId { get; set; }
+        public bool IsFirstAddRecord { get; set; }
         public DateTime StartTime { get; set; }
 
         public StateOfRequest(string orderBy)
@@ -25,6 +26,7 @@ namespace VodManageSystem.Models
             this.OrderBy = orderBy;
             QueryCondition = "";
             FirstId = 0;    // record the Id of first Singer in this page
+            IsFirstAddRecord = true;
             StartTime = DateTime.Now;
         }
     }

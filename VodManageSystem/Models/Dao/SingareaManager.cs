@@ -148,7 +148,14 @@ namespace VodManageSystem.Models.Dao
 
             Dictionary<int, Singarea> singareasDictionary = null;
 
-            if (mState.OrderBy == "AreaNo")
+            // No singarea selected
+            if (mState.OrderBy == "")
+            {
+                singareasDictionary = totalSingareas
+                            .Select((m, index) => new { rowNumber = index + 1, m })
+                            .ToDictionary(m => m.rowNumber, m => m.m);
+            }
+            else if (mState.OrderBy == "AreaNo")
             {
                 singareasDictionary = totalSingareas.OrderBy(x => x.AreaNo)
                             .Select((m, index) => new { rowNumber = index + 1, m })
@@ -314,10 +321,6 @@ namespace VodManageSystem.Models.Dao
             {
                 return new List<Singarea>();
             }
-            if (string.IsNullOrEmpty(mState.OrderBy))
-            {
-                mState.OrderBy = "AreaNo";
-            }
 
             int pageSize = mState.PageSize;
 
@@ -326,15 +329,20 @@ namespace VodManageSystem.Models.Dao
 
             SortedDictionary<int, Singarea> singareasDictionary = await GetDictionaryOfSingareas(mState);
 
-            if (id > 0)
+            if (id >= 0)
             {
                 // There was a selected singarea
                 singareaWithIndex = singareasDictionary.Where(x=>x.Value.Id == id).SingleOrDefault();
             }
             else
             {
-                // No selected anguage
-                if (mState.OrderBy == "AreaNo")
+                // No singarea selected
+                if (mState.OrderBy == "")
+                {
+                    int area_id = singarea.Id;
+                    singareaWithIndex = singareasDictionary.Where(x => (x.Value.Id >= area_id)).FirstOrDefault();
+                }
+                else if (mState.OrderBy == "AreaNo")
                 {
                     string area_no = singarea.AreaNo;
                     singareaWithIndex = singareasDictionary.Where(x=>(String.Compare(x.Value.AreaNo,area_no)>=0)).FirstOrDefault();

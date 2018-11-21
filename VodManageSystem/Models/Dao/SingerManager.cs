@@ -172,9 +172,14 @@ namespace VodManageSystem.Models.Dao
 
             Dictionary<int, Singer> singersDictionary = null;
 
-
-            // OrderBy(x=>x.SingNo) must put the following (not above in the totalSingers)
-            if (mState.OrderBy == "SingNo")
+            // No singer selected
+            if (mState.OrderBy == "")
+            {
+                singersDictionary = totalSingers
+                            .Select((m, index) => new { rowNumber = index + 1, m })
+                            .ToDictionary(m => m.rowNumber, m => m.m);
+            }
+            else if (mState.OrderBy == "SingNo")
             {
                 singersDictionary = totalSingers.OrderBy(x => x.SingNo)
                             .Select((m, index) => new { rowNumber = index + 1, m })
@@ -446,11 +451,6 @@ namespace VodManageSystem.Models.Dao
             {
                 return new List<Singer>();
             }
-            if (string.IsNullOrEmpty(mState.OrderBy))
-            {
-                // default is order by singer's No
-                mState.OrderBy = "SingNo";
-            }
 
             int pageSize = mState.PageSize;
 
@@ -459,15 +459,20 @@ namespace VodManageSystem.Models.Dao
 
             SortedDictionary<int, Singer> singersDictionary = await GetDictionaryOfSingers(mState);
 
-            if (id > 0)
+            if (id >= 0)
             {
-                // There was a selected singer
+                // There was a singer selected
                 singerWithIndex = singersDictionary.Where(x=>x.Value.Id == id).SingleOrDefault();
             }
             else
             {
-                // No selected anguage
-                if (mState.OrderBy == "SingNo")
+                // No singer selected
+                if (mState.OrderBy == "")
+                {
+                    int sing_id = singer.Id;
+                    singerWithIndex = singersDictionary.Where(x => (x.Value.Id >= sing_id) ).FirstOrDefault();
+                }
+                else if (mState.OrderBy == "SingNo")
                 {
                     string sing_no = singer.SingNo;
                     singerWithIndex = singersDictionary

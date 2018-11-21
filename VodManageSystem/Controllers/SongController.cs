@@ -322,11 +322,31 @@ namespace VodManageSystem.Controllers
         {
             if (!LoginUtil.CheckIfLoggedIn(HttpContext)) return View(nameof(Index));
 
+            StateOfRequest mState;
+            if (string.IsNullOrEmpty(song_state))
+            {
+                mState = new StateOfRequest("SongNo");
+            }
+            else
+            {
+                mState = JsonUtil.GetObjectFromJsonString<StateOfRequest>(song_state);
+            }
+
+            if ( (mState.IsFirstAddRecord ) || (mState.OrgId == 0) )
+            {
+                // the first id of this page became the selected original id
+                // or SateOfRequest.OrgId = 0
+                mState.OrgId = mState.FirstId;
+            }
+
             List<SelectListItem> languageSelectList = await _languageManager.GetSelectListOfLanguages(new StateOfRequest("LangNa"));
             List<SelectListItem> singerSelectList = await _singerManager.GetSelectListOfSingers(new StateOfRequest("SingNa"));
             ViewBag.LanguageList = languageSelectList;
             ViewBag.SingerList = singerSelectList;
-            ViewBag.SongState = song_state; // pass the Json string to View
+
+            mState.StartTime = DateTime.Now;
+            string temp_state = JsonUtil.SetJsonStringFromObject(mState);
+            ViewBag.SongState = temp_state; // pass the Json string to View
 
             Song song = new Song(); // create a new Song object
 
@@ -359,9 +379,10 @@ namespace VodManageSystem.Controllers
             {
                 Song newSong = new Song();
                 List<Song> songsTemp = await _songManager.FindOnePageOfSongsForOneSong(mState, newSong, orgId);
+                mState.IsFirstAddRecord = true;
                 temp_state = JsonUtil.SetJsonStringFromObject(mState);
-
                 ViewBag.SongState = temp_state;
+
                 return View(nameof(SongsList), songsTemp);
             }
             if (ModelState.IsValid)
@@ -373,6 +394,7 @@ namespace VodManageSystem.Controllers
                     // Song newSong = new Song();
                     mState.OrgId = song.Id;
                     mState.OrgNo = song.SongNo;
+                    mState.IsFirstAddRecord = false;    // becomes not the first add
                     temp_state = JsonUtil.SetJsonStringFromObject(mState);
 
                     return RedirectToAction(nameof(Add), new { song_state = temp_state });
@@ -428,7 +450,6 @@ namespace VodManageSystem.Controllers
 
                 List<SelectListItem> languageSelectList = await _languageManager.GetSelectListOfLanguages(new StateOfRequest("LangNa"));
                 List<SelectListItem> singerSelectList = await _singerManager.GetSelectListOfSingers(new StateOfRequest("SingNa"));
-
                 ViewBag.LanguageList = languageSelectList;
                 ViewBag.SingerList = singerSelectList;
                 ViewBag.SongState = temp_state;
@@ -531,6 +552,7 @@ namespace VodManageSystem.Controllers
                 ViewBag.LanguageList = languageSelectList;
                 ViewBag.SingerList = singerSelectList;
                 ViewBag.SongState = temp_state;
+
                 return View(song);
             }
         }
@@ -629,6 +651,7 @@ namespace VodManageSystem.Controllers
                 ViewBag.LanguageList = languageSelectList;
                 ViewBag.SingerList = singerSelectList;
                 ViewBag.SongState = temp_state;
+
                 return View(song);
             }
         }
@@ -656,6 +679,7 @@ namespace VodManageSystem.Controllers
             string temp_state = JsonUtil.SetJsonStringFromObject(mState);
 
             ViewBag.SongState = temp_state;
+
             return View(nameof(SongsList), songsTemp);
         }
 
