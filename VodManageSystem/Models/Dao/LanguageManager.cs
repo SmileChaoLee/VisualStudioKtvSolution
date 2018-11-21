@@ -38,98 +38,10 @@ namespace VodManageSystem.Models.Dao
             }
 
             mState.CurrentPageNo = -100;  // represnt to get all languages
-            List<Language> totalLanguages = await GetOnePageOfLanguages(mState);
+            List<Language> totalLanguages = await GetOnePageOfLanguagesDictionary(mState);
 
             return totalLanguages;
         }
-
-        public async Task<List<Language>> GetOnePageOfLanguages(StateOfRequest mState)
-        {
-            if (mState == null)
-            {
-                return new List<Language>();
-            }
-
-            var languagesList = _context.Language.Where(x => x.Id == -1);
-            if (mState.OrderBy == "LangNo")
-            {
-                languagesList = _context.Language.OrderBy(x => x.LangNo);
-            }
-            else if (mState.OrderBy == "LangNa")
-            {
-                languagesList = _context.Language.OrderBy(x => x.LangNa).ThenBy(x => x.LangNo);
-            }
-            else if (mState.OrderBy == "")
-            {
-                languagesList = _context.Language;
-            }
-            else
-            {
-                // invalid order by then return empty list
-            }
-
-            int pageNo = mState.CurrentPageNo;
-            int pageSize = mState.PageSize;
-            int[] returnNumbers = await GetTotalRecordsAndPages(pageSize);
-            int totalRecords = returnNumbers[0];
-            int totalPages = returnNumbers[1];
-
-            bool getAll = false;
-            if (pageNo == -1)
-            {
-                // get the last page
-                pageNo = totalPages;
-            }
-            else if (pageNo == -100)
-            {
-                // get all songs
-                getAll = true;
-                pageNo = 1; // restore pageNo to 1
-            }
-            else
-            {
-                if (pageNo < 1)
-                {
-                    pageNo = 1;
-                }
-                else if (pageNo > totalPages)
-                {
-                    pageNo = totalPages;
-                }
-            }
-
-            int recordNum = (pageNo - 1) * pageSize;
-
-            List<Language> languages;
-            if (getAll)
-            {
-                languages = await languagesList.AsNoTracking().ToListAsync();
-            }
-            else
-            {
-                languages = await languagesList.Skip(recordNum).Take(pageSize).AsNoTracking().ToListAsync();
-            }
-
-            mState.CurrentPageNo = pageNo;
-            mState.PageSize = pageSize;
-            mState.TotalRecords = totalRecords;
-            mState.TotalPages = totalPages;
-
-            Language firstLanguage = languages.FirstOrDefault();
-            if (firstLanguage != null)
-            {
-                mState.FirstId = firstLanguage.Id;
-            }
-            else
-            {
-                mState.OrgId = 0;
-                mState.OrgNo = "";
-                mState.FirstId = 0;
-            }
-
-            return languages;
-        }
-
 
         /// <summary>
         /// Gets the dictionary of languages.

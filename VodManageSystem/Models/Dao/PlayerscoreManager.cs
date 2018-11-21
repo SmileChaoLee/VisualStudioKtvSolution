@@ -27,6 +27,18 @@ namespace VodManageSystem.Models.Dao
 
 
         // public methods
+        public async Task<List<Playerscore>> GetAllPlayerscores(StateOfRequest mState)
+        {
+            if (mState == null)
+            {
+                return new List<Playerscore>();    // return empty list
+            }
+
+            mState.CurrentPageNo = -100;  // represnt to get all languages
+            List<Playerscore> totalPlayerscores = await GetOnePageOfPlayerscoresDictionary(mState);
+
+            return totalPlayerscores;
+        }
 
         /// <summary>
         /// Gets the dictionary of playerscores.
@@ -80,8 +92,8 @@ namespace VodManageSystem.Models.Dao
         public async Task<List<SelectListItem>> GetSelectListOfPlayerscores(StateOfRequest mState)
         {
             List<SelectListItem> selectList = new List<SelectListItem>();
-            SortedDictionary<int, Playerscore> playerscoreDict = await GetDictionaryOfPlayerscores(mState);
-            foreach (Playerscore playerscore in playerscoreDict.Values)
+            List<Playerscore> playerscores = await GetOnePageOfPlayerscoresDictionary(mState);
+            foreach (Playerscore playerscore in playerscores)
             {
                 selectList.Add(new SelectListItem
                 {
@@ -96,12 +108,14 @@ namespace VodManageSystem.Models.Dao
         /// Gets the total page of playerscore table.
         /// </summary>
         /// <returns>The total page of Playerscore table.</returns>
-        public async Task<int> GetTotalPageOfPlayerscoreTable(int pageSize)    // by condition
+        public async Task<int[]> GetTotalRecordsAndPages(int pageSize)    // by condition
         {
+            int[] result = new int[2] { 0, 0 };
+
             if (pageSize <= 0)
             {
                 Console.WriteLine("The value of pageSize cannot be less than 0.");
-                return 0;
+                return result;
             }
             // have to define queryCondition
             // queryCondition has not been used for now
@@ -112,7 +126,11 @@ namespace VodManageSystem.Models.Dao
             {
                 totalPages++;
             }
-            return totalPages;
+
+            result[0] = count;
+            result[1] = totalPages;
+
+            return result;
         }
 
         /// <summary>

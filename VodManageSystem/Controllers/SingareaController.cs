@@ -63,8 +63,7 @@ namespace VodManageSystem.Controllers
             {
                 mState = JsonUtil.GetObjectFromJsonString<StateOfRequest>(singarea_state);
             }
-            // List<Singarea> singareas = await _singareaManager.GetOnePageOfSingareasDictionary(mState);
-            List<Singarea> singareas = await _singareaManager.GetOnePageOfSingareas(mState);
+            List<Singarea> singareas = await _singareaManager.GetOnePageOfSingareasDictionary(mState);
 
             ViewBag.SingareaState = JsonUtil.SetJsonStringFromObject(mState);
             return View(singareas);
@@ -267,9 +266,12 @@ namespace VodManageSystem.Controllers
                 mState.OrgId = mState.FirstId;
             }
 
+            mState.StartTime = DateTime.Now;
+            string temp_state = JsonUtil.SetJsonStringFromObject(mState);
+            ViewBag.SingareaState = temp_state; // pass the Json string to View
+
             Singarea singarea = new Singarea(); // create a new Singarea object
 
-            ViewBag.SingareaState = singarea_state; // pass the Json string to View
             return View(singarea);
         }
 

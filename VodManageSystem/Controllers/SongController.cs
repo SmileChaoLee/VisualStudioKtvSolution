@@ -79,8 +79,7 @@ namespace VodManageSystem.Controllers
             {
                 mState = JsonUtil.GetObjectFromJsonString<StateOfRequest>(song_state);
             }
-            // List<Song> songs = await _songManager.GetOnePageOfSongsDictionary(mState);
-            List<Song> songs = await _songManager.GetOnePageOfSongs(mState);
+            List<Song> songs = await _songManager.GetOnePageOfSongsDictionary(mState);
 
             ViewBag.SongState = JsonUtil.SetJsonStringFromObject(mState);
             return View(songs);

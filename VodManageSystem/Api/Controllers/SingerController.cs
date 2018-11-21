@@ -83,7 +83,7 @@ namespace VodManageSystem.Api.Controllers
             mState.PageSize = pageSize;
             mState.CurrentPageNo = pageNo;
             // mState.OrderBy = orderByParam;
-            List<Singer> singers = await _singerManager.GetOnePageOfSingers(mState);
+            List<Singer> singers = await _singerManager.GetOnePageOfSingersDictionary(mState);
 
             JObject jObjectForAll = new JObject();
             jObjectForAll.Add("pageNo", mState.CurrentPageNo);
@@ -127,7 +127,7 @@ namespace VodManageSystem.Api.Controllers
             mState.PageSize = pageSize;
             mState.CurrentPageNo = pageNo;
             // mState.OrderBy = orderByParam;
-            List<Singer> singers = await _singerManager.GetOnePageOfSingers(mState);
+            List<Singer> singers = await _singerManager.GetOnePageOfSingersDictionary(mState);
 
             JObject jObjectForAll = new JObject();
             jObjectForAll.Add("pageNo", mState.CurrentPageNo);
@@ -179,7 +179,7 @@ namespace VodManageSystem.Api.Controllers
             StateOfRequest mState = new StateOfRequest(orderByParam);
             mState.PageSize = pageSize;
             mState.CurrentPageNo = pageNo;
-            // mState.OrderBy = orderByParam;
+
             List<Singer> singers = await _singerManager.GetOnePageOfSingersByAreaSex(mState, areaId, sex);
 
             JObject jObjectForAll = new JObject();

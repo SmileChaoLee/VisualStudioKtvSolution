@@ -40,96 +40,9 @@ namespace VodManageSystem.Models.Dao
             }
 
             mState.CurrentPageNo = -100; // present to all Singareas
-            List<Singarea> totalSingareas = await GetOnePageOfSingareas(mState);
+            List<Singarea> totalSingareas = await GetOnePageOfSingareasDictionary(mState);
 
             return totalSingareas;
-        }
-
-        public async Task<List<Singarea>> GetOnePageOfSingareas(StateOfRequest mState)
-        {
-            if (mState == null)
-            {
-                return new List<Singarea>();
-            }
-
-            var singareasList = _context.Singarea.Where(x => x.Id == -1);
-            if (mState.OrderBy == "AreaNo")
-            {
-                singareasList = _context.Singarea.OrderBy(x => x.AreaNo);
-            }
-            else if (mState.OrderBy == "AreaNa")
-            {
-                singareasList = _context.Singarea.OrderBy(x => x.AreaNa).ThenBy(x => x.AreaNo);
-            }
-            else if (mState.OrderBy == "")
-            {
-                singareasList = _context.Singarea;
-            }
-            else
-            {
-                // invalid order by then return empty list
-            }
-
-            int pageNo = mState.CurrentPageNo;
-            int pageSize = mState.PageSize;
-            int[] returnNumbers = await GetTotalRecordsAndPages(pageSize);
-            int totalRecords = returnNumbers[0];
-            int totalPages = returnNumbers[1];
-
-            bool getAll = false;
-            if (pageNo == -1)
-            {
-                // get the last page
-                pageNo = totalPages;
-            }
-            else if (pageNo == -100)
-            {
-                // get all songs
-                getAll = true;
-                pageNo = 1; // restore pageNo to 1
-            }
-            else
-            {
-                if (pageNo < 1)
-                {
-                    pageNo = 1;
-                }
-                else if (pageNo > totalPages)
-                {
-                    pageNo = totalPages;
-                }
-            }
-
-            int recordNum = (pageNo - 1) * pageSize;
-
-            List<Singarea> singareas;
-            if (getAll)
-            {
-                singareas = await singareasList.AsNoTracking().ToListAsync();
-            }
-            else
-            {
-                singareas = await singareasList.Skip(recordNum).Take(pageSize).AsNoTracking().ToListAsync();
-            }
-
-            mState.CurrentPageNo = pageNo;
-            mState.PageSize = pageSize;
-            mState.TotalRecords = totalRecords;
-            mState.TotalPages = totalPages;
-
-            Singarea firstSingarea = singareas.FirstOrDefault();
-            if (firstSingarea != null)
-            {
-                mState.FirstId = firstSingarea.Id;
-            }
-            else
-            {
-                mState.OrgId = 0;
-                mState.OrgNo = "";
-                mState.FirstId = 0;
-            }
-
-            return singareas;
         }
 
         /// <summary>

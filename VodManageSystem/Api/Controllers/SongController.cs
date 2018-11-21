@@ -47,7 +47,7 @@ namespace VodManageSystem.Api.Controllers
 
             // List<Song> songs = await _songManager.GetAllSongs(mState);
             // get the first 50 songs
-            List<Song> songs = await _songManager.GetOnePageOfSongs(mState);
+            List<Song> songs = await _songManager.GetOnePageOfSongsDictionary(mState);
 
             JObject jObjectForAll = new JObject();
             jObjectForAll.Add("pageNo", mState.CurrentPageNo);
@@ -89,7 +89,7 @@ namespace VodManageSystem.Api.Controllers
             StateOfRequest mState = new StateOfRequest("");
             mState.PageSize = pageSize;
             mState.CurrentPageNo = pageNo;
-            List<Song> songs = await _songManager.GetOnePageOfSongs(mState);
+            List<Song> songs = await _songManager.GetOnePageOfSongsDictionary(mState);
 
             JObject jObjectForAll = new JObject();
             jObjectForAll.Add("pageNo", mState.CurrentPageNo);
@@ -149,7 +149,7 @@ namespace VodManageSystem.Api.Controllers
             StateOfRequest mState = new StateOfRequest(orderByParam);
             mState.PageSize = pageSize;
             mState.CurrentPageNo = pageNo;
-            List<Song> songs = await _songManager.GetOnePageOfSongs(mState);
+            List<Song> songs = await _songManager.GetOnePageOfSongsDictionary(mState);
 
             JObject jObjectForAll = new JObject();
             jObjectForAll.Add("pageNo", mState.CurrentPageNo);

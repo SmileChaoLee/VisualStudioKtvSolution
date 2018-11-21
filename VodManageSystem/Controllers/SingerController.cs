@@ -66,8 +66,7 @@ namespace VodManageSystem.Controllers
             {
                 mState = JsonUtil.GetObjectFromJsonString<StateOfRequest>(singer_state);
             }
-            // List<Singer> singers = await _singerManager.GetOnePageOfSingersDictionary(mState);
-            List<Singer> singers = await _singerManager.GetOnePageOfSingers(mState);
+            List<Singer> singers = await _singerManager.GetOnePageOfSingersDictionary(mState);
 
             ViewBag.SingerState = JsonUtil.SetJsonStringFromObject(mState);
             return View(singers);
@@ -271,7 +270,9 @@ namespace VodManageSystem.Controllers
 
             List<SelectListItem> singareaSelectList = await _singareaManager.GetSelectListOfSingareas(new StateOfRequest("AreaNa"));
             ViewBag.SingareaList = singareaSelectList;
-            ViewBag.SingerState = singer_state; // pass the Json string to View
+            mState.StartTime = DateTime.Now;
+            string temp_state = JsonUtil.SetJsonStringFromObject(mState);
+            ViewBag.SingerState = temp_state; // pass the Json string to View
 
             Singer singer = new Singer(); // create a new Singer object
 

@@ -63,8 +63,7 @@ namespace VodManageSystem.Controllers
             {
                 mState = JsonUtil.GetObjectFromJsonString<StateOfRequest>(language_state);
             }
-            // List<Language> languages = await _languageManager.GetOnePageOfLanguagesDictionary(mState);
-            List<Language> languages = await _languageManager.GetOnePageOfLanguages(mState);
+            List<Language> languages = await _languageManager.GetOnePageOfLanguagesDictionary(mState);
 
             ViewBag.LanguageState = JsonUtil.SetJsonStringFromObject(mState);
             return View(languages);
@@ -267,9 +266,12 @@ namespace VodManageSystem.Controllers
                 mState.OrgId = mState.FirstId;
             }
 
+            mState.StartTime = DateTime.Now;
+            string temp_state = JsonUtil.SetJsonStringFromObject(mState);
+            ViewBag.LanguageState = temp_state; // pass the Json string to View
+
             Language language = new Language(); // create a new Language object
 
-            ViewBag.LanguageState = language_state; // pass the Json string to View
             return View(language);
         }
 
