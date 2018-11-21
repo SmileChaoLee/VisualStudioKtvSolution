@@ -66,6 +66,88 @@ namespace VodManageSystem.Models.Dao
             return totalSingers;
         }
 
+        public async Task<List<Singer>> GetOnePageOfSingers(StateOfRequest mState)
+        {
+            if (mState == null)
+            {
+                return new List<Singer>();
+            }
+
+            var singersList = _context.Singer.Where(x => x.Id == -1);
+            if (mState.OrderBy == "SingNo")
+            {
+                singersList = _context.Singer.Include(x => x.Singarea)
+                                      .OrderBy(x => x.SingNo);
+            }
+            else if (mState.OrderBy == "SingNa")
+            {
+                singersList = _context.Singer.Include(x => x.Singarea)
+                                      .OrderBy(x => x.SingNa).ThenBy(x => x.SingNo);
+            }
+            else if (mState.OrderBy == "")
+            {
+                singersList = _context.Singer.Include(x => x.Singarea);
+            }
+            else
+            {
+                // invalid order by then return empty list
+            }
+            int pageNo = mState.CurrentPageNo;
+            int pageSize = mState.PageSize;
+            int[] returnNumbers = await GetTotalRecordsAndPages(pageSize);
+            int totalRecords = returnNumbers[0];
+            int totalPages = returnNumbers[1];
+            bool getAll = false;
+            if (pageNo == -1)
+            {
+                // get the last page
+                pageNo = totalPages;
+            }
+            else if (pageNo == -100)
+            {
+                // get all songs
+                getAll = true;
+                pageNo = 1; // restore pageNo to 1
+            }
+            else
+            {
+                if (pageNo < 1)
+                {
+                    pageNo = 1;
+                }
+                else if (pageNo > totalPages)
+                {
+                    pageNo = totalPages;
+                }
+            }
+            int recordNum = (pageNo - 1) * pageSize;
+            List<Singer> singers;
+            if (getAll)
+            {
+                singers = await singersList.AsNoTracking().ToListAsync();
+            }
+            else
+            {
+                singers = await singersList.Skip(recordNum).Take(pageSize).AsNoTracking().ToListAsync();
+            }
+            mState.CurrentPageNo = pageNo;
+            mState.PageSize = pageSize;
+            mState.TotalRecords = totalRecords;
+            mState.TotalPages = totalPages;
+            Singer firstSinger = singers.FirstOrDefault();
+            if (firstSinger != null)
+            {
+                mState.FirstId = firstSinger.Id;
+            }
+            else
+            {
+                mState.OrgId = 0;
+                mState.OrgNo = "";
+                mState.FirstId = 0;
+            }
+            return singers;
+        }
+
         /// <summary>
         /// Gets the dictionary of singers.
         /// </summary>
@@ -252,6 +334,109 @@ namespace VodManageSystem.Models.Dao
         /// <param name="areaId">Singer area No.</param>
         /// <param name="sex">Singer sex.</param>
         public async Task<List<Singer>> GetOnePageOfSingersByAreaSex(StateOfRequest mState, int areaId, string sex)
+        {
+            if (mState == null)
+            {
+                return new List<Singer>();
+            }
+
+            var singersSubTotal = _context.Singer.Where(x => x.AreaId == -1);
+            if (mState.OrderBy == "")
+            {
+                if (sex == "0")
+                {
+                    singersSubTotal = _context.Singer.Where(x => x.AreaId == areaId);
+                }
+                else
+                {
+                    singersSubTotal = _context.Singer.Where(x => (x.AreaId == areaId) && (x.Sex == sex));
+                }
+            }
+            else if (mState.OrderBy == "SingNo")
+            {
+                if (sex == "0")
+                {
+                    singersSubTotal = _context.Singer.Where(x => x.AreaId == areaId)
+                                                .OrderBy(x => x.SingNo);
+                }
+                else
+                {
+                    singersSubTotal = _context.Singer.Where(x => (x.AreaId == areaId) && (x.Sex == sex))
+                                                .OrderBy(x => x.SingNo);
+                }
+            }
+            else if (mState.OrderBy == "SingNa")
+            {
+                if (sex == "0")
+                {
+                    singersSubTotal = _context.Singer.Where(x => x.AreaId == areaId)
+                                              .OrderBy(x => x.SingNa).ThenBy(x => x.SingNo);
+                }
+                else
+                {
+                    singersSubTotal = _context.Singer.Where(x => (x.AreaId == areaId) && (x.Sex == sex))
+                                              .OrderBy(x => x.SingNa).ThenBy(x => x.SingNo);
+                }
+            }
+            else
+            {
+                // empty list
+
+            }
+
+            int pageNo = mState.CurrentPageNo;
+            int pageSize = mState.PageSize;
+            int totalRecords = await singersSubTotal.CountAsync();
+            int totalPages = totalRecords / pageSize;
+            if (totalPages * pageSize != totalRecords)
+            {
+                totalPages++;
+            }
+            if (pageNo == -1)
+            {
+                // get the last page
+                pageNo = totalPages;
+            }
+            else if (pageNo < 1)
+            {
+                pageNo = 1;
+            }
+            else if (pageNo > totalPages)
+            {
+                pageNo = totalPages;
+            }
+            int recordNum = (pageNo - 1) * pageSize;
+
+            List<Singer> singers = await singersSubTotal.Skip(recordNum).Take(pageSize).ToListAsync();
+
+            mState.CurrentPageNo = pageNo;
+            mState.PageSize = pageSize;
+            mState.TotalRecords = totalRecords;
+            mState.TotalPages = totalPages;
+
+            Singer firstSinger = singers.FirstOrDefault();
+            if (firstSinger != null)
+            {
+                mState.FirstId = firstSinger.Id;
+            }
+            else
+            {
+                mState.OrgId = 0;
+                mState.OrgNo = "";
+                mState.FirstId = 0;
+            }
+
+            return singers;
+        }
+
+        /// <summary>
+        /// Gets the one page of singers by Singarea No and singer sex.
+        /// </summary>
+        /// <returns>The one page of singers dictionary.</returns>
+        /// <param name="mState">Singer state.</param>
+        /// <param name="areaId">Singer area No.</param>
+        /// <param name="sex">Singer sex.</param>
+        public async Task<List<Singer>> GetOnePageOfSingersByAreaSexByToList(StateOfRequest mState, int areaId, string sex)
         {
             if (mState == null)
             {

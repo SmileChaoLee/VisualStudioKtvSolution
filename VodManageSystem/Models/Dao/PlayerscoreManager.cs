@@ -92,7 +92,7 @@ namespace VodManageSystem.Models.Dao
         public async Task<List<SelectListItem>> GetSelectListOfPlayerscores(StateOfRequest mState)
         {
             List<SelectListItem> selectList = new List<SelectListItem>();
-            List<Playerscore> playerscores = await GetOnePageOfPlayerscoresDictionary(mState);
+            List<Playerscore> playerscores = await GetAllPlayerscores(mState);
             foreach (Playerscore playerscore in playerscores)
             {
                 selectList.Add(new SelectListItem

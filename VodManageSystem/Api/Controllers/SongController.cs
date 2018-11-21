@@ -7,6 +7,7 @@ using Newtonsoft.Json.Linq;
 using VodManageSystem.Models;
 using VodManageSystem.Models.Dao;
 using VodManageSystem.Models.DataModels;
+using VodManageSystem.Utilities;
 
 // For more information on enabling Web API for empty projects, visit https://go.microsoft.com/fwlink/?LinkID=397860
 
@@ -59,7 +60,7 @@ namespace VodManageSystem.Api.Controllers
             for (int i = 0; i < songs.Count; i++)
             {
                 Song song = songs[i];
-                jObject = ConvertSongToJsongObject(song);
+                jObject = JsonUtil.ConvertSongToJsongObject(song);
                 jArray.Add(jObject);
             }
             jObjectForAll.Add("songs", jArray);
@@ -73,7 +74,7 @@ namespace VodManageSystem.Api.Controllers
         {
             // get one song
             Song song = await _songManager.FindOneSongById(id);
-            JObject jObject = ConvertSongToJsongObject(song);
+            JObject jObject = JsonUtil.ConvertSongToJsongObject(song);
             JObject returnJSON = new JObject();
             returnJSON.Add("song", jObject);
 
@@ -100,7 +101,7 @@ namespace VodManageSystem.Api.Controllers
             JArray jArray = new JArray();
             foreach (var song in songs)
             {
-                jObject = ConvertSongToJsongObject(song);
+                jObject = JsonUtil.ConvertSongToJsongObject(song);
                 jArray.Add(jObject);
             }
             jObjectForAll.Add("songs", jArray);
@@ -108,7 +109,7 @@ namespace VodManageSystem.Api.Controllers
             return jObjectForAll.ToString();
         }
 
-        // GET api/values/10/1/orderBy
+        // GET api/values/10/1/"SongNo"
         [HttpGet("{pageSize}/{pageNo}/{orderBy}")]
         public async Task<string> Get(int pageSize, int pageNo, string orderBy)
         {
@@ -160,7 +161,7 @@ namespace VodManageSystem.Api.Controllers
             JArray jArray = new JArray();
             foreach (var song in songs)
             {
-                jObject = ConvertSongToJsongObject(song);
+                jObject = JsonUtil.ConvertSongToJsongObject(song);
                 jArray.Add(jObject);
             }
             jObjectForAll.Add("songs", jArray);
@@ -184,68 +185,6 @@ namespace VodManageSystem.Api.Controllers
         [HttpDelete("{id}")]
         public void Delete(int id)
         {
-        }
-
-        private JObject ConvertSongToJsongObject(Song song)
-        {
-            JObject jObject = new JObject();
-            if (song == null)
-            {
-                return jObject;
-            }
-
-            jObject.Add("id", song.Id);
-            jObject.Add("songNo", song.SongNo);
-            jObject.Add("songNa", song.SongNa);
-            jObject.Add("sNumWord", song.SNumWord);
-            jObject.Add("numFw", song.NumFw);
-            jObject.Add("numPw", song.NumPw);
-            jObject.Add("chor", song.Chor);
-            jObject.Add("nMpeg", song.NMpeg);
-            jObject.Add("mMpeg", song.MMpeg);
-            jObject.Add("vodYn", song.VodYn);
-            jObject.Add("vodNo", song.VodNo);
-            jObject.Add("pathname", song.Pathname);
-            jObject.Add("ordNo", song.OrdNo);
-            jObject.Add("orderNum", song.OrderNum);
-            jObject.Add("ordOldN", song.OrdOldN);
-            jObject.Add("languageId", song.LanguageId);
-            if (song.Language != null)
-            {
-                jObject.Add("languageNo", song.Language.LangNo);
-                jObject.Add("languageNa", song.Language.LangNa);
-            }
-            else 
-            {
-                jObject.Add("languageNo", "");
-                jObject.Add("languageNa", "");
-            }
-            jObject.Add("singer1Id", song.Singer1Id);
-            if (song.Singer1 != null)
-            {
-                jObject.Add("singer1No", song.Singer1.SingNo);
-                jObject.Add("singer1Na", song.Singer1.SingNa);
-            }
-            else 
-            {
-                jObject.Add("singer1No", "");
-                jObject.Add("singer1Na", "");
-            }
-            jObject.Add("singer2Id", song.Singer2Id);
-            if (song.Singer2 != null)
-            {
-                jObject.Add("singer2No", song.Singer2.SingNo);
-                jObject.Add("singer2Na", song.Singer2.SingNa);
-            }
-            else
-            {
-                jObject.Add("singer2No", "");
-                jObject.Add("singer2Na", "");
-            }
-
-            jObject.Add("inDate", song.InDate);
-
-            return jObject;
         }
     }
 }

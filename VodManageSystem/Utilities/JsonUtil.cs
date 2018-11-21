@@ -1,7 +1,8 @@
 ﻿using System;
 using Newtonsoft.Json;
-
+using Newtonsoft.Json.Linq;
 using VodManageSystem.Models;
+using VodManageSystem.Models.DataModels;
 
 namespace VodManageSystem.Utilities
 {
@@ -49,6 +50,90 @@ namespace VodManageSystem.Utilities
             {
                 ReferenceLoopHandling = Newtonsoft.Json.ReferenceLoopHandling.Ignore
             });
+        }
+
+
+        public static JObject ConvertSingerToJsongObject(Singer singer)
+        {
+            JObject jObject = new JObject();
+            if (singer == null)
+            {
+                return jObject;
+            }
+
+            jObject.Add("id", singer.Id);
+            jObject.Add("singNo", singer.SingNo);
+            jObject.Add("singNa", singer.SingNa);
+            jObject.Add("sex", singer.Sex);
+            jObject.Add("chor", singer.Chor);
+            jObject.Add("hot", singer.Hot);
+            jObject.Add("numFw", singer.NumFw);
+            jObject.Add("numPw", singer.NumPw);
+            jObject.Add("picFile", singer.PicFile);
+
+            return jObject;
+        }
+
+        public static JObject ConvertSongToJsongObject(Song song)
+        {
+            JObject jObject = new JObject();
+            if (song == null)
+            {
+                return jObject;
+            }
+
+            jObject.Add("id", song.Id);
+            jObject.Add("songNo", song.SongNo);
+            jObject.Add("songNa", song.SongNa);
+            jObject.Add("sNumWord", song.SNumWord);
+            jObject.Add("numFw", song.NumFw);
+            jObject.Add("numPw", song.NumPw);
+            jObject.Add("chor", song.Chor);
+            jObject.Add("nMpeg", song.NMpeg);
+            jObject.Add("mMpeg", song.MMpeg);
+            jObject.Add("vodYn", song.VodYn);
+            jObject.Add("vodNo", song.VodNo);
+            jObject.Add("pathname", song.Pathname);
+            jObject.Add("ordNo", song.OrdNo);
+            jObject.Add("orderNum", song.OrderNum);
+            jObject.Add("ordOldN", song.OrdOldN);
+            jObject.Add("languageId", song.LanguageId);
+            if (song.Language != null)
+            {
+                jObject.Add("languageNo", song.Language.LangNo);
+                jObject.Add("languageNa", song.Language.LangNa);
+            }
+            else
+            {
+                jObject.Add("languageNo", "");
+                jObject.Add("languageNa", "");
+            }
+            jObject.Add("singer1Id", song.Singer1Id);
+            if (song.Singer1 != null)
+            {
+                jObject.Add("singer1No", song.Singer1.SingNo);
+                jObject.Add("singer1Na", song.Singer1.SingNa);
+            }
+            else
+            {
+                jObject.Add("singer1No", "");
+                jObject.Add("singer1Na", "");
+            }
+            jObject.Add("singer2Id", song.Singer2Id);
+            if (song.Singer2 != null)
+            {
+                jObject.Add("singer2No", song.Singer2.SingNo);
+                jObject.Add("singer2Na", song.Singer2.SingNa);
+            }
+            else
+            {
+                jObject.Add("singer2No", "");
+                jObject.Add("singer2Na", "");
+            }
+
+            jObject.Add("inDate", song.InDate);
+
+            return jObject;
         }
     }
 }

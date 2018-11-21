@@ -19,6 +19,7 @@ namespace VodManageSystem.Api.Controllers
         private readonly KtvSystemDBContext _context;
         private readonly SingerManager _singerManager;
         private readonly SingareaManager _singareaManager;
+        private readonly SongManager _songManager;
 
         /// <summary>
         /// Initializes a new instance of the <see cref="T:VodManageSystem.Controllers.SingerController"/> class.
@@ -26,11 +27,12 @@ namespace VodManageSystem.Api.Controllers
         /// <param name="context">Context.</param>
         /// <param name="singerManager">Singer manager.</param>
         /// <param name="singareaManager">Singer Area manager.</param>
-        public SingerController(KtvSystemDBContext context, SingerManager singerManager, SingareaManager singareaManager)
+        public SingerController(KtvSystemDBContext context, SingerManager singerManager, SingareaManager singareaManager, SongManager songManager)
         {
             _context = context;
             _singerManager = singerManager;
             _singareaManager = singareaManager;
+            _songManager = songManager;
         }
 
         // GET: api/values
@@ -52,7 +54,7 @@ namespace VodManageSystem.Api.Controllers
             JArray jArray = new JArray();
             foreach (var singer in singers)
             {
-                jObject = ConvertSingerToJsongObject(singer);
+                jObject = JsonUtil.ConvertSingerToJsongObject(singer);
                 jArray.Add(jObject);
             }
             jObjectForAll.Add("singers", jArray);
@@ -66,7 +68,7 @@ namespace VodManageSystem.Api.Controllers
         {
             // get one singer
             Singer singer = await _singerManager.FindOneSingerById(id);
-            JObject jObject = ConvertSingerToJsongObject(singer);
+            JObject jObject = JsonUtil.ConvertSingerToJsongObject(singer);
             JObject returnJSON = new JObject();
             returnJSON.Add("singer", jObject);
 
@@ -94,7 +96,7 @@ namespace VodManageSystem.Api.Controllers
             JArray jArray = new JArray();
             foreach (var singer in singers)
             {
-                jObject = ConvertSingerToJsongObject(singer);
+                jObject = JsonUtil.ConvertSingerToJsongObject(singer);
                 jArray.Add(jObject);
             }
             jObjectForAll.Add("singers", jArray);
@@ -138,13 +140,47 @@ namespace VodManageSystem.Api.Controllers
             JArray jArray = new JArray();
             foreach (var singer in singers)
             {
-                jObject = ConvertSingerToJsongObject(singer);
+                jObject = JsonUtil.ConvertSingerToJsongObject(singer);
                 jArray.Add(jObject);
             }
             jObjectForAll.Add("singers", jArray);
 
             return jObjectForAll.ToString();
         }
+
+        // GET api/values/{id}/songs/10/1
+
+        // [Route("{id}/[Action]/{pageSize}/{pageNo}")]
+        // [HttpGet]
+        // or
+        [HttpGet("{id}/[Action]/{pageSize}/{pageNo}")]
+        public string Songs(int id, int pageSize, int pageNo)
+        {
+            Console.WriteLine("HttpGet[\"{id}/Songs/{ pageSize}/{ pageNo}\")]");
+
+            StateOfRequest mState = new StateOfRequest("");
+            mState.PageSize = pageSize;
+            mState.CurrentPageNo = pageNo;
+
+            List<Song> songs = _songManager.GetOnePageOfSongsBySingerId(mState, id, true);
+
+            JObject jObjectForAll = new JObject();
+            jObjectForAll.Add("pageNo", mState.CurrentPageNo);
+            jObjectForAll.Add("pageSize", mState.PageSize);
+            jObjectForAll.Add("totalRecords", mState.TotalRecords);
+            jObjectForAll.Add("totalPages", mState.TotalPages);
+            JObject jObject;
+            JArray jArray = new JArray();
+            foreach (var song in songs)
+            {
+                jObject = JsonUtil.ConvertSongToJsongObject(song);
+                jArray.Add(jObject);
+            }
+            jObjectForAll.Add("songs", jArray);
+
+            return jObjectForAll.ToString();
+        }
+
 
         // GET api/values/5/"1"/10/1
         [HttpGet("{areaId}/{sex}/{pageSize}/{pageNo}/{orderBy}")]
@@ -191,7 +227,7 @@ namespace VodManageSystem.Api.Controllers
             JArray jArray = new JArray();
             foreach (var singer in singers)
             {
-                jObject = ConvertSingerToJsongObject(singer);
+                jObject = JsonUtil.ConvertSingerToJsongObject(singer);
                 jArray.Add(jObject);
             }
             jObjectForAll.Add("singers", jArray);
@@ -215,27 +251,6 @@ namespace VodManageSystem.Api.Controllers
         [HttpDelete("{id}")]
         public void Delete(int id)
         {
-        }
-
-        private JObject ConvertSingerToJsongObject(Singer singer) 
-        {
-            JObject jObject = new JObject();
-            if (singer == null)
-            {
-                return jObject;
-            }
-
-            jObject.Add("id", singer.Id);
-            jObject.Add("singNo", singer.SingNo);
-            jObject.Add("singNa", singer.SingNa);
-            jObject.Add("sex", singer.Sex);
-            jObject.Add("chor", singer.Chor);
-            jObject.Add("hot", singer.Hot);
-            jObject.Add("numFw", singer.NumFw);
-            jObject.Add("numPw", singer.NumPw);
-            jObject.Add("picFile", singer.PicFile);
-
-            return jObject;
         }
     }
 }
