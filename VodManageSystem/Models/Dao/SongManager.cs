@@ -505,10 +505,6 @@ namespace VodManageSystem.Models.Dao
             {
                 return new List<Song>();
             }
-            if (string.IsNullOrEmpty(mState.OrderBy))
-            {
-                mState.OrderBy = "SongNo";
-            }
 
             int pageSize = mState.PageSize;
 
@@ -517,15 +513,21 @@ namespace VodManageSystem.Models.Dao
 
             SortedDictionary<int, Song> songsDictionary = await GetDictionaryOfSongs(mState);
 
-            if (id > 0)
+            if (id >= 0)
             {
-                // There was a selected song
+                // There was a song selected
                 songWithIndex = songsDictionary.Where(x=>x.Value.Id == id).SingleOrDefault();
             }
             else
             {
-                // No selected song
-                if (mState.OrderBy == "SongNo")
+                // No song selected
+                if (mState.OrderBy == "")
+                {
+                    // order by Id
+                    int song_id = song.Id;
+                    songWithIndex = songsDictionary.Where(x => (x.Value.Id >= song_id) ).FirstOrDefault();
+                }
+                else if (mState.OrderBy == "SongNo")
                 {
                     string song_no = song.SongNo;
                     songWithIndex = songsDictionary.Where(x=>(String.Compare(x.Value.SongNo,song_no)>=0)).FirstOrDefault();
