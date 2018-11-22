@@ -109,7 +109,7 @@ namespace VodManageSystem.Models.Dao
         }
 
         // public methods
-        public async Task<List<Song>> GetAllSongs(StateOfRequest mState)
+        public List<Song> GetAllSongs(StateOfRequest mState)
         {
             if (mState == null)
             {
@@ -117,74 +117,37 @@ namespace VodManageSystem.Models.Dao
             }
 
             mState.CurrentPageNo = -100; // present to get all songs
-            List<Song> totalSongs = await GetOnePageOfSongsDictionary(mState);
+            // List<Song> totalSongs = await GetOnePageOfSongsDictionary(mState);
+            List<Song> totalSongs = GetOnePageOfSongs(mState);
 
             return totalSongs;
-
         }
 
-        public async Task<List<Song>> GetOnePageOfSongs(StateOfRequest mState)
+        public List<Song> GetOnePageOfSongs(StateOfRequest mState)
         {
             if (mState == null)
             {
                 return new List<Song>();
             }
+            IQueryable<Song> songsList = GetAllSongsNotUseDictionary(mState);
+            if (songsList == null)
+            {
+                return new List<Song>();
+            }
 
-            var songsList = _context.Song.Where(x => x.Id == -1);
-            if (mState.OrderBy == "SongNo")
-            {
-                songsList = _context.Song.Include(x => x.Language)
-                                    .Include(x => x.Singer1).Include(x => x.Singer2)
-                                    .OrderBy(x => x.SongNo);
-            }
-            else if (mState.OrderBy == "SongNa")
-            {
-                songsList = _context.Song.Include(x => x.Language)
-                                           .Include(x => x.Singer1).Include(x => x.Singer2)
-                                      .OrderBy(x => x.SongNa).ThenBy(x => x.SongNo);
-            }
-            else if (mState.OrderBy == "VodNo")
-            {
-                songsList = _context.Song.Include(x => x.Language)
-                                    .Include(x => x.Singer1).Include(x => x.Singer2)
-                                    .OrderBy(x => x.VodNo).ThenBy(x => x.SongNo);
-            }
-            else if (mState.OrderBy == "LangSongNa")
-            {
-                songsList = _context.Song.Include(x => x.Language)
-                                    .Include(x => x.Singer1).Include(x => x.Singer2)
-                                    .OrderBy(x => x.Language == null)
-                                    .ThenBy(x => x.Language.LangNo + x.SongNa).ThenBy(x => x.SongNo);
-            }
-            else if (mState.OrderBy == "Singer1Na")
-            {
-                songsList = _context.Song.Include(x => x.Language)
-                                     .Include(x => x.Singer1).Include(x => x.Singer2)
-                                     .OrderBy(x => x.Singer1 == null)
-                                    .ThenBy(x => x.Singer1.SingNa).ThenBy(x => x.SongNo);
-            }
-            else if (mState.OrderBy == "Singer2Na")
-            {
-                songsList = _context.Song.Include(x => x.Language)
-                                    .Include(x => x.Singer1).Include(x => x.Singer2)
-                                    .OrderBy(x => x.Singer2 == null)
-                                    .ThenBy(x => x.Singer2.SingNa).ThenBy(x => x.SongNo);
-            }
-            else if (mState.OrderBy == "")
-            {
-                // no order by (just from the top of database
-                songsList = _context.Song.Include(x => x.Language)
-                                    .Include(x => x.Singer1).Include(x => x.Singer2);
-            }
-            else
-            {
-                // invalid order by then return empty list
-            }
             int pageNo = mState.CurrentPageNo;
             int pageSize = mState.PageSize;
-            int[] returnNumbers = await GetTotalRecordsAndPages(pageSize);
-            int totalRecords = returnNumbers[0];
-            int totalPages = returnNumbers[1];
+            // int[] returnNumbers = await GetTotalRecordsAndPages(pageSize);
+            // int totalRecords = returnNumbers[0];
+            // int totalPages = returnNumbers[1];
+
+            int totalRecords = songsList.Count();
+            int totalPages = totalRecords / pageSize;
+            if ((totalPages * pageSize) != totalRecords)
+            {
+                totalPages++;
+            }
+
             bool getAll = false;
             if (pageNo == -1)
             {
@@ -208,16 +171,18 @@ namespace VodManageSystem.Models.Dao
                     pageNo = totalPages;
                 }
             }
+
             int recordNum = (pageNo - 1) * pageSize;
+
             List<Song> songs;
             if (getAll)
             {
                 // get all songs
-                songs = await songsList.AsNoTracking().ToListAsync();
+                songs = songsList.ToList();
             }
             else
             {
-                songs = await songsList.Skip(recordNum).Take(pageSize).AsNoTracking().ToListAsync();
+                songs = songsList.Skip(recordNum).Take(pageSize).ToList();
             }
             mState.CurrentPageNo = pageNo;
             mState.PageSize = pageSize;
@@ -323,7 +288,8 @@ namespace VodManageSystem.Models.Dao
             }
 
             IQueryable<Song> totalSongs = _context.Song.Include(x => x.Language)
-                                         .Include(x => x.Singer1).Include(x => x.Singer2);
+                                         .Include(x => x.Singer1).Include(x => x.Singer2)
+                                         .ToList().AsQueryable<Song>();
 
             IQueryable<Song> songs;
             if (mState.OrderBy == "")
@@ -372,11 +338,13 @@ namespace VodManageSystem.Models.Dao
         /// </summary>
         /// <returns>The dictionary of songs.</returns>
         /// <param name="mState">Song state.</param>
-        public async Task<SortedDictionary<int,Song>> GetDictionaryOfSongs(StateOfRequest mState)
+        // public async Task<SortedDictionary<int,Song>> GetDictionaryOfSongs(StateOfRequest mState)
+        public async Task<Dictionary<int, Song>> GetDictionaryOfSongs(StateOfRequest mState)
         {
             if (mState == null)
             {
-                return new SortedDictionary<int,Song>();
+                // return new SortedDictionary<int,Song>();
+                return new Dictionary<int, Song>();
             }
 
             List<Song> totalSongs = await _context.Song.Include(x=>x.Language)
@@ -437,7 +405,9 @@ namespace VodManageSystem.Models.Dao
                 songsDictionary = new Dictionary<int, Song>();    // empty lsit
             }
 
-            return new SortedDictionary<int,Song>(songsDictionary);
+            // return new SortedDictionary<int,Song>(songsDictionary);
+
+            return songsDictionary;
         }
 
         /// <summary>
@@ -484,7 +454,8 @@ namespace VodManageSystem.Models.Dao
                 mState.OrderBy = "SongNo";
             }
 
-            SortedDictionary<int, Song> songsDictionary = await GetDictionaryOfSongs(mState);
+            // SortedDictionary<int, Song> songsDictionary = await GetDictionaryOfSongs(mState);
+            Dictionary<int, Song> songsDictionary = await GetDictionaryOfSongs(mState);
 
             int pageNo = mState.CurrentPageNo;
             int pageSize = mState.PageSize;
@@ -570,7 +541,8 @@ namespace VodManageSystem.Models.Dao
             List<Song> songs = null;
             KeyValuePair<int,Song> songWithIndex = new KeyValuePair<int, Song>(-1,null);
 
-            SortedDictionary<int, Song> songsDictionary = await GetDictionaryOfSongs(mState);
+            // SortedDictionary<int, Song> songsDictionary = await GetDictionaryOfSongs(mState);
+            Dictionary<int, Song> songsDictionary = await GetDictionaryOfSongs(mState);
 
             if (id >= 0)
             {

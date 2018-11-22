@@ -527,7 +527,7 @@ namespace VodManageSystem.Models.DataModels
                     .IsRequired()
                     .HasColumnName("s_num_word")
                     .HasColumnType("int(2)");
-
+                      
                 entity.Property(e => e.SeleTf)
                     .HasColumnName("sele_tf")
                     .HasMaxLength(1);

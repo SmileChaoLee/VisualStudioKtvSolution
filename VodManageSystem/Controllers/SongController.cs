@@ -68,7 +68,7 @@ namespace VodManageSystem.Controllers
         // get a list of songs
         // Get method.  
         [HttpGet, ActionName("SongsList")]
-        public async Task<IActionResult> SongsList(string song_state)
+        public IActionResult SongsList(string song_state)
         {
             StateOfRequest mState;
             if (string.IsNullOrEmpty(song_state))
@@ -80,27 +80,10 @@ namespace VodManageSystem.Controllers
                 mState = JsonUtil.GetObjectFromJsonString<StateOfRequest>(song_state);
             }
 
-            DateTime beginTime = DateTime.Now;
-            mState.CurrentPageNo = 1;
-            mState.PageSize = 15;
-
-            List<Song> songs = await _songManager.GetOnePageOfSongsDictionary(mState);
-
-            DateTime endTime = DateTime.Now;
-            double diff = ((TimeSpan)(endTime - beginTime)).TotalMilliseconds;
-
-            Console.WriteLine("\n\n_songManager.GetOnePageOfSongsDictionary(mState) ---- elapsed time = " + diff + "\n\n");
-
-            beginTime = DateTime.Now;
-
-            List<Song> songsTest = await _songManager.GetOnePageOfSongs(mState);
-
-            endTime = DateTime.Now;
-            diff = ((TimeSpan)(endTime - beginTime)).TotalMilliseconds;
-
-            Console.WriteLine("\n\n_songManager.GetOnePageOfSongs(mState) ---- elapsed time = " + diff + "\n\n");
+            List<Song> songs = _songManager.GetOnePageOfSongs(mState);
 
             ViewBag.SongState = JsonUtil.SetJsonStringFromObject(mState);
+
             return View(songs);
         }
 
