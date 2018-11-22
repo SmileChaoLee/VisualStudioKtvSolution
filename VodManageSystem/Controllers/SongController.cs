@@ -211,7 +211,18 @@ namespace VodManageSystem.Controllers
                 song.Singer2.SingNa = sing_na2;
             }
 
-            List<Song> songsTemp = await _songManager.FindOnePageOfSongsForOneSong(mState, song, -1);
+            DateTime beginTime = DateTime.Now;
+            List<Song> songsTempNoUsed = await _songManager.FindOnePageOfSongsForOneSong_OLD(mState, song, -1);
+            DateTime endTime = DateTime.Now;
+            double diff = ( (TimeSpan)(endTime - beginTime) ).TotalMilliseconds;
+            Console.WriteLine("\n\nElapsed time for _songManager.FindOnePageOfSongsForOneSong_OLD() = {0}\n\n", diff);
+
+            beginTime = DateTime.Now;
+            List<Song> songsTemp = _songManager.FindOnePageOfSongsForOneSong(mState, song, -1);
+            endTime = DateTime.Now;
+            diff = ((TimeSpan)(endTime - beginTime)).TotalMilliseconds;
+            Console.WriteLine("\n\nElapsed time for _songManager.FindOnePageOfSongsForOneSong() = {0}\n\n", diff);
+
             temp_state = JsonUtil.SetJsonStringFromObject(mState);
 
             ViewBag.SongState = temp_state;
@@ -379,7 +390,8 @@ namespace VodManageSystem.Controllers
             if (sButton == "CANCEL")
             {
                 Song newSong = new Song();
-                List<Song> songsTemp = await _songManager.FindOnePageOfSongsForOneSong(mState, newSong, orgId);
+                // List<Song> songsTemp = await _songManager.FindOnePageOfSongsForOneSong_OLD(mState, newSong, orgId);
+                List<Song> songsTemp = _songManager.FindOnePageOfSongsForOneSong(mState, newSong, orgId);
                 mState.IsFirstAddRecord = true;
                 temp_state = JsonUtil.SetJsonStringFromObject(mState);
                 ViewBag.SongState = temp_state;
@@ -493,7 +505,8 @@ namespace VodManageSystem.Controllers
                 {
                     // succeeded to update
                     Song newSong = new Song();
-                    List<Song> songsTemp = await _songManager.FindOnePageOfSongsForOneSong(mState, newSong, orgId);
+                    // List<Song> songsTemp = await _songManager.FindOnePageOfSongsForOneSong_OLD(mState, newSong, orgId);
+                    List<Song> songsTemp = await _songManager.FindOnePageOfSongsForOneSong_OLD(mState, newSong, orgId);
                     temp_state = JsonUtil.SetJsonStringFromObject(mState);
 
                     ViewBag.SongState = temp_state;
@@ -592,7 +605,8 @@ namespace VodManageSystem.Controllers
                 if (result == ErrorCodeModel.Succeeded)
                 {
                     // succeeded to delete a song
-                    List<Song> songsTemp = await _songManager.FindOnePageOfSongsForOneSong(mState, song, -1);
+                    // List<Song> songsTemp = await _songManager.FindOnePageOfSongsForOneSong(mState, song, -1);
+                    List<Song> songsTemp = _songManager.FindOnePageOfSongsForOneSong(mState, song, -1);
                     temp_state = JsonUtil.SetJsonStringFromObject(mState);
 
                     ViewBag.SongState = temp_state;
@@ -659,7 +673,7 @@ namespace VodManageSystem.Controllers
 
         // POST:
         [HttpPost, ActionName("Details")]
-        public async Task<IActionResult> DetailsReturn(string song_state)
+        public IActionResult DetailsReturn(string song_state)
         {
             if (!LoginUtil.CheckIfLoggedIn(HttpContext)) return View(nameof(Index));
 
@@ -676,7 +690,8 @@ namespace VodManageSystem.Controllers
 
             int orgId = mState.OrgId;
             Song song = new Song();
-            List<Song> songsTemp = await _songManager.FindOnePageOfSongsForOneSong(mState, song, orgId);
+            // List<Song> songsTemp = await _songManager.FindOnePageOfSongsForOneSong_OLD(mState, song, orgId);
+            List<Song> songsTemp = _songManager.FindOnePageOfSongsForOneSong(mState, song, orgId);
             string temp_state = JsonUtil.SetJsonStringFromObject(mState);
 
             ViewBag.SongState = temp_state;
@@ -686,7 +701,7 @@ namespace VodManageSystem.Controllers
 
         // Get:
         [HttpGet,ActionName("ChangeOrder")]
-        public async Task<IActionResult> ChangeOrder(string song_state)
+        public IActionResult ChangeOrder(string song_state)
         {
             if (!LoginUtil.CheckIfLoggedIn(HttpContext)) return View(nameof(Index));
 
@@ -716,7 +731,8 @@ namespace VodManageSystem.Controllers
             if (orgId != 0)
             {
                 Song song = new Song();
-                List<Song> songsTemp = await _songManager.FindOnePageOfSongsForOneSong(mState, song, orgId);
+                // List<Song> songsTemp = await _songManager.FindOnePageOfSongsForOneSong_OLD(mState, song, orgId);
+                List<Song> songsTemp = _songManager.FindOnePageOfSongsForOneSong(mState, song, orgId);
                 string temp_state = JsonUtil.SetJsonStringFromObject(mState);
 
                 ViewBag.SongState = temp_state;

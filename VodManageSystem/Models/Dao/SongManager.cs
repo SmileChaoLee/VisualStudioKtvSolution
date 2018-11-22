@@ -129,8 +129,8 @@ namespace VodManageSystem.Models.Dao
             {
                 return new List<Song>();
             }
-            IQueryable<Song> songsList = GetAllSongsNotUseDictionary(mState);
-            if (songsList == null)
+            IQueryable<KeyValuePair<int, Song>> songPairList = GetAllSongsNotUseDictionary(mState);
+            if (songPairList == null)
             {
                 return new List<Song>();
             }
@@ -141,7 +141,7 @@ namespace VodManageSystem.Models.Dao
             // int totalRecords = returnNumbers[0];
             // int totalPages = returnNumbers[1];
 
-            int totalRecords = songsList.Count();
+            int totalRecords = songPairList.Count();
             int totalPages = totalRecords / pageSize;
             if ((totalPages * pageSize) != totalRecords)
             {
@@ -178,11 +178,11 @@ namespace VodManageSystem.Models.Dao
             if (getAll)
             {
                 // get all songs
-                songs = songsList.ToList();
+                songs = songPairList.Select(x=>x.Value).ToList();
             }
             else
             {
-                songs = songsList.Skip(recordNum).Take(pageSize).ToList();
+                songs = songPairList.Skip(recordNum).Take(pageSize).Select(x => x.Value).ToList();
             }
             mState.CurrentPageNo = pageNo;
             mState.PageSize = pageSize;
@@ -204,16 +204,16 @@ namespace VodManageSystem.Models.Dao
 
         public List<Song> GetOnePageOfSongsBySingerId(StateOfRequest mState, int singerId, bool isWebAPI)
         {
-            IQueryable<Song> totalSongs = GetAllSongsNotUseDictionary(mState);
-            if (totalSongs == null)
+            IQueryable<KeyValuePair<int, Song>> totalSongPairs = GetAllSongsNotUseDictionary(mState);
+            if (totalSongPairs == null)
             {
                 return new List<Song>();
             }
 
-            totalSongs = totalSongs.Where(x => (x.Singer1Id == singerId) || (x.Singer2Id == singerId));
+            totalSongPairs = totalSongPairs.Where(x => (x.Value.Singer1Id == singerId) || (x.Value.Singer2Id == singerId));
             int pageNo = mState.CurrentPageNo;
             int pageSize = mState.PageSize;
-            int totalRecords = totalSongs.Count();
+            int totalRecords = totalSongPairs.Count();
             int totalPages = totalRecords / pageSize;
             if ( (totalPages * pageSize) != totalRecords)
             {
@@ -253,11 +253,11 @@ namespace VodManageSystem.Models.Dao
             if (getAll)
             {
                 // get all songs
-                songs = totalSongs.ToList();
+                songs = totalSongPairs.Select(x=>x.Value).ToList();
             }
             else
             {
-                songs = totalSongs.Skip(recordNum).Take(pageSize).ToList();
+                songs = totalSongPairs.Skip(recordNum).Take(pageSize).Select(x => x.Value).ToList();
             }
 
             mState.CurrentPageNo = pageNo;
@@ -280,7 +280,7 @@ namespace VodManageSystem.Models.Dao
         }
 
         // has not been used yet
-        public IQueryable<Song> GetAllSongsNotUseDictionary(StateOfRequest mState)
+        public IQueryable<KeyValuePair<int, Song>> GetAllSongsNotUseDictionary(StateOfRequest mState)
         {
             if (mState == null)
             {
@@ -329,7 +329,9 @@ namespace VodManageSystem.Models.Dao
                 songs = null;   // empty lsit
             }
 
-            return songs;
+            IQueryable<KeyValuePair<int, Song>> songPairs = songs.Select((m, index) => new KeyValuePair<int, Song>(index+1, m) );
+
+            return songPairs;
         }
 
 
@@ -529,7 +531,192 @@ namespace VodManageSystem.Models.Dao
         /// <param name="mState">Song state.</param>
         /// <param name="song">Song.</param>
         /// <param name="id">Identifier.</param>
-        public async Task<List<Song>> FindOnePageOfSongsForOneSong(StateOfRequest mState, Song song, int id)
+        public List<Song> FindOnePageOfSongsForOneSong(StateOfRequest mState, Song song, int id)
+        {
+            if ((mState == null) || (song == null))
+            {
+                return new List<Song>();
+            }
+
+            IQueryable<KeyValuePair<int, Song>> songPairsQueryable = GetAllSongsNotUseDictionary(mState);
+            if (songPairsQueryable == null)
+            {
+                return new List<Song>();
+            }
+
+            // List<Song> songsList = songsQueryable.ToList();
+
+            List<Song> songs = null;
+            KeyValuePair<int, Song> songWithIndex = new KeyValuePair<int, Song>(-1, null);
+            IQueryable<KeyValuePair<int, Song>> songsTempList = null;
+
+            if (id >= 0)
+            {
+                // There was a song selected
+                songsTempList = songPairsQueryable.Where(x => x.Value.Id == id);
+            }
+            else
+            {
+                // No song selected
+                if (mState.OrderBy == "")
+                {
+                    // order by Id
+                    int song_id = song.Id;
+                    songsTempList = songPairsQueryable.Where(x => (x.Value.Id >= song_id));
+                }
+                else if (mState.OrderBy == "SongNo")
+                {
+                    string song_no = song.SongNo;
+                    songsTempList = songPairsQueryable.Where(x => (String.Compare(x.Value.SongNo, song_no) >= 0));
+                }
+                else if (mState.OrderBy == "SongNa")
+                {
+                    string song_na = song.SongNa;
+                    songsTempList = songPairsQueryable.Where(x => (String.Compare(x.Value.SongNa, song_na) >= 0));
+                }
+                else if (mState.OrderBy == "VodNo")
+                {
+                    string vod_no = song.VodNo;
+                    songsTempList = songPairsQueryable.Where(x => (String.Compare(x.Value.VodNo, vod_no) >= 0));
+                }
+                else if (mState.OrderBy == "LangSongNa")
+                {
+                    string lang_no = song.Language.LangNo;
+                    string song_na = song.SongNa;
+                    songsTempList = (IQueryable<KeyValuePair<int, Song>>)songPairsQueryable
+                        .AsEnumerable<KeyValuePair<int, Song>>().Where(x => {
+                        bool YN = true;
+                        if (!string.IsNullOrEmpty(lang_no))
+                        {
+                            if (x.Value.Language != null)
+                            {
+                                YN = (String.Compare(x.Value.Language.LangNo + x.Value.SongNa, lang_no + song_na) >= 0);
+                            }
+                            else
+                            {
+                                YN = false;
+                            }
+                        }
+                        return YN;
+                    });
+                }
+                else if (mState.OrderBy == "Singer1Na")
+                {
+                    string singer1Na = song.Singer1.SingNa;
+                    songsTempList = (IQueryable<KeyValuePair<int, Song>>)songPairsQueryable
+                        .AsEnumerable<KeyValuePair<int, Song>>().Where(x => {
+                        bool YN = true;
+                        if (!string.IsNullOrEmpty(singer1Na))
+                        {
+                            if (x.Value.Singer1 != null)
+                            {
+                                YN = (String.Compare(x.Value.Singer1.SingNa, singer1Na) >= 0);
+                            }
+                            else
+                            {
+                                YN = false;
+                            }
+                        }
+                        return YN;
+                    });
+                }
+                else if (mState.OrderBy == "Singer2Na")
+                {
+                    string singer2Na = song.Singer2.SingNa;
+                    songsTempList = (IQueryable<KeyValuePair<int, Song>>)songPairsQueryable
+                        .AsEnumerable<KeyValuePair<int, Song>>().Where(x => {
+                        bool YN = true;
+                        if (!string.IsNullOrEmpty(singer2Na))
+                        {
+                            if (x.Value.Singer2 != null)
+                            {
+                                YN = (String.Compare(x.Value.Singer2.SingNa, singer2Na) >= 0);
+                            }
+                            else
+                            {
+                                YN = false;
+                            }
+                        }
+                        return YN;
+                    });
+                }
+                else
+                {
+                    // not inside range of roder by then return empty lsit
+                    return new List<Song>();
+                }
+            }
+
+            int totalRecords = songPairsQueryable.Count();  // the whole song table
+
+            songWithIndex = songsTempList.FirstOrDefault(); // the first one found
+            if (songWithIndex.Value == null)
+            {
+                if (totalRecords == 0)
+                {
+                    // dictionay (Song Table) is empty
+                    mState.OrgId = 0;
+                    mState.OrgNo = "";
+                    mState.FirstId = 0;
+                    // return empty list
+                    return new List<Song>();
+                }
+                else
+                {
+                    // go to last page
+                    songWithIndex = songPairsQueryable.LastOrDefault();
+                }
+            }
+
+            song.CopyFrom(songWithIndex.Value);
+
+            int pageSize = mState.PageSize;
+            int tempCount = songWithIndex.Key;
+            int pageNo = tempCount / pageSize;
+            if ((pageNo * pageSize) != tempCount)
+            {
+                pageNo++;
+            }
+
+            int recordNo = (pageNo - 1) * pageSize;
+
+            songs = songPairsQueryable.Skip(recordNo).Take(pageSize).Select(x => x.Value).ToList();
+
+            int totalPages = totalRecords / pageSize;
+            if ((totalPages * pageSize) != totalRecords)
+            {
+                totalPages++;
+            }
+
+            mState.CurrentPageNo = pageNo;
+            mState.PageSize = pageSize;
+            mState.TotalRecords = totalRecords;
+            mState.TotalPages = totalPages;
+            mState.OrgId = song.Id;
+            mState.OrgNo = song.SongNo;
+
+            Song firstSong = songs.FirstOrDefault();
+            if (firstSong != null)
+            {
+                mState.FirstId = firstSong.Id;
+            }
+            else
+            {
+                mState.FirstId = 0;
+            }
+
+            return songs;
+        }
+
+
+        /// <summary>
+        /// Finds the one page of songs for one song.
+        /// </summary>
+        /// <returns>The one page of songs for one song.</returns>
+        /// <param name="mState">Song state.</param>
+        /// <param name="song">Song.</param>
+        /// <param name="id">Identifier.</param>
+        public async Task<List<Song>> FindOnePageOfSongsForOneSong_OLD(StateOfRequest mState, Song song, int id)
         {
             if ( (mState == null) || (song == null) )
             {
