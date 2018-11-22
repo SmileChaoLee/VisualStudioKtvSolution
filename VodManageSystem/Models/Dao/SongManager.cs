@@ -129,7 +129,7 @@ namespace VodManageSystem.Models.Dao
             {
                 return new List<Song>();
             }
-            IQueryable<KeyValuePair<int, Song>> songPairList = GetAllSongsNotUseDictionary(mState);
+            IQueryable<KeyValuePair<int, Song>> songPairList = GetAllSongsIQueryable(mState);
             if (songPairList == null)
             {
                 return new List<Song>();
@@ -204,7 +204,7 @@ namespace VodManageSystem.Models.Dao
 
         public List<Song> GetOnePageOfSongsBySingerId(StateOfRequest mState, int singerId, bool isWebAPI)
         {
-            IQueryable<KeyValuePair<int, Song>> totalSongPairs = GetAllSongsNotUseDictionary(mState);
+            IQueryable<KeyValuePair<int, Song>> totalSongPairs = GetAllSongsIQueryable(mState);
             if (totalSongPairs == null)
             {
                 return new List<Song>();
@@ -280,7 +280,7 @@ namespace VodManageSystem.Models.Dao
         }
 
         // has not been used yet
-        public IQueryable<KeyValuePair<int, Song>> GetAllSongsNotUseDictionary(StateOfRequest mState)
+        public IQueryable<KeyValuePair<int, Song>> GetAllSongsIQueryable(StateOfRequest mState)
         {
             if (mState == null)
             {
@@ -289,7 +289,7 @@ namespace VodManageSystem.Models.Dao
 
             IQueryable<Song> totalSongs = _context.Song.Include(x => x.Language)
                                          .Include(x => x.Singer1).Include(x => x.Singer2)
-                                         .ToList().AsQueryable<Song>();
+                                                  .ToList().AsQueryable<Song>();
 
             IQueryable<Song> songs;
             if (mState.OrderBy == "")
@@ -329,7 +329,9 @@ namespace VodManageSystem.Models.Dao
                 songs = null;   // empty lsit
             }
 
-            IQueryable<KeyValuePair<int, Song>> songPairs = songs.Select((m, index) => new KeyValuePair<int, Song>(index+1, m) );
+            IQueryable<KeyValuePair<int, Song>> songPairs = 
+                songs.Select((m, index) => new KeyValuePair<int, Song>(index+1, m) );
+                // Queryable.Select(songs, (m, index) => new KeyValuePair<int, Song>(index + 1, m));
 
             return songPairs;
         }
@@ -538,7 +540,7 @@ namespace VodManageSystem.Models.Dao
                 return new List<Song>();
             }
 
-            IQueryable<KeyValuePair<int, Song>> songPairsQueryable = GetAllSongsNotUseDictionary(mState);
+            IQueryable<KeyValuePair<int, Song>> songPairsQueryable = GetAllSongsIQueryable(mState);
             if (songPairsQueryable == null)
             {
                 return new List<Song>();
