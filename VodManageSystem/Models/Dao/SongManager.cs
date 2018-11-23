@@ -115,6 +115,12 @@ namespace VodManageSystem.Models.Dao
             {
                 return new List<Song>();    // return empty list
             }
+            int pageSize = mState.PageSize;
+            if (pageSize <= 0)
+            {
+                Console.WriteLine("The value of pageSize cannot be less than 0.");
+                return new List<Song>();
+            }
 
             mState.CurrentPageNo = -100; // present to get all songs
             List<Song> totalSongs = GetOnePageOfSongs(mState);
@@ -128,6 +134,12 @@ namespace VodManageSystem.Models.Dao
             {
                 return new List<Song>();
             }
+            int pageSize = mState.PageSize;
+            if (pageSize <= 0)
+            {
+                Console.WriteLine("The value of pageSize cannot be less than 0.");
+                return new List<Song>();
+            }
 
             IQueryable<Song> totalSongs = GetAllSongsIQueryable(mState);
             if (totalSongs == null)
@@ -136,7 +148,6 @@ namespace VodManageSystem.Models.Dao
             }
 
             int pageNo = mState.CurrentPageNo;
-            int pageSize = mState.PageSize;
             int[] returnNumbers = GetTotalRecordsAndPages(pageSize);
             int totalRecords = returnNumbers[0];
             int totalPages = returnNumbers[1];
@@ -208,6 +219,17 @@ namespace VodManageSystem.Models.Dao
 
         public List<Song> GetOnePageOfSongsBySingerId(StateOfRequest mState, int singerId, bool isWebAPI)
         {
+            if (mState == null)
+            {
+                return new List<Song>();
+            }
+            int pageSize = mState.PageSize;
+            if (pageSize <= 0)
+            {
+                Console.WriteLine("The value of pageSize cannot be less than 0.");
+                return new List<Song>();
+            }
+
             IQueryable<Song> totalSongs = GetAllSongsIQueryable(mState);
             if (totalSongs == null)
             {
@@ -216,7 +238,6 @@ namespace VodManageSystem.Models.Dao
 
             totalSongs = totalSongs.Where(x => (x.Singer1Id == singerId) || (x.Singer2Id == singerId));
             int pageNo = mState.CurrentPageNo;
-            int pageSize = mState.PageSize;
             int totalRecords = totalSongs.Count();
             int totalPages = totalRecords / pageSize;
             if ( (totalPages * pageSize) != totalRecords)
@@ -288,7 +309,13 @@ namespace VodManageSystem.Models.Dao
         {
             if (mState == null)
             {
-                mState = new StateOfRequest("ReturnEmptyList");
+                return null;
+            }
+            int pageSize = mState.PageSize;
+            if (pageSize <= 0)
+            {
+                Console.WriteLine("The value of pageSize cannot be less than 0.");
+                return null;
             }
 
             IQueryable<Song> totalSongs = _context.Song.Include(x => x.Language)
@@ -375,6 +402,12 @@ namespace VodManageSystem.Models.Dao
         {
             if ((mState == null) || (song == null))
             {
+                return new List<Song>();
+            }
+            int pageSize = mState.PageSize;
+            if (pageSize <= 0)
+            {
+                Console.WriteLine("The value of pageSize cannot be less than 0.");
                 return new List<Song>();
             }
 
@@ -472,7 +505,6 @@ namespace VodManageSystem.Models.Dao
 
             song.CopyFrom(songWithIndex);
 
-            int pageSize = mState.PageSize;
             int tempCount = totalSongs.ToList().IndexOf(songWithIndex) + 1; // row number has to be from 1
             int pageNo = tempCount / pageSize;
             if ((pageNo * pageSize) != tempCount)
