@@ -50,178 +50,15 @@ namespace VodManageSystem.Models.Dao
             return result;
         }
 
-        // end of private methods
-
-
-        // public methods
-        public async Task<List<Singer>> GetAllSingers(StateOfRequest mState) {
-            if (mState == null)
-            {
-                return new List<Singer>();  // return empty list
-            }
-
-            mState.CurrentPageNo = -100;   // present to get all singers
-            List<Singer> totalSingers = await GetOnePageOfSingersDictionary(mState);
-
-            return totalSingers;
-        }
-
-        public async Task<List<Singer>> GetOnePageOfSingers(StateOfRequest mState)
-        {
-            if (mState == null)
-            {
-                return new List<Singer>();
-            }
-
-            var singersList = _context.Singer.Where(x => x.Id == -1);
-            if (mState.OrderBy == "SingNo")
-            {
-                singersList = _context.Singer.Include(x => x.Singarea)
-                                      .OrderBy(x => x.SingNo);
-            }
-            else if (mState.OrderBy == "SingNa")
-            {
-                singersList = _context.Singer.Include(x => x.Singarea)
-                                      .OrderBy(x => x.SingNa).ThenBy(x => x.SingNo);
-            }
-            else if (mState.OrderBy == "")
-            {
-                singersList = _context.Singer.Include(x => x.Singarea);
-            }
-            else
-            {
-                // invalid order by then return empty list
-            }
-            int pageNo = mState.CurrentPageNo;
-            int pageSize = mState.PageSize;
-            int[] returnNumbers = await GetTotalRecordsAndPages(pageSize);
-            int totalRecords = returnNumbers[0];
-            int totalPages = returnNumbers[1];
-            bool getAll = false;
-            if (pageNo == -1)
-            {
-                // get the last page
-                pageNo = totalPages;
-            }
-            else if (pageNo == -100)
-            {
-                // get all songs
-                getAll = true;
-                pageNo = 1; // restore pageNo to 1
-            }
-            else
-            {
-                if (pageNo < 1)
-                {
-                    pageNo = 1;
-                }
-                else if (pageNo > totalPages)
-                {
-                    pageNo = totalPages;
-                }
-            }
-            int recordNum = (pageNo - 1) * pageSize;
-            List<Singer> singers;
-            if (getAll)
-            {
-                singers = await singersList.AsNoTracking().ToListAsync();
-            }
-            else
-            {
-                singers = await singersList.Skip(recordNum).Take(pageSize).AsNoTracking().ToListAsync();
-            }
-            mState.CurrentPageNo = pageNo;
-            mState.PageSize = pageSize;
-            mState.TotalRecords = totalRecords;
-            mState.TotalPages = totalPages;
-            Singer firstSinger = singers.FirstOrDefault();
-            if (firstSinger != null)
-            {
-                mState.FirstId = firstSinger.Id;
-            }
-            else
-            {
-                mState.OrgId = 0;
-                mState.OrgNo = "";
-                mState.FirstId = 0;
-            }
-            return singers;
-        }
-
-        /// <summary>
-        /// Gets the dictionary of singers.
-        /// </summary>
-        /// <returns>The dictionary of singers.</returns>
-        /// <param name="mState">Singer state.</param>
-        public async Task<SortedDictionary<int, Singer>> GetDictionaryOfSingers(StateOfRequest mState)
-        {
-            if (mState == null)
-            {
-                return new SortedDictionary<int, Singer>();
-            }
-
-            List<Singer> totalSingers = await _context.Singer.Include(x => x.Singarea)
-                                                .AsNoTracking().ToListAsync();
-
-            Dictionary<int, Singer> singersDictionary = null;
-
-            // No singer selected
-            if (mState.OrderBy == "")
-            {
-                singersDictionary = totalSingers
-                            .Select((m, index) => new { rowNumber = index + 1, m })
-                            .ToDictionary(m => m.rowNumber, m => m.m);
-            }
-            else if (mState.OrderBy == "SingNo")
-            {
-                singersDictionary = totalSingers.OrderBy(x => x.SingNo)
-                            .Select((m, index) => new { rowNumber = index + 1, m })
-                            .ToDictionary(m => m.rowNumber, m => m.m);
-            }
-            else if (mState.OrderBy == "SingNa")
-            {
-                singersDictionary = totalSingers.OrderBy(x => x.SingNa).ThenBy(x => x.SingNo)
-                            .Select((m, index) => new { rowNumber = index + 1, m })
-                            .ToDictionary(m => m.rowNumber, m => m.m);
-            }
-            else
-            {
-                // not inside range of roder by
-                singersDictionary = new Dictionary<int, Singer>();    // empty lsit
-            }
-
-            return new SortedDictionary<int, Singer>(singersDictionary);
-        }
-
-        /// <summary>
-        /// Gets the select list from a SortedDictionary of singers.
-        /// </summary>
-        /// <returns>The select list of singers.</returns>
-        /// <param name="mState">Singer state.</param>
-        public async Task<List<SelectListItem>> GetSelectListOfSingers(StateOfRequest mState)
-        {
-            List<SelectListItem> selectList = new List<SelectListItem>();
-            List<Singer> singers = await GetAllSingers(mState);
-            foreach (Singer sing in singers)
-            {
-                selectList.Add(new SelectListItem
-                {
-                    Text = sing.SingNa,
-                    Value = Convert.ToString(sing.Id)
-                });
-            }
-            return selectList;
-        }
-
         /// <summary>
         /// Gets the total page of singer table.
         /// </summary>
         /// <returns>The total page of Singer table.</returns>
-        public async Task<int[]> GetTotalRecordsAndPages(int pageSize)    // by condition
+        private int[] GetTotalRecordsAndPages(int pageSize)    // by condition
         {
             int[] result = new int[2] { 0, 0 };
 
-            if (pageSize <= 0 )
+            if (pageSize <= 0)
             {
                 Console.WriteLine("The value of pageSize cannot be less than 0.");
                 return result;
@@ -229,7 +66,7 @@ namespace VodManageSystem.Models.Dao
             // have to define queryCondition
             // queryCondition has not been used for now
 
-            int count = await _context.Singer.CountAsync();
+            int count = _context.Singer.Count();
             int totalPages = count / pageSize;
             if ((totalPages * pageSize) != count)
             {
@@ -242,33 +79,113 @@ namespace VodManageSystem.Models.Dao
             return result;
         }
 
-        /// <summary>
-        /// Gets the one page of singers dictionary.
-        /// </summary>
-        /// <returns>The one page of singers dictionary.</returns>
-        /// <param name="mState">Singer state.</param>
-        public async Task<List<Singer>> GetOnePageOfSingersDictionary(StateOfRequest mState)
+        private void UpdateStateOfRequest(StateOfRequest mState, Singer firstSinger, int pageNo, int pageSize, int totalRecords, int totalPages, bool isFind = false)
+        {
+            mState.CurrentPageNo = pageNo;
+            mState.PageSize = pageSize;
+            mState.TotalRecords = totalRecords;
+            mState.TotalPages = totalPages;
+            if (firstSinger != null)
+            {
+                mState.FirstId = firstSinger.Id;
+                if (!isFind)
+                {
+                    // mState.OrgId = mState.FirstId;
+                }
+            }
+            else
+            {
+                mState.OrgId = 0;
+                mState.OrgNo = "";
+                mState.FirstId = 0;
+            }
+        }
+
+        public IQueryable<Singer> GetAllSingersIQueryable(StateOfRequest mState)
+        {
+            if (mState == null)
+            {
+                return null;
+            }
+            int pageSize = mState.PageSize;
+            if (pageSize <= 0)
+            {
+                Console.WriteLine("The value of pageSize cannot be less than 0.");
+                return null;
+            }
+
+            IQueryable<Singer> totalSingers = _context.Singer.Include(x => x.Singarea);
+
+            IQueryable<Singer> singers;
+            if (mState.OrderBy == "")
+            {
+                singers = totalSingers;
+            }
+            else if (mState.OrderBy == "SingNo")
+            {
+                singers = totalSingers.OrderBy(x => x.SingNo);
+            }
+            else if (mState.OrderBy == "SingNa")
+            {
+                singers = totalSingers.OrderBy(x => x.SingNa).ThenBy(x => x.SingNo);
+            }
+            else
+            {
+                // not inside range of roder by
+                singers = null;   // empty lsit
+            }
+
+            return singers;
+        }
+
+        // end of private methods
+
+
+        // public methods
+        public List<Singer> GetAllSingers(StateOfRequest mState) {
+            if (mState == null)
+            {
+                return new List<Singer>();  // return empty list
+            }
+
+            mState.CurrentPageNo = -100;   // present to get all singers
+            List<Singer> totalSingers = GetOnePageOfSingers(mState);
+
+            return totalSingers;
+        }
+
+        public List<Singer> GetOnePageOfSingers(StateOfRequest mState)
         {
             if (mState == null)
             {
                 return new List<Singer>();
             }
-            if (string.IsNullOrEmpty(mState.OrderBy))
+            int pageSize = mState.PageSize;
+            if (pageSize <= 0)
             {
-                // default is order by singer's No
-                mState.OrderBy = "SingNo";
+                Console.WriteLine("The value of pageSize cannot be less than 0.");
+                return new List<Singer>();
             }
 
-            SortedDictionary<int, Singer> singersDictionary = await GetDictionaryOfSingers(mState);
+            IQueryable<Singer> totalSingers = GetAllSingersIQueryable(mState);
+            if (totalSingers == null)
+            {
+                return new List<Singer>();
+            }
 
             int pageNo = mState.CurrentPageNo;
-            int pageSize = mState.PageSize;
-            int totalRecords = singersDictionary.Count;
+            int[] returnNumbers = GetTotalRecordsAndPages(pageSize);
+            int totalRecords = returnNumbers[0];
+            int totalPages = returnNumbers[1];
+
+            /*
+            int totalRecords = totalSingers.Count();
             int totalPages = totalRecords / pageSize;
-            if ((totalPages * pageSize) < totalRecords)
+            if ((totalPages * pageSize) != totalRecords)
             {
                 totalPages++;
             }
+            */
 
             bool getAll = false;
             if (pageNo == -1)
@@ -294,227 +211,124 @@ namespace VodManageSystem.Models.Dao
                 }
             }
 
-            int recordNo = (pageNo - 1) * pageSize;
+            int recordNum = (pageNo - 1) * pageSize;
+
+            List<Singer> singers = new List<Singer>();
+            if (getAll)
+            {
+                // get all songs
+                singers = totalSingers.ToList();
+            }
+            else
+            {
+                singers = totalSingers.Skip(recordNum).Take(pageSize).ToList();
+            }
+
+            UpdateStateOfRequest(mState, singers.FirstOrDefault(), pageNo, pageSize, totalRecords, totalPages);
+
+            return singers;
+        }
+
+        public List<Singer> GetOnePageOfSingersByAreaSex(StateOfRequest mState, int areaId, string sex, bool isWebAPI)
+        {
+            if (mState == null)
+            {
+                return new List<Singer>();
+            }
+            int pageSize = mState.PageSize;
+            if (pageSize <= 0)
+            {
+                Console.WriteLine("The value of pageSize cannot be less than 0.");
+                return new List<Singer>();
+            }
+
+            IQueryable<Singer> totalSingers = GetAllSingersIQueryable(mState);
+            if (totalSingers == null)
+            {
+                return new List<Singer>();
+            }
+
+            if (sex == "0")
+            {
+                totalSingers = totalSingers.Where(x => x.AreaId == areaId);
+            }
+            else
+            {
+                totalSingers = totalSingers.Where(x => (x.AreaId == areaId) && (x.Sex == sex)) ;
+            }
+
+            int pageNo = mState.CurrentPageNo;
+            int totalRecords = totalSingers.Count();
+            int totalPages = totalRecords / pageSize;
+            if ((totalPages * pageSize) != totalRecords)
+            {
+                totalPages++;
+            }
+
+            bool getAll = false;
+            if (pageNo == -1)
+            {
+                // get the last page
+                pageNo = totalPages;
+            }
+            else if (pageNo == -100)
+            {
+                // get all singers
+                getAll = true;
+                pageNo = 1; // restore pageNo to 1
+            }
+            else
+            {
+                if (!isWebAPI)
+                {
+                    if (pageNo < 1)
+                    {
+                        pageNo = 1;
+                    }
+                    else if (pageNo > totalPages)
+                    {
+                        pageNo = totalPages;
+                    }
+                }
+            }
+
+            int recordNum = (pageNo - 1) * pageSize;
 
             List<Singer> singers;
             if (getAll)
             {
-                singers = singersDictionary.Select(m => m.Value).ToList();
+                // get all songs
+                singers = totalSingers.ToList();
             }
             else
             {
-                singers = singersDictionary.Skip(recordNo).Take(pageSize).Select(m => m.Value).ToList();
+                singers = totalSingers.Skip(recordNum).Take(pageSize).ToList();
             }
 
-            mState.CurrentPageNo = pageNo;
-            mState.PageSize = pageSize;
-            mState.TotalRecords = totalRecords;
-            mState.TotalPages = totalPages;
-
-            Singer firstSinger = singers.FirstOrDefault();
-            if (firstSinger != null)
-            {
-                mState.FirstId = firstSinger.Id;
-            }
-            else
-            {
-                mState.OrgId = 0;
-                mState.OrgNo = "";
-                mState.FirstId = 0;
-            }
+            UpdateStateOfRequest(mState, singers.FirstOrDefault(), pageNo, pageSize, totalRecords, totalPages);
 
             return singers;
         }
 
         /// <summary>
-        /// Gets the one page of singers by Singarea No and singer sex.
+        /// Gets the select list from a SortedDictionary of singers.
         /// </summary>
-        /// <returns>The one page of singers dictionary.</returns>
+        /// <returns>The select list of singers.</returns>
         /// <param name="mState">Singer state.</param>
-        /// <param name="areaId">Singer area No.</param>
-        /// <param name="sex">Singer sex.</param>
-        public async Task<List<Singer>> GetOnePageOfSingersByAreaSex(StateOfRequest mState, int areaId, string sex)
+        public List<SelectListItem> GetSelectListOfSingers(StateOfRequest mState)
         {
-            if (mState == null)
+            List<SelectListItem> selectList = new List<SelectListItem>();
+            List<Singer> singers = GetAllSingers(mState);
+            foreach (Singer sing in singers)
             {
-                return new List<Singer>();
-            }
-
-            var singersSubTotal = _context.Singer.Where(x => x.AreaId == -1);
-            if (mState.OrderBy == "")
-            {
-                if (sex == "0")
+                selectList.Add(new SelectListItem
                 {
-                    singersSubTotal = _context.Singer.Where(x => x.AreaId == areaId);
-                }
-                else
-                {
-                    singersSubTotal = _context.Singer.Where(x => (x.AreaId == areaId) && (x.Sex == sex));
-                }
+                    Text = sing.SingNa,
+                    Value = Convert.ToString(sing.Id)
+                });
             }
-            else if (mState.OrderBy == "SingNo")
-            {
-                if (sex == "0")
-                {
-                    singersSubTotal = _context.Singer.Where(x => x.AreaId == areaId)
-                                                .OrderBy(x => x.SingNo);
-                }
-                else
-                {
-                    singersSubTotal = _context.Singer.Where(x => (x.AreaId == areaId) && (x.Sex == sex))
-                                                .OrderBy(x => x.SingNo);
-                }
-            }
-            else if (mState.OrderBy == "SingNa")
-            {
-                if (sex == "0")
-                {
-                    singersSubTotal = _context.Singer.Where(x => x.AreaId == areaId)
-                                              .OrderBy(x => x.SingNa).ThenBy(x => x.SingNo);
-                }
-                else
-                {
-                    singersSubTotal = _context.Singer.Where(x => (x.AreaId == areaId) && (x.Sex == sex))
-                                              .OrderBy(x => x.SingNa).ThenBy(x => x.SingNo);
-                }
-            }
-            else
-            {
-                // empty list
-
-            }
-
-            int pageNo = mState.CurrentPageNo;
-            int pageSize = mState.PageSize;
-            int totalRecords = await singersSubTotal.CountAsync();
-            int totalPages = totalRecords / pageSize;
-            if (totalPages * pageSize != totalRecords)
-            {
-                totalPages++;
-            }
-            if (pageNo == -1)
-            {
-                // get the last page
-                pageNo = totalPages;
-            }
-            else if (pageNo < 1)
-            {
-                pageNo = 1;
-            }
-            else if (pageNo > totalPages)
-            {
-                pageNo = totalPages;
-            }
-            int recordNum = (pageNo - 1) * pageSize;
-
-            List<Singer> singers = await singersSubTotal.Skip(recordNum).Take(pageSize).ToListAsync();
-
-            mState.CurrentPageNo = pageNo;
-            mState.PageSize = pageSize;
-            mState.TotalRecords = totalRecords;
-            mState.TotalPages = totalPages;
-
-            Singer firstSinger = singers.FirstOrDefault();
-            if (firstSinger != null)
-            {
-                mState.FirstId = firstSinger.Id;
-            }
-            else
-            {
-                mState.OrgId = 0;
-                mState.OrgNo = "";
-                mState.FirstId = 0;
-            }
-
-            return singers;
+            return selectList;
         }
-
-        /// <summary>
-        /// Gets the one page of singers by Singarea No and singer sex.
-        /// </summary>
-        /// <returns>The one page of singers dictionary.</returns>
-        /// <param name="mState">Singer state.</param>
-        /// <param name="areaId">Singer area No.</param>
-        /// <param name="sex">Singer sex.</param>
-        public async Task<List<Singer>> GetOnePageOfSingersByAreaSexByToList(StateOfRequest mState, int areaId, string sex)
-        {
-            if (mState == null)
-            {
-                return new List<Singer>();
-            }
-            if (string.IsNullOrEmpty(mState.OrderBy))
-            {
-                // default is order by singer's No
-                mState.OrderBy = "SingNo";
-            }
-
-            List<Singer> singersSubTotal;
-            if (sex == "0")
-            {
-                singersSubTotal = await _context.Singer.Where(x => x.AreaId == areaId).ToListAsync();
-            }
-            else
-            {
-                singersSubTotal = await _context.Singer.Where(x => (x.AreaId == areaId) && (x.Sex == sex)).ToListAsync();
-            }
-
-            if (mState.OrderBy=="SingNo")
-            {
-                singersSubTotal = singersSubTotal.OrderBy(x => x.SingNo).ToList();
-            }
-            else if (mState.OrderBy=="SingNa")
-            {
-                singersSubTotal = singersSubTotal.OrderBy(x => x.SingNa).ThenBy(x=>x.SingNo).ToList();
-            } 
-            else
-            {
-            }
-
-            int pageNo = mState.CurrentPageNo;
-            int pageSize = mState.PageSize;
-            int totalRecords = singersSubTotal.Count;
-            int totalPages = totalRecords / pageSize;
-            if (totalPages * pageSize != totalRecords)
-            {
-                totalPages++;
-            }
-            if (pageNo == -1)
-            {
-                // get the last page
-                pageNo = totalPages;
-            }
-            else if (pageNo < 1)
-            {
-                pageNo = 1;
-            }
-            else if (pageNo > totalPages)
-            {
-                pageNo = totalPages;
-            }
-            int recordNum = (pageNo - 1) * pageSize;
-
-            List<Singer> singers = singersSubTotal.Skip(recordNum).Take(pageSize).ToList();
-
-            mState.CurrentPageNo = pageNo;
-            mState.PageSize = pageSize;
-            mState.TotalRecords = totalRecords;
-            mState.TotalPages = totalPages;
-
-            Singer firstSinger = singers.FirstOrDefault();
-            if (firstSinger != null)
-            {
-                mState.FirstId = firstSinger.Id;
-            }
-            else
-            {
-                mState.OrgId = 0;
-                mState.OrgNo = "";
-                mState.FirstId = 0;
-            }
-
-            return singers;
-        }
-
 
         /// <summary>
         /// Finds the one page of singers for one singer.
@@ -523,24 +337,33 @@ namespace VodManageSystem.Models.Dao
         /// <param name="mState">Singer state.</param>
         /// <param name="singer">Singer.</param>
         /// <param name="id">Identifier.</param>
-        public async Task<List<Singer>> FindOnePageOfSingersForOneSinger(StateOfRequest mState, Singer singer, int id)
+        public List<Singer> FindOnePageOfSingersForOneSinger(StateOfRequest mState, Singer singer, int id)
         {
-            if ( (mState == null) || (singer == null) )
+            if ((mState == null) || (singer == null))
+            {
+                return new List<Singer>();
+            }
+            int pageSize = mState.PageSize;
+            if (pageSize <= 0)
+            {
+                Console.WriteLine("The value of pageSize cannot be less than 0.");
+                return new List<Singer>();
+            }
+
+            IQueryable<Singer> totalSingers = GetAllSingersIQueryable(mState);
+            if (totalSingers == null)
             {
                 return new List<Singer>();
             }
 
-            int pageSize = mState.PageSize;
-
             List<Singer> singers = null;
-            KeyValuePair<int,Singer> singerWithIndex = new KeyValuePair<int, Singer>(-1,null);
-
-            SortedDictionary<int, Singer> singersDictionary = await GetDictionaryOfSingers(mState);
+            Singer singerWithIndex = null;
+            IQueryable<Singer> singersTempList = null;
 
             if (id >= 0)
             {
                 // There was a singer selected
-                singerWithIndex = singersDictionary.Where(x=>x.Value.Id == id).SingleOrDefault();
+                singersTempList = totalSingers.Where(x=>x.Id == id);
             }
             else
             {
@@ -548,19 +371,19 @@ namespace VodManageSystem.Models.Dao
                 if (mState.OrderBy == "")
                 {
                     int sing_id = singer.Id;
-                    singerWithIndex = singersDictionary.Where(x => (x.Value.Id >= sing_id) ).FirstOrDefault();
+                    singersTempList = totalSingers.Where(x => (x.Id >= sing_id) );
                 }
                 else if (mState.OrderBy == "SingNo")
                 {
-                    string sing_no = singer.SingNo;
-                    singerWithIndex = singersDictionary
-                        .Where(x=>(String.Compare(x.Value.SingNo,sing_no) >= 0)).FirstOrDefault();
+                    string sing_no = singer.SingNo.Trim();
+                    int len = sing_no.Length;
+                    singersTempList = totalSingers.Where(x=>x.SingNo.Trim().Substring(0, len) == sing_no);
                 }
                 else if (mState.OrderBy == "SingNa")
                 {
-                    string sing_na = singer.SingNa;
-                    singerWithIndex = singersDictionary
-                        .Where(x => String.Compare(x.Value.SingNa, sing_na) >= 0).FirstOrDefault();
+                    string sing_na = singer.SingNa.Trim();
+                    int len = sing_na.Length;
+                    singersTempList = totalSingers.Where(x => x.SingNa.Trim().Substring(0, len) == sing_na);
                 }
                 else
                 {
@@ -569,28 +392,38 @@ namespace VodManageSystem.Models.Dao
                 }
             }
 
-            if (singerWithIndex.Value == null)
+            int totalRecords = totalSingers.Count();  // the whole singer table
+
+            bool isFound = true;
+            singerWithIndex = singersTempList.FirstOrDefault(); // the first one found
+            if (singerWithIndex == null)
             {
-                if (singersDictionary.Count == 0)
+                if (totalRecords == 0)
                 {
-                    // dictionary (Singer Table) is empty
-                    mState.OrgId = 0;
-                    mState.OrgNo = "";
-                    mState.FirstId = 0;
+                    // Song Table is empty
+                    UpdateStateOfRequest(mState, singerWithIndex, mState.CurrentPageNo, pageSize, 0, 0, true);
                     // return empty list
                     return new List<Singer>();
                 }
                 else
                 {
                     // go to last page
-                    singerWithIndex = singersDictionary.LastOrDefault();
+                    singerWithIndex = totalSingers.LastOrDefault();
                 }
             }
         
-            Singer singerFound = singerWithIndex.Value;
-            singer.CopyFrom(singerFound);   // return to calling function
+            singer.CopyFrom(singerWithIndex);   // return to calling function
 
-            int tempCount = singerWithIndex.Key;
+            // find the row number of singerWithIndex
+            int tempCount = 0;
+            foreach (var songVar in totalSingers)
+            {
+                ++tempCount;    // first row number is 1
+                if (songVar.Id == singerWithIndex.Id)
+                {
+                    break;
+                }
+            }
             int pageNo =  tempCount / pageSize;
             if ( (pageNo * pageSize) != tempCount)
             {
@@ -598,32 +431,27 @@ namespace VodManageSystem.Models.Dao
             }
 
             int recordNo = (pageNo - 1) * pageSize;
-            singers = singersDictionary.Skip(recordNo).Take(pageSize).Select(m=>m.Value).ToList();
 
-            int totalRecords = singersDictionary.Count;
+            singers = totalSingers.Skip(recordNo).Take(pageSize).ToList();
+
             int totalPages = totalRecords / pageSize;
             if ((totalPages * pageSize) != totalRecords)
             {
                 totalPages++;
             }
 
-            mState.CurrentPageNo = pageNo;
-            mState.PageSize = pageSize;
-            mState.TotalRecords = totalRecords;
-            mState.TotalPages = totalPages;
-            mState.OrgId = singer.Id;
-            mState.OrgNo = singer.SingNo;
-
-            Singer firstSinger = singers.FirstOrDefault();
-            if(firstSinger != null)
+            if (isFound)
             {
-                mState.FirstId = firstSinger.Id;
+                // found
+                mState.OrgId = singer.Id; // chnaged OrgId to the singer id found
             }
             else
             {
-                mState.FirstId = 0;
+                // not found, then it is last page and last record
+                mState.OrgId = 0;   // no singer is selected
             }
-               
+            UpdateStateOfRequest(mState, singers.FirstOrDefault(), pageNo, pageSize, totalRecords, totalPages, true);
+
             return singers;
         }
 

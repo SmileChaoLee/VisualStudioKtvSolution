@@ -37,13 +37,13 @@ namespace VodManageSystem.Api.Controllers
 
         // GET: api/values
         [HttpGet]
-        public async Task<string> Get()
+        public string Get()
         {
             Console.WriteLine("Get all singers.");
 
             StateOfRequest mState = new StateOfRequest("SingNo");
 
-            List<Singer> singers = await _singerManager.GetAllSingers(mState);
+            List<Singer> singers = _singerManager.GetAllSingers(mState);
 
             JObject jObjectForAll = new JObject();
             jObjectForAll.Add("pageNo", mState.CurrentPageNo);
@@ -77,15 +77,14 @@ namespace VodManageSystem.Api.Controllers
 
         // GET api/values/10/1
         [HttpGet("{pageSize}/{pageNo}")]
-        public async Task<string> Get(int pageSize, int pageNo)
+        public string Get(int pageSize, int pageNo)
         {
             Console.WriteLine("HttpGet[\"{ pageSize}/{ pageNo}\")]");
 
             StateOfRequest mState = new StateOfRequest("");
             mState.PageSize = pageSize;
             mState.CurrentPageNo = pageNo;
-            // mState.OrderBy = orderByParam;
-            List<Singer> singers = await _singerManager.GetOnePageOfSingersDictionary(mState);
+            List<Singer> singers = _singerManager.GetOnePageOfSingers(mState);
 
             JObject jObjectForAll = new JObject();
             jObjectForAll.Add("pageNo", mState.CurrentPageNo);
@@ -106,7 +105,7 @@ namespace VodManageSystem.Api.Controllers
 
         // GET api/values/10/1/orderBy
         [HttpGet("{pageSize}/{pageNo}/{orderBy}")]
-        public async Task<string> Get(int pageSize, int pageNo, string orderBy) {
+        public string Get(int pageSize, int pageNo, string orderBy) {
             Console.WriteLine("HttpGet[\"{ pageSize}/{ pageNo}/{orderBy}\")]");
 
             // orderBy is either "SingNo" or "SingNa"
@@ -128,8 +127,7 @@ namespace VodManageSystem.Api.Controllers
             StateOfRequest mState = new StateOfRequest(orderByParam);
             mState.PageSize = pageSize;
             mState.CurrentPageNo = pageNo;
-            // mState.OrderBy = orderByParam;
-            List<Singer> singers = await _singerManager.GetOnePageOfSingersDictionary(mState);
+            List<Singer> singers = _singerManager.GetOnePageOfSingers(mState);
 
             JObject jObjectForAll = new JObject();
             jObjectForAll.Add("pageNo", mState.CurrentPageNo);
@@ -184,7 +182,7 @@ namespace VodManageSystem.Api.Controllers
 
         // GET api/values/5/"1"/10/1
         [HttpGet("{areaId}/{sex}/{pageSize}/{pageNo}/{orderBy}")]
-        public async Task<string> Get(int areaId, String sex, int pageSize, int pageNo, string orderBy)
+        public string Get(int areaId, String sex, int pageSize, int pageNo, string orderBy)
         {
             Console.WriteLine("HttpGet[\"{areaId}/{sex}/{ pageSize}/{ pageNo}/{orderBy}\")]");
             Console.WriteLine("areaId = {0}, sex = {1}, pageSize = {2}, pageNo = {3}, orderBy = {4}", areaId, sex, pageSize, pageNo, orderBy);
@@ -216,7 +214,7 @@ namespace VodManageSystem.Api.Controllers
             mState.PageSize = pageSize;
             mState.CurrentPageNo = pageNo;
 
-            List<Singer> singers = await _singerManager.GetOnePageOfSingersByAreaSex(mState, areaId, sex);
+            List<Singer> singers = _singerManager.GetOnePageOfSingersByAreaSex(mState, areaId, sex, true);
 
             JObject jObjectForAll = new JObject();
             jObjectForAll.Add("pageNo", mState.CurrentPageNo);

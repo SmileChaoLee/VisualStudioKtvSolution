@@ -55,7 +55,7 @@ namespace VodManageSystem.Controllers
 
         // Get: get method
         [HttpGet, ActionName("SingersList")]
-        public async Task<IActionResult> SingersList(string singer_state)
+        public IActionResult SingersList(string singer_state)
         {
             StateOfRequest mState;
             if (string.IsNullOrEmpty(singer_state))
@@ -66,7 +66,7 @@ namespace VodManageSystem.Controllers
             {
                 mState = JsonUtil.GetObjectFromJsonString<StateOfRequest>(singer_state);
             }
-            List<Singer> singers = await _singerManager.GetOnePageOfSingersDictionary(mState);
+            List<Singer> singers = _singerManager.GetOnePageOfSingers(mState);
 
             ViewBag.SingerState = JsonUtil.SetJsonStringFromObject(mState);
             return View(singers);
@@ -84,7 +84,7 @@ namespace VodManageSystem.Controllers
 
         // Post
         [HttpPost, ActionName("Find")]
-        public async Task<IActionResult> Find(string sing_no, string sing_na, string search_type, string submitbutton, string singer_state)
+        public IActionResult Find(string sing_no, string sing_na, string search_type, string submitbutton, string singer_state)
         {
             if (!LoginUtil.CheckIfLoggedIn(HttpContext)) return View(nameof(Index));
 
@@ -140,7 +140,7 @@ namespace VodManageSystem.Controllers
                 return View();
             }
 
-            List<Singer> singersTemp = await _singerManager.FindOnePageOfSingersForOneSinger(mState, singer, -1);
+            List<Singer> singersTemp = _singerManager.FindOnePageOfSingersForOneSinger(mState, singer, -1);
             temp_state = JsonUtil.SetJsonStringFromObject(mState);
 
             ViewBag.SingerState = temp_state;
@@ -304,7 +304,7 @@ namespace VodManageSystem.Controllers
             if (sButton == "CANCEL")
             {
                 Singer newSinger = new Singer();
-                List<Singer> singersTemp = await _singerManager.FindOnePageOfSingersForOneSinger(mState, newSinger, orgId);
+                List<Singer> singersTemp = _singerManager.FindOnePageOfSingersForOneSinger(mState, newSinger, orgId);
                 mState.IsFirstAddRecord = true;
                 temp_state = JsonUtil.SetJsonStringFromObject(mState);
                 ViewBag.SingerState = temp_state;
@@ -412,7 +412,7 @@ namespace VodManageSystem.Controllers
                 {
                     // succeeded to update
                     Singer newSinger = new Singer();
-                    List<Singer> singersTemp = await _singerManager.FindOnePageOfSingersForOneSinger(mState, newSinger, orgId);
+                    List<Singer> singersTemp = _singerManager.FindOnePageOfSingersForOneSinger(mState, newSinger, orgId);
                     temp_state = JsonUtil.SetJsonStringFromObject(mState);
 
                     ViewBag.SingerState = temp_state;
@@ -506,7 +506,7 @@ namespace VodManageSystem.Controllers
                 if (result == ErrorCodeModel.Succeeded)
                 {
                     // succeeded to delete a singer
-                    List<Singer> singersTemp = await _singerManager.FindOnePageOfSingersForOneSinger(mState, singer, -1);
+                    List<Singer> singersTemp = _singerManager.GetOnePageOfSingers(mState);
                     temp_state = JsonUtil.SetJsonStringFromObject(mState);
 
                     ViewBag.SingerState = temp_state;
@@ -568,7 +568,7 @@ namespace VodManageSystem.Controllers
 
         // POST:
         [HttpPost, ActionName("Details")]
-        public async Task<IActionResult> DetailsReturn(string singer_state)
+        public IActionResult DetailsReturn(string singer_state)
         {
             if (!LoginUtil.CheckIfLoggedIn(HttpContext)) return View(nameof(Index));
 
@@ -585,7 +585,7 @@ namespace VodManageSystem.Controllers
 
             int orgId = mState.OrgId;
             Singer singer = new Singer();
-            List<Singer> singersTemp = await _singerManager.FindOnePageOfSingersForOneSinger(mState, singer, orgId);
+            List<Singer> singersTemp = _singerManager.GetOnePageOfSingers(mState);
             string temp_state = JsonUtil.SetJsonStringFromObject(mState);
 
             ViewBag.SingerState = temp_state;
@@ -595,7 +595,7 @@ namespace VodManageSystem.Controllers
 
         // Get:
         [HttpGet, ActionName("ChangeOrder")]
-        public async Task<IActionResult> ChangeOrder(string singer_state)
+        public IActionResult ChangeOrder(string singer_state)
         {
             if (!LoginUtil.CheckIfLoggedIn(HttpContext)) return View(nameof(Index));
 
@@ -625,7 +625,7 @@ namespace VodManageSystem.Controllers
             if (orgId != 0)
             {
                 Singer singer = new Singer();
-                List<Singer> singersTemp = await _singerManager.FindOnePageOfSingersForOneSinger(mState, singer, orgId);
+                List<Singer> singersTemp = _singerManager.FindOnePageOfSingersForOneSinger(mState, singer, orgId);
                 string temp_state = JsonUtil.SetJsonStringFromObject(mState);
 
                 ViewBag.SingerState = temp_state;
