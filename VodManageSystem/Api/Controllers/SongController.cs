@@ -38,7 +38,7 @@ namespace VodManageSystem.Api.Controllers
 
         // GET: api/values
         [HttpGet]
-        public async Task<string> Get()
+        public string Get()
         {
             Console.WriteLine("Get all songs.");
 
@@ -48,7 +48,7 @@ namespace VodManageSystem.Api.Controllers
 
             // List<Song> songs = await _songManager.GetAllSongs(mState);
             // get the first 50 songs
-            List<Song> songs = await _songManager.GetOnePageOfSongsDictionary(mState);
+            List<Song> songs = _songManager.GetOnePageOfSongs(mState);
 
             JObject jObjectForAll = new JObject();
             jObjectForAll.Add("pageNo", mState.CurrentPageNo);
@@ -83,14 +83,14 @@ namespace VodManageSystem.Api.Controllers
 
         // GET api/values/10/1
         [HttpGet("{pageSize}/{pageNo}")]
-        public async Task<string> Get(int pageSize, int pageNo)
+        public string Get(int pageSize, int pageNo)
         {
             Console.WriteLine("HttpGet[\"{ pageSize}/{ pageNo}\")]");
 
             StateOfRequest mState = new StateOfRequest("");
             mState.PageSize = pageSize;
             mState.CurrentPageNo = pageNo;
-            List<Song> songs = await _songManager.GetOnePageOfSongsDictionary(mState);
+            List<Song> songs = _songManager.GetOnePageOfSongs(mState);
 
             JObject jObjectForAll = new JObject();
             jObjectForAll.Add("pageNo", mState.CurrentPageNo);
@@ -111,7 +111,7 @@ namespace VodManageSystem.Api.Controllers
 
         // GET api/values/10/1/"SongNo"
         [HttpGet("{pageSize}/{pageNo}/{orderBy}")]
-        public async Task<string> Get(int pageSize, int pageNo, string orderBy)
+        public string Get(int pageSize, int pageNo, string orderBy)
         {
             Console.WriteLine("HttpGet[\"{ pageSize}/{ pageNo}/{orderBy}\")]");
 
@@ -150,7 +150,7 @@ namespace VodManageSystem.Api.Controllers
             StateOfRequest mState = new StateOfRequest(orderByParam);
             mState.PageSize = pageSize;
             mState.CurrentPageNo = pageNo;
-            List<Song> songs = await _songManager.GetOnePageOfSongsDictionary(mState);
+            List<Song> songs = _songManager.GetOnePageOfSongs(mState);
 
             JObject jObjectForAll = new JObject();
             jObjectForAll.Add("pageNo", mState.CurrentPageNo);
