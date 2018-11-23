@@ -593,7 +593,6 @@ namespace VodManageSystem.Controllers
                 if (result == ErrorCodeModel.Succeeded)
                 {
                     // succeeded to delete a song
-                    // List<Song> songsTemp = await _songManager.FindOnePageOfSongsForOneSong(mState, song, -1);
                     List<Song> songsTemp = _songManager.FindOnePageOfSongsForOneSong(mState, song, -1);
                     temp_state = JsonUtil.SetJsonStringFromObject(mState);
 
@@ -703,6 +702,15 @@ namespace VodManageSystem.Controllers
             }
             mState.StartTime = DateTime.Now;
 
+            /*
+             *    // start from first page
+            mState.CurrentPageNo = 1;
+            List<Song> songsTemp = _songManager.GetOnePageOfSongs(mState);
+            string temp_state = JsonUtil.SetJsonStringFromObject(mState);
+            ViewBag.SongState = temp_state;
+            return View(nameof(SongsList), songsTemp);
+            */
+
             int orgId = 0;
             if (mState.OrgId == 0)
             {
@@ -714,7 +722,6 @@ namespace VodManageSystem.Controllers
             {
                 orgId = mState.OrgId;
             }
-
             if (orgId != 0)
             {
                 Song song = new Song();
@@ -724,6 +731,7 @@ namespace VodManageSystem.Controllers
                 ViewBag.SongState = temp_state;
                 return View(nameof(SongsList), songsTemp);
             }
+
             else
             {
                 // return to the previous page

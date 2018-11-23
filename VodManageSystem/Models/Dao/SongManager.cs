@@ -108,6 +108,56 @@ namespace VodManageSystem.Models.Dao
             return result;
         }
 
+        /// <summary>
+        /// Gets the total page of song table.
+        /// </summary>
+        /// <returns>The total page of song table.</returns>
+        private int[] GetTotalRecordsAndPages(int pageSize)  // by a condition
+        {
+            int[] result = new int[2] { 0, 0 };
+
+            if (pageSize <= 0)
+            {
+                Console.WriteLine("The value of pageSize cannot be less than 0.");
+                return result;
+            }
+
+            int count = _context.Song.Count();
+            int totalPages = count / pageSize;
+            if ((totalPages * pageSize) != count)
+            {
+                totalPages++;
+            }
+            result[0] = count;
+            result[1] = totalPages;
+
+            return result;
+        }
+
+        private void UpdateStateOfRequest(StateOfRequest mState, Song firstSong, int pageNo, int pageSize, int totalRecords, int totalPages, bool isFind=false)
+        {
+            mState.CurrentPageNo = pageNo;
+            mState.PageSize = pageSize;
+            mState.TotalRecords = totalRecords;
+            mState.TotalPages = totalPages;
+            if (firstSong != null)
+            {
+                mState.FirstId = firstSong.Id;
+                if (!isFind)
+                {
+                    mState.OrgId = mState.FirstId;
+                }
+            }
+            else
+            {
+                mState.OrgId = 0;
+                mState.OrgNo = "";
+                mState.FirstId = 0;
+            }
+        }
+
+        // end of private methods
+
         // public methods
         public List<Song> GetAllSongs(StateOfRequest mState)
         {
@@ -198,6 +248,9 @@ namespace VodManageSystem.Models.Dao
                 songs = totalSongs.Skip(recordNum).Take(pageSize).ToList();
             }
 
+            UpdateStateOfRequest(mState, songs.FirstOrDefault(), pageNo, pageSize, totalRecords, totalPages);
+
+            /*
             mState.CurrentPageNo = pageNo;
             mState.PageSize = pageSize;
             mState.TotalRecords = totalRecords;
@@ -206,6 +259,7 @@ namespace VodManageSystem.Models.Dao
             if (firstSong != null)
             {
                 mState.FirstId = firstSong.Id;
+                mState.OrgId = mState.FirstId;
             }
             else
             {
@@ -213,6 +267,7 @@ namespace VodManageSystem.Models.Dao
                 mState.OrgNo = "";
                 mState.FirstId = 0;
             }
+            */
 
             return songs;
         }
@@ -285,26 +340,11 @@ namespace VodManageSystem.Models.Dao
                 songs = totalSongs.Skip(recordNum).Take(pageSize).ToList();
             }
 
-            mState.CurrentPageNo = pageNo;
-            mState.PageSize = pageSize;
-            mState.TotalRecords = totalRecords;
-            mState.TotalPages = totalPages;
-            Song firstSong = songs.FirstOrDefault();
-            if (firstSong != null)
-            {
-                mState.FirstId = firstSong.Id;
-            }
-            else
-            {
-                mState.OrgId = 0;
-                mState.OrgNo = "";
-                mState.FirstId = 0;
-            }
- 
+            UpdateStateOfRequest(mState, songs.FirstOrDefault(), pageNo, pageSize, totalRecords, totalPages);
+
             return songs;
         }
 
-        // has not been used yet
         public IQueryable<Song> GetAllSongsIQueryable(StateOfRequest mState)
         {
             if (mState == null)
@@ -319,8 +359,8 @@ namespace VodManageSystem.Models.Dao
             }
 
             IQueryable<Song> totalSongs = _context.Song.Include(x => x.Language)
-                                          .Include(x => x.Singer1).Include(x => x.Singer2)
-                                          .ToList().AsQueryable<Song>();
+                                          .Include(x => x.Singer1).Include(x => x.Singer2);
+                                          // .ToList().AsQueryable<Song>(); // removed for testing on 2018-11-23
                                   
             IQueryable<Song> songs;
             if (mState.OrderBy == "")
@@ -362,34 +402,6 @@ namespace VodManageSystem.Models.Dao
 
             return songs;
         }
-
-        /// <summary>
-        /// Gets the total page of song table.
-        /// </summary>
-        /// <returns>The total page of song table.</returns>
-        public int[] GetTotalRecordsAndPages(int pageSize)  // by a condition
-        {
-            int[] result = new int[2] { 0, 0 };
-
-            if (pageSize <= 0)
-            {
-                Console.WriteLine("The value of pageSize cannot be less than 0.");
-                return result;
-            }
-
-            int count = _context.Song.Count();
-            int totalPages = count / pageSize;
-            if ( (totalPages * pageSize) != count )
-            {
-                totalPages++;
-            }
-            result[0] = count;
-            result[1] = totalPages;
-
-            return result;
-        }
-
-        // public methods
 
         /// <summary>
         /// Finds the one page of songs for one song.
@@ -439,18 +451,24 @@ namespace VodManageSystem.Models.Dao
                 }
                 else if (mState.OrderBy == "SongNo")
                 {
-                    string song_no = song.SongNo;
-                    songsTempList = totalSongs.Where(x => (String.Compare(x.SongNo, song_no) >= 0));
+                    string song_no = song.SongNo.Trim();
+                    int len = song_no.Length;
+                    // songsTempList = totalSongs.Where(x => (String.Compare(x.SongNo, song_no) >= 0));
+                    songsTempList = totalSongs.Where(x => x.SongNo.Trim().Substring(0, len) == song_no);
                 }
                 else if (mState.OrderBy == "SongNa")
                 {
-                    string song_na = song.SongNa;
-                    songsTempList = totalSongs.Where(x => (String.Compare(x.SongNa, song_na) >= 0));
+                    string song_na = song.SongNa.Trim();
+                    int len = song_na.Length;
+                    // songsTempList = totalSongs.Where(x => (String.Compare(x.SongNa, song_na) >= 0));
+                    songsTempList = totalSongs.Where(x => x.SongNa.Trim().Substring(0, len) == song_na);
                 }
                 else if (mState.OrderBy == "VodNo")
                 {
-                    string vod_no = song.VodNo;
-                    songsTempList = totalSongs.Where(x => (String.Compare(x.VodNo, vod_no) >= 0));
+                    string vod_no = song.VodNo.Trim();
+                    int len = vod_no.Length;
+                    // songsTempList = totalSongs.Where(x => (String.Compare(x.VodNo, vod_no) >= 0));
+                    songsTempList = totalSongs.Where(x => x.VodNo.Trim().Substring(0, len) == vod_no);
                 }
                 else if (mState.OrderBy == "LangSongNa")
                 {
@@ -459,21 +477,24 @@ namespace VodManageSystem.Models.Dao
                     {
                         lang_no = _context.Language.FirstOrDefault().LangNo;
                     }
-                    string song_na = song.SongNa;
+                    string song_na = song.SongNa.Trim();
+                    int len = song_na.Length;
                     songsTempList = totalSongs.Where(x => (x.Language != null)
-                                    && String.Compare(x.Language.LangNo + x.SongNa, lang_no + song_na) >= 0);
+                         && (x.Language.LangNo + x.SongNa.Trim().Substring(0, len) == lang_no + song_na));
                 }
                 else if (mState.OrderBy == "Singer1Na")
                 {
-                    string singer1Na = song.Singer1.SingNa;
+                    string singer1Na = song.Singer1.SingNa.Trim();
+                    int len = singer1Na.Length;
                     songsTempList = totalSongs.Where(x => (x.Singer1 != null)
-                                     && String.Compare(x.Singer1.SingNa, singer1Na) >= 0);
+                         && (x.Singer1.SingNa.Trim().Substring(0, len) == singer1Na));
                 }
                 else if (mState.OrderBy == "Singer2Na")
                 {
-                    string singer2Na = song.Singer2.SingNa;
+                    string singer2Na = song.Singer2.SingNa.Trim();
+                    int len = singer2Na.Length;
                     songsTempList = totalSongs.Where(x => (x.Singer2 != null)
-                                     && String.Compare(x.Singer2.SingNa, singer2Na) >= 0);
+                         && (x.Singer2.SingNa.Trim().Substring(0, len) == singer2Na));
                 }
                 else
                 {
@@ -484,15 +505,15 @@ namespace VodManageSystem.Models.Dao
 
             int totalRecords = totalSongs.Count();  // the whole song table
 
+            bool isFound = true;
             songWithIndex = songsTempList.FirstOrDefault(); // the first one found
             if (songWithIndex == null)
             {
+                isFound = false;    // song that was assigned is not found
                 if (totalRecords == 0)
                 {
                     // dictionay (Song Table) is empty
-                    mState.OrgId = 0;
-                    mState.OrgNo = "";
-                    mState.FirstId = 0;
+                    UpdateStateOfRequest(mState, songWithIndex, mState.CurrentPageNo, pageSize, 0, 0, true);
                     // return empty list
                     return new List<Song>();
                 }
@@ -505,7 +526,16 @@ namespace VodManageSystem.Models.Dao
 
             song.CopyFrom(songWithIndex);
 
-            int tempCount = totalSongs.ToList().IndexOf(songWithIndex) + 1; // row number has to be from 1
+            // find the row number of songWithIndex
+            int tempCount = 0;
+            foreach (var songVar in totalSongs)
+            {
+                ++tempCount;    // first row number is 1
+                if (songVar.Id == songWithIndex.Id)
+                {
+                    break;
+                }
+            }
             int pageNo = tempCount / pageSize;
             if ((pageNo * pageSize) != tempCount)
             {
@@ -522,22 +552,17 @@ namespace VodManageSystem.Models.Dao
                 totalPages++;
             }
 
-            mState.CurrentPageNo = pageNo;
-            mState.PageSize = pageSize;
-            mState.TotalRecords = totalRecords;
-            mState.TotalPages = totalPages;
-            mState.OrgId = song.Id;
-            mState.OrgNo = song.SongNo;
-
-            Song firstSong = songs.FirstOrDefault();
-            if (firstSong != null)
+            if (isFound)
             {
-                mState.FirstId = firstSong.Id;
+                // found
+                mState.OrgId = song.Id; // chnaged OrgId to the song id found
             }
             else
             {
-                mState.FirstId = 0;
+                // not found, then it is last page and last record
+                mState.OrgId = 0;   // no song is selected
             }
+            UpdateStateOfRequest(mState, songs.FirstOrDefault(), pageNo, pageSize, totalRecords, totalPages, true);
 
             return songs;
         }
