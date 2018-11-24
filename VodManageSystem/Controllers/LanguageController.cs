@@ -491,10 +491,10 @@ namespace VodManageSystem.Controllers
                 if (result == ErrorCodeModel.Succeeded)
                 {
                     // succeeded to delete a language
-                    List<Language> languagesTemp = await _languageManager.FindOnePageOfLanguagesForOneLanguage(mState, language, 0);
+                    List<Language> languagesTemp = await _languageManager.GetOnePageOfLanguages(mState);
                     temp_state = JsonUtil.SetJsonStringFromObject(mState);
-
                     ViewBag.LanguageState = temp_state;
+
                     return View(nameof(LanguagesList), languagesTemp);
                 }
                 else
@@ -539,8 +539,8 @@ namespace VodManageSystem.Controllers
                 mState.OrgId = language.Id;
                 mState.OrgNo = language.LangNo;
                 string temp_state = JsonUtil.SetJsonStringFromObject(mState);
-
                 ViewBag.LanguageState = temp_state;
+
                 return View(language);
             }
         }
@@ -563,8 +563,7 @@ namespace VodManageSystem.Controllers
             mState.StartTime = DateTime.Now;
 
             int orgId = mState.OrgId;
-            Language language = new Language();
-            List<Language> languagesTemp = await _languageManager.FindOnePageOfLanguagesForOneLanguage(mState, language, orgId);
+            List<Language> languagesTemp = await _languageManager.GetOnePageOfLanguages(mState);
             string temp_state = JsonUtil.SetJsonStringFromObject(mState);
             ViewBag.LanguageState = temp_state;
 

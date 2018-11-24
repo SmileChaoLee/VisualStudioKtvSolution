@@ -450,8 +450,8 @@ namespace VodManageSystem.Controllers
                 mState.OrgId = id;
                 mState.OrgNo = singarea.AreaNo;
                 string temp_state = JsonUtil.SetJsonStringFromObject(mState);
-
                 ViewBag.SingareaState = temp_state;
+
                 return View(singarea);
             }
         }
@@ -490,10 +490,10 @@ namespace VodManageSystem.Controllers
                 if (result == ErrorCodeModel.Succeeded)
                 {
                     // succeeded to delete a singarea
-                    List<Singarea> singareasTemp = await _singareaManager.FindOnePageOfSingareasForOneSingarea(mState, singarea, -1);
+                    List<Singarea> singareasTemp = await _singareaManager.GetOnePageOfSingareas(mState);
                     temp_state = JsonUtil.SetJsonStringFromObject(mState);
-
                     ViewBag.SingareaState = temp_state;
+
                     return View(nameof(SingareasList), singareasTemp);
                 }
                 else
@@ -562,8 +562,7 @@ namespace VodManageSystem.Controllers
             mState.StartTime = DateTime.Now;
 
             int orgId = mState.OrgId;
-            Singarea singarea = new Singarea();
-            List<Singarea> singareasTemp = await _singareaManager.FindOnePageOfSingareasForOneSingarea(mState, singarea, orgId);
+            List<Singarea> singareasTemp = await _singareaManager.GetOnePageOfSingareas(mState);
             string temp_state = JsonUtil.SetJsonStringFromObject(mState);
 
             ViewBag.SingareaState = temp_state;

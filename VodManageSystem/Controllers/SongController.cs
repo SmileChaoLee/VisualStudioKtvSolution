@@ -593,11 +593,10 @@ namespace VodManageSystem.Controllers
                 if (result == ErrorCodeModel.Succeeded)
                 {
                     // succeeded to delete a song
-                    // List<Song> songsTemp = _songManager.FindOnePageOfSongsForOneSong(mState, song, -1);
                     List<Song> songsTemp = _songManager.GetOnePageOfSongs(mState);
                     temp_state = JsonUtil.SetJsonStringFromObject(mState);
-
                     ViewBag.SongState = temp_state;
+
                     return View(nameof(SongsList), songsTemp);
                 }
                 else
@@ -677,8 +676,6 @@ namespace VodManageSystem.Controllers
             mState.StartTime = DateTime.Now;
 
             int orgId = mState.OrgId;
-            Song song = new Song();
-            // List<Song> songsTemp = _songManager.FindOnePageOfSongsForOneSong(mState, song, orgId);
             List<Song> songsTemp = _songManager.GetOnePageOfSongs(mState);
             string temp_state = JsonUtil.SetJsonStringFromObject(mState);
 

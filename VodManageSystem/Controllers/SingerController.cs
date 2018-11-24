@@ -370,7 +370,7 @@ namespace VodManageSystem.Controllers
                 mState.OrgNo = singer.SingNo;
                 string temp_state = JsonUtil.SetJsonStringFromObject(mState);
 
-                List<SelectListItem> singareaSelectList = await _singareaManager.GetSelectListOfSingareas(new StateOfRequest("AreaNo"));
+                List<SelectListItem> singareaSelectList = await _singareaManager.GetSelectListOfSingareas(new StateOfRequest("AreaNa"));
                 ViewBag.SingareaList = singareaSelectList;
                 ViewBag.SingerState = temp_state;
 
@@ -508,8 +508,8 @@ namespace VodManageSystem.Controllers
                     // succeeded to delete a singer
                     List<Singer> singersTemp = _singerManager.GetOnePageOfSingers(mState);
                     temp_state = JsonUtil.SetJsonStringFromObject(mState);
-
                     ViewBag.SingerState = temp_state;
+
                     return View(nameof(SingersList), singersTemp);
                 }
                 else
@@ -558,7 +558,7 @@ namespace VodManageSystem.Controllers
                 mState.OrgNo = singer.SingNo;
                 string temp_state = JsonUtil.SetJsonStringFromObject(mState);
 
-                List<SelectListItem> singareaSelectList = await _singareaManager.GetSelectListOfSingareas(new StateOfRequest("AreaNo"));
+                List<SelectListItem> singareaSelectList = await _singareaManager.GetSelectListOfSingareas(new StateOfRequest("AreaNa"));
                 ViewBag.SingareaList = singareaSelectList;
                 ViewBag.SingerState = temp_state;
 
@@ -584,7 +584,6 @@ namespace VodManageSystem.Controllers
             mState.StartTime = DateTime.Now;
 
             int orgId = mState.OrgId;
-            Singer singer = new Singer();
             List<Singer> singersTemp = _singerManager.GetOnePageOfSingers(mState);
             string temp_state = JsonUtil.SetJsonStringFromObject(mState);
 
