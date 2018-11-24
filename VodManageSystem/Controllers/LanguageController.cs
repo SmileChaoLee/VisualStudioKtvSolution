@@ -566,8 +566,8 @@ namespace VodManageSystem.Controllers
             Language language = new Language();
             List<Language> languagesTemp = await _languageManager.FindOnePageOfLanguagesForOneLanguage(mState, language, orgId);
             string temp_state = JsonUtil.SetJsonStringFromObject(mState);
-
             ViewBag.LanguageState = temp_state;
+
             return View(nameof(LanguagesList), languagesTemp);
         }
 
@@ -588,6 +588,16 @@ namespace VodManageSystem.Controllers
             }
             mState.StartTime = DateTime.Now;
 
+            // Added on 2018-11-24
+            // start from first page
+            mState.CurrentPageNo = 1;
+            List<Language> languagesTemp = await _languageManager.GetOnePageOfLanguages(mState);
+            string temp_state = JsonUtil.SetJsonStringFromObject(mState);
+            ViewBag.LanguageState = temp_state;
+
+            return View(nameof(LanguagesList), languagesTemp);
+
+            /*
             int orgId = 0;
             if (mState.OrgId == 0)
             {
@@ -614,6 +624,7 @@ namespace VodManageSystem.Controllers
                 // return to the previous page
                 return Redirect(HttpContext.Request.Headers["Referer"]);
             }
+            */
         }
     }
 }

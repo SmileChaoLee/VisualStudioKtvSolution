@@ -567,6 +567,7 @@ namespace VodManageSystem.Controllers
             string temp_state = JsonUtil.SetJsonStringFromObject(mState);
 
             ViewBag.SingareaState = temp_state;
+
             return View(nameof(SingareasList), singareasTemp);
         }
 
@@ -587,6 +588,16 @@ namespace VodManageSystem.Controllers
             }
             mState.StartTime = DateTime.Now;
 
+            // Added on 2018-11-24
+            // start from first page
+            mState.CurrentPageNo = 1;
+            List<Singarea> singareasTemp = await _singareaManager.GetOnePageOfSingareas(mState);
+            string temp_state = JsonUtil.SetJsonStringFromObject(mState);
+            ViewBag.SingareaState = temp_state;
+
+            return View(nameof(SingareasList), singareasTemp);
+
+            /*s
             int orgId = 0;
             if (mState.OrgId == 0)
             {
@@ -613,6 +624,7 @@ namespace VodManageSystem.Controllers
                 // return to the previous page
                 return Redirect(HttpContext.Request.Headers["Referer"]);
             }
+            */
         }
     }
 }

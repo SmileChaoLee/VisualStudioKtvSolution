@@ -704,15 +704,15 @@ namespace VodManageSystem.Controllers
             }
             mState.StartTime = DateTime.Now;
 
-            /*
-             *    // start from first page
+            // Added on 2018-11-24
+            // start from first page
             mState.CurrentPageNo = 1;
             List<Song> songsTemp = _songManager.GetOnePageOfSongs(mState);
             string temp_state = JsonUtil.SetJsonStringFromObject(mState);
             ViewBag.SongState = temp_state;
             return View(nameof(SongsList), songsTemp);
-            */
 
+            /*
             int orgId = 0;
             if (mState.OrgId == 0)
             {
@@ -739,6 +739,7 @@ namespace VodManageSystem.Controllers
                 // return to the previous page
                 return Redirect(HttpContext.Request.Headers["Referer"]);
             }
+            */
         }
     }
 }
