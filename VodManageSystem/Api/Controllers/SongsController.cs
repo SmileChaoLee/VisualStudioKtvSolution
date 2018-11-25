@@ -14,7 +14,7 @@ using VodManageSystem.Utilities;
 namespace VodManageSystem.Api.Controllers
 {
     [Route("api/[controller]")]
-    public class SongController : Controller
+    public class SongsController : Controller
     {
         private readonly KtvSystemDBContext _context;
         private readonly SongManager _songManager;
@@ -28,7 +28,7 @@ namespace VodManageSystem.Api.Controllers
         /// <param name="songManager">Song manager.</param>
         /// <param name="languagemanager">Languagemanager.</param>
         /// <param name="singerManager">Singer manager.</param>
-        public SongController(KtvSystemDBContext context, SongManager songManager, LanguageManager languagemanager, SingerManager singerManager)
+        public SongsController(KtvSystemDBContext context, SongManager songManager, LanguageManager languagemanager, SingerManager singerManager)
         {
             _context = context;
             _songManager = songManager;

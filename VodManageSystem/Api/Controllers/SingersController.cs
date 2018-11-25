@@ -14,7 +14,7 @@ using VodManageSystem.Utilities;
 namespace VodManageSystem.Api.Controllers
 {
     [Route("api/[controller]")]
-    public class SingerController : Controller
+    public class SingersController : Controller
     {
         private readonly KtvSystemDBContext _context;
         private readonly SingerManager _singerManager;
@@ -27,7 +27,7 @@ namespace VodManageSystem.Api.Controllers
         /// <param name="context">Context.</param>
         /// <param name="singerManager">Singer manager.</param>
         /// <param name="singareaManager">Singer Area manager.</param>
-        public SingerController(KtvSystemDBContext context, SingerManager singerManager, SingareaManager singareaManager, SongManager songManager)
+        public SingersController(KtvSystemDBContext context, SingerManager singerManager, SingareaManager singareaManager, SongManager songManager)
         {
             _context = context;
             _singerManager = singerManager;
@@ -175,60 +175,6 @@ namespace VodManageSystem.Api.Controllers
                 jArray.Add(jObject);
             }
             jObjectForAll.Add("songs", jArray);
-
-            return jObjectForAll.ToString();
-        }
-
-
-        // GET api/values/5/"1"/10/1
-        [HttpGet("{areaId}/{sex}/{pageSize}/{pageNo}/{orderBy}")]
-        public string Get(int areaId, String sex, int pageSize, int pageNo, string orderBy)
-        {
-            Console.WriteLine("HttpGet[\"{areaId}/{sex}/{ pageSize}/{ pageNo}/{orderBy}\")]");
-            Console.WriteLine("areaId = {0}, sex = {1}, pageSize = {2}, pageNo = {3}, orderBy = {4}", areaId, sex, pageSize, pageNo, orderBy);
-
-            // orderBy is either "SingNo" or "SingNa"
-            string orderByParam;
-            if (string.IsNullOrEmpty(orderBy))
-            {
-                orderByParam = "SingNo"; // default value is "SingNo"
-            }
-            else
-            {
-                string orderByTemp = orderBy.ToUpper().Trim();
-                if (orderByTemp == "SINGNO")
-                {
-                    orderByParam = "SingNo";
-                }
-                else if (orderByTemp == "SINGNA")
-                {
-                    orderByParam = "SingNa";
-                }
-                else
-                {
-                    orderByParam = "SingNo";
-                }
-            }
-
-            StateOfRequest mState = new StateOfRequest(orderByParam);
-            mState.PageSize = pageSize;
-            mState.CurrentPageNo = pageNo;
-
-            List<Singer> singers = _singerManager.GetOnePageOfSingersByAreaSex(mState, areaId, sex, true);
-
-            JObject jObjectForAll = new JObject();
-            jObjectForAll.Add("pageNo", mState.CurrentPageNo);
-            jObjectForAll.Add("pageSize", mState.PageSize);
-            jObjectForAll.Add("totalRecords", mState.TotalRecords);
-            jObjectForAll.Add("totalPages", mState.TotalPages);
-            JObject jObject;
-            JArray jArray = new JArray();
-            foreach (var singer in singers)
-            {
-                jObject = JsonUtil.ConvertSingerToJsongObject(singer);
-                jArray.Add(jObject);
-            }
-            jObjectForAll.Add("singers", jArray);
 
             return jObjectForAll.ToString();
         }
