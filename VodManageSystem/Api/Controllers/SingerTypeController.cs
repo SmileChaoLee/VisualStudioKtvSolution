@@ -32,11 +32,11 @@ namespace VodManageSystem.Api.Controllers
 
         // GET: api/values
         [HttpGet]
-        public async Task<string> Get()
+        public string Get()
         {
             // get all singarea
             StateOfRequest mState = new StateOfRequest("AreaNo");
-            List<Singarea> singareas = await _singareaManager.GetAllSingareas(mState);
+            List<Singarea> singareas = _singareaManager.GetAllSingareas(mState);
             // Convert List<Singarea> to JSON array
 
             JObject jObjectForAll = new JObject();

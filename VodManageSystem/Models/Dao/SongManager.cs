@@ -261,15 +261,6 @@ namespace VodManageSystem.Models.Dao
             int totalRecords = returnNumbers[0];
             int totalPages = returnNumbers[1];
 
-            /*
-            int totalRecords = totalSongs.Count();
-            int totalPages = totalRecords / pageSize;
-            if ((totalPages * pageSize) != totalRecords)
-            {
-                totalPages++;
-            }
-            */
-
             bool getAll = false;
             if (pageNo == -1)
             {

@@ -52,7 +52,7 @@ namespace VodManageSystem.Controllers
         // Get: get method
         // [Route("/[controller]/[action]")]
         [HttpGet, ActionName("SingareasList")]
-        public async Task<IActionResult> SingareasList(string singarea_state)
+        public IActionResult SingareasList(string singarea_state)
         {
             StateOfRequest mState;
             if (string.IsNullOrEmpty(singarea_state))
@@ -63,9 +63,10 @@ namespace VodManageSystem.Controllers
             {
                 mState = JsonUtil.GetObjectFromJsonString<StateOfRequest>(singarea_state);
             }
-            List<Singarea> singareas = await _singareaManager.GetOnePageOfSingareasDictionary(mState);
 
+            List<Singarea> singareas = _singareaManager.GetOnePageOfSingareas(mState);
             ViewBag.SingareaState = JsonUtil.SetJsonStringFromObject(mState);
+
             return View(singareas);
         }
 
@@ -81,7 +82,7 @@ namespace VodManageSystem.Controllers
 
         // Post
         [HttpPost, ActionName("Find")]
-        public async Task<IActionResult> Find(string area_no, string area_na, string search_type, string submitbutton, string singarea_state)
+        public IActionResult Find(string area_no, string area_na, string search_type, string submitbutton, string singarea_state)
         {
             if (!LoginUtil.CheckIfLoggedIn(HttpContext)) return View(nameof(Index));
 
@@ -137,10 +138,10 @@ namespace VodManageSystem.Controllers
                 return View();
             }
 
-            List<Singarea> singareasTemp = await _singareaManager.FindOnePageOfSingareasForOneSingarea(mState, singarea, -1);
+            List<Singarea> singareasTemp = _singareaManager.FindOnePageOfSingareasForOneSingarea(mState, singarea, -1);
             temp_state = JsonUtil.SetJsonStringFromObject(mState);
-
             ViewBag.SingareaState = temp_state;
+
             return View(nameof(SingareasList), singareasTemp);
         }
 
@@ -300,7 +301,7 @@ namespace VodManageSystem.Controllers
             if (sButton == "CANCEL")
             {
                 Singarea newSingarea = new Singarea();
-                List<Singarea> singareasTemp = await _singareaManager.FindOnePageOfSingareasForOneSingarea(mState, newSingarea, orgId);
+                List<Singarea> singareasTemp = _singareaManager.FindOnePageOfSingareasForOneSingarea(mState, newSingarea, orgId);
                 mState.IsFirstAddRecord = true;
                 temp_state = JsonUtil.SetJsonStringFromObject(mState);
                 ViewBag.SingareaState = temp_state;
@@ -402,7 +403,7 @@ namespace VodManageSystem.Controllers
                 {
                     // succeeded to update
                     Singarea newSingarea = new Singarea();
-                    List<Singarea> singareasTemp = await _singareaManager.FindOnePageOfSingareasForOneSingarea(mState, newSingarea, orgId);
+                    List<Singarea> singareasTemp = _singareaManager.FindOnePageOfSingareasForOneSingarea(mState, newSingarea, orgId);
                     temp_state = JsonUtil.SetJsonStringFromObject(mState);
 
                     ViewBag.SingareaState = temp_state;
@@ -490,7 +491,7 @@ namespace VodManageSystem.Controllers
                 if (result == ErrorCodeModel.Succeeded)
                 {
                     // succeeded to delete a singarea
-                    List<Singarea> singareasTemp = await _singareaManager.GetOnePageOfSingareas(mState);
+                    List<Singarea> singareasTemp = _singareaManager.GetOnePageOfSingareas(mState);
                     temp_state = JsonUtil.SetJsonStringFromObject(mState);
                     ViewBag.SingareaState = temp_state;
 
@@ -546,7 +547,7 @@ namespace VodManageSystem.Controllers
 
         // POST:
         [HttpPost, ActionName("Details")]
-        public async Task<IActionResult> DetailsReturn(string singarea_state)
+        public IActionResult DetailsReturn(string singarea_state)
         {
             if (!LoginUtil.CheckIfLoggedIn(HttpContext)) return View(nameof(Index));
 
@@ -562,7 +563,7 @@ namespace VodManageSystem.Controllers
             mState.StartTime = DateTime.Now;
 
             int orgId = mState.OrgId;
-            List<Singarea> singareasTemp = await _singareaManager.GetOnePageOfSingareas(mState);
+            List<Singarea> singareasTemp = _singareaManager.GetOnePageOfSingareas(mState);
             string temp_state = JsonUtil.SetJsonStringFromObject(mState);
 
             ViewBag.SingareaState = temp_state;
@@ -572,7 +573,7 @@ namespace VodManageSystem.Controllers
 
         // Get:
         [HttpGet, ActionName("ChangeOrder")]
-        public async Task<IActionResult> ChangeOrder(string singarea_state)
+        public IActionResult ChangeOrder(string singarea_state)
         {
             if (!LoginUtil.CheckIfLoggedIn(HttpContext)) return View(nameof(Index));
 
@@ -590,7 +591,7 @@ namespace VodManageSystem.Controllers
             // Added on 2018-11-24
             // start from first page
             mState.CurrentPageNo = 1;
-            List<Singarea> singareasTemp = await _singareaManager.GetOnePageOfSingareas(mState);
+            List<Singarea> singareasTemp = _singareaManager.GetOnePageOfSingareas(mState);
             string temp_state = JsonUtil.SetJsonStringFromObject(mState);
             ViewBag.SingareaState = temp_state;
 
@@ -612,7 +613,7 @@ namespace VodManageSystem.Controllers
             if (orgId != 0)
             {
                 Singarea singarea = new Singarea();
-                List<Singarea> singareasTemp = await _singareaManager.FindOnePageOfSingareasForOneSingarea(mState, singarea, orgId);
+                List<Singarea> singareasTemp = _singareaManager.FindOnePageOfSingareasForOneSingarea(mState, singarea, orgId);
                 string temp_state = JsonUtil.SetJsonStringFromObject(mState);
 
                 ViewBag.SingareaState = temp_state;

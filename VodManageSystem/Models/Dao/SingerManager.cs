@@ -195,7 +195,7 @@ namespace VodManageSystem.Models.Dao
             }
             else if (pageNo == -100)
             {
-                // get all songs
+                // get all singers
                 getAll = true;
                 pageNo = 1; // restore pageNo to 1
             }
@@ -216,7 +216,7 @@ namespace VodManageSystem.Models.Dao
             List<Singer> singers = new List<Singer>();
             if (getAll)
             {
-                // get all songs
+                // get all singers
                 singers = totalSingers.ToList();
             }
             else
@@ -297,7 +297,7 @@ namespace VodManageSystem.Models.Dao
             List<Singer> singers;
             if (getAll)
             {
-                // get all songs
+                // get all singers
                 singers = totalSingers.ToList();
             }
             else
@@ -400,7 +400,7 @@ namespace VodManageSystem.Models.Dao
             {
                 if (totalRecords == 0)
                 {
-                    // Song Table is empty
+                    // Singer Table is empty
                     UpdateStateOfRequest(mState, singerWithIndex, mState.CurrentPageNo, pageSize, 0, 0, true);
                     // return empty list
                     return new List<Singer>();
@@ -416,10 +416,10 @@ namespace VodManageSystem.Models.Dao
 
             // find the row number of singerWithIndex
             int tempCount = 0;
-            foreach (var songVar in totalSingers)
+            foreach (var singerVar in totalSingers)
             {
                 ++tempCount;    // first row number is 1
-                if (songVar.Id == singerWithIndex.Id)
+                if (singerVar.Id == singerWithIndex.Id)
                 {
                     break;
                 }
@@ -585,7 +585,7 @@ namespace VodManageSystem.Models.Dao
                 {
                     orgSinger.CopyColumnsFrom(singer);
 
-                    // verifying the validation for Song data
+                    // verifying the validation for Singer data
                     int validCode = await VerifySinger(orgSinger);
                     if (validCode != ErrorCodeModel.Succeeded)
                     {

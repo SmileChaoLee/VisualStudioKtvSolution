@@ -247,7 +247,7 @@ namespace VodManageSystem.Controllers
 
         // GET: Singer/Add
         // the view of adding singers to Singer table
-        public async Task<IActionResult> Add(string singer_state)
+        public IActionResult Add(string singer_state)
         {
             if (!LoginUtil.CheckIfLoggedIn(HttpContext)) return View(nameof(Index));
 
@@ -268,7 +268,7 @@ namespace VodManageSystem.Controllers
                 mState.OrgId = mState.FirstId;
             }
 
-            List<SelectListItem> singareaSelectList = await _singareaManager.GetSelectListOfSingareas(new StateOfRequest("AreaNa"));
+            List<SelectListItem> singareaSelectList = _singareaManager.GetSelectListOfSingareas(new StateOfRequest("AreaNa"));
             ViewBag.SingareaList = singareaSelectList;
             mState.StartTime = DateTime.Now;
             string temp_state = JsonUtil.SetJsonStringFromObject(mState);
@@ -335,7 +335,7 @@ namespace VodManageSystem.Controllers
                 ViewData["ErrorMessage"] = ErrorCodeModel.GetErrorMessage(ErrorCodeModel.ModelBindingFailed);
             }
 
-            List<SelectListItem> singareaSelectList = await _singareaManager.GetSelectListOfSingareas(new StateOfRequest("AreaNa"));
+            List<SelectListItem> singareaSelectList = _singareaManager.GetSelectListOfSingareas(new StateOfRequest("AreaNa"));
             ViewBag.SingareaList = singareaSelectList;
             ViewBag.SingerState = temp_state;
 
@@ -370,7 +370,7 @@ namespace VodManageSystem.Controllers
                 mState.OrgNo = singer.SingNo;
                 string temp_state = JsonUtil.SetJsonStringFromObject(mState);
 
-                List<SelectListItem> singareaSelectList = await _singareaManager.GetSelectListOfSingareas(new StateOfRequest("AreaNa"));
+                List<SelectListItem> singareaSelectList = _singareaManager.GetSelectListOfSingareas(new StateOfRequest("AreaNa"));
                 ViewBag.SingareaList = singareaSelectList;
                 ViewBag.SingerState = temp_state;
 
@@ -429,7 +429,7 @@ namespace VodManageSystem.Controllers
                 ViewData["ErrorMessage"] = ErrorCodeModel.GetErrorMessage(ErrorCodeModel.ModelBindingFailed);
             }
 
-            List<SelectListItem> singareaSelectList = await _singareaManager.GetSelectListOfSingareas(new StateOfRequest("AreaNa"));
+            List<SelectListItem> singareaSelectList = _singareaManager.GetSelectListOfSingareas(new StateOfRequest("AreaNa"));
             ViewBag.SingareaList = singareaSelectList;
             ViewBag.SingerState = temp_state;
 
@@ -464,7 +464,7 @@ namespace VodManageSystem.Controllers
                 mState.OrgNo = singer.SingNo;
                 string temp_state = JsonUtil.SetJsonStringFromObject(mState);
 
-                List<SelectListItem> singareaSelectList = await _singareaManager.GetSelectListOfSingareas(new StateOfRequest("AreaNa"));
+                List<SelectListItem> singareaSelectList = _singareaManager.GetSelectListOfSingareas(new StateOfRequest("AreaNa"));
                 ViewBag.SingareaList = singareaSelectList;
                 ViewBag.SingerState = temp_state;
 
@@ -524,7 +524,7 @@ namespace VodManageSystem.Controllers
             }
 
             // failed
-            List<SelectListItem> singareaSelectList = await _singareaManager.GetSelectListOfSingareas(new StateOfRequest("AreaNa"));
+            List<SelectListItem> singareaSelectList = _singareaManager.GetSelectListOfSingareas(new StateOfRequest("AreaNa"));
             ViewBag.SingareaList = singareaSelectList;
             ViewBag.SingerState = temp_state;
 
@@ -558,7 +558,7 @@ namespace VodManageSystem.Controllers
                 mState.OrgNo = singer.SingNo;
                 string temp_state = JsonUtil.SetJsonStringFromObject(mState);
 
-                List<SelectListItem> singareaSelectList = await _singareaManager.GetSelectListOfSingareas(new StateOfRequest("AreaNa"));
+                List<SelectListItem> singareaSelectList = _singareaManager.GetSelectListOfSingareas(new StateOfRequest("AreaNa"));
                 ViewBag.SingareaList = singareaSelectList;
                 ViewBag.SingerState = temp_state;
 
