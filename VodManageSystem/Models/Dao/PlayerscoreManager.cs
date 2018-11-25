@@ -23,92 +23,11 @@ namespace VodManageSystem.Models.Dao
         }
 
         // private methods
-        // end of private methods
-
-
-        // public methods
-        public async Task<List<Playerscore>> GetAllPlayerscores(StateOfRequest mState)
-        {
-            if (mState == null)
-            {
-                return new List<Playerscore>();    // return empty list
-            }
-
-            mState.CurrentPageNo = -100;  // represnt to get all languages
-            List<Playerscore> totalPlayerscores = await GetOnePageOfPlayerscoresDictionary(mState);
-
-            return totalPlayerscores;
-        }
-
-        /// <summary>
-        /// Gets the dictionary of playerscores.
-        /// </summary>
-        /// <returns>The dictionary of playerscores.</returns>
-        /// <param name="mState">Playerscore state.</param>
-        public async Task<SortedDictionary<int, Playerscore>> GetDictionaryOfPlayerscores(StateOfRequest mState)
-        {
-            if (mState == null)
-            {
-                return new SortedDictionary<int, Playerscore>();
-            }
-
-            List<Playerscore> totalPlayerscores = await _context.Playerscore.AsNoTracking().ToListAsync();
-
-            Dictionary<int, Playerscore> playerscoresDictionary = null;
-
-            // No playerscore selected
-            if (mState.OrderBy == "")
-            {
-                playerscoresDictionary = totalPlayerscores
-                            .Select((m, index) => new { rowNumber = index + 1, m })
-                            .ToDictionary(m => m.rowNumber, m => m.m);
-            }
-            else if (mState.OrderBy == "PlayerName")
-            {
-                playerscoresDictionary = totalPlayerscores.OrderBy(x => x.PlayerName)
-                            .Select((m, index) => new { rowNumber = index + 1, m })
-                            .ToDictionary(m => m.rowNumber, m => m.m);
-            }
-            else if (mState.OrderBy == "Score")
-            {
-                playerscoresDictionary = totalPlayerscores.OrderBy(x => x.Score).ThenBy(x => x.PlayerName)
-                            .Select((m, index) => new { rowNumber = index + 1, m })
-                            .ToDictionary(m => m.rowNumber, m => m.m);
-            }
-            else
-            {
-                // not inside range of roder by
-                playerscoresDictionary = new Dictionary<int, Playerscore>();    // empty lsit
-            }
-
-            return new SortedDictionary<int, Playerscore>(playerscoresDictionary);
-        }
-
-        /// <summary>
-        /// Gets the select list from a SortedDictionary of playerscores.
-        /// </summary>
-        /// <returns>The select list of playerscores.</returns>
-        /// <param name="mState">Playerscore state.</param>
-        public async Task<List<SelectListItem>> GetSelectListOfPlayerscores(StateOfRequest mState)
-        {
-            List<SelectListItem> selectList = new List<SelectListItem>();
-            List<Playerscore> playerscores = await GetAllPlayerscores(mState);
-            foreach (Playerscore playerscore in playerscores)
-            {
-                selectList.Add(new SelectListItem
-                {
-                    Text = playerscore.PlayerName,
-                    Value = Convert.ToString(playerscore.Score)
-                });
-            }
-            return selectList;
-        }
-
         /// <summary>
         /// Gets the total page of playerscore table.
         /// </summary>
         /// <returns>The total page of Playerscore table.</returns>
-        public async Task<int[]> GetTotalRecordsAndPages(int pageSize)    // by condition
+        private int[] GetTotalRecordsAndPages(int pageSize)    // by condition
         {
             int[] result = new int[2] { 0, 0 };
 
@@ -120,7 +39,7 @@ namespace VodManageSystem.Models.Dao
             // have to define queryCondition
             // queryCondition has not been used for now
 
-            int count = await _context.Playerscore.CountAsync();
+            int count = _context.Playerscore.Count();
             int totalPages = count / pageSize;
             if ((totalPages * pageSize) != count)
             {
@@ -133,32 +52,91 @@ namespace VodManageSystem.Models.Dao
             return result;
         }
 
-        /// <summary>
-        /// Gets the one page of playerscores dictionary.
-        /// </summary>
-        /// <returns>The one page of playerscores dictionary.</returns>
-        /// <param name="mState">Playerscore state.</param>
-        public async Task<List<Playerscore>> GetOnePageOfPlayerscoresDictionary(StateOfRequest mState)
+        private void UpdateStateOfRequest(StateOfRequest mState, Playerscore firstPlayerscore, int pageNo, int pageSize, int totalRecords, int totalPages, bool isFind = false)
+        {
+            mState.CurrentPageNo = pageNo;
+            mState.PageSize = pageSize;
+            mState.TotalRecords = totalRecords;
+            mState.TotalPages = totalPages;
+            if (firstPlayerscore != null)
+            {
+                mState.FirstId = firstPlayerscore.Id;
+                if (!isFind)
+                {
+                    // mState.OrgId = mState.FirstId;
+                }
+            }
+            else
+            {
+                mState.OrgId = 0;
+                mState.OrgNo = "";
+                mState.FirstId = 0;
+            }
+        }
+
+        private IQueryable<Playerscore> GetAllPlayerscoresIQueryable(StateOfRequest mState)
+        {
+            if (mState == null)
+            {
+                return null;
+            }
+            int pageSize = mState.PageSize;
+            if (pageSize <= 0)
+            {
+                Console.WriteLine("The value of pageSize cannot be less than 0.");
+                return null;
+            }
+
+            IQueryable<Playerscore> totalPlayerscores = _context.Playerscore;
+
+            return totalPlayerscores;
+        }
+
+        // end of private methods
+
+        // public methods
+        public List<Playerscore> GetAllPlayerscores(StateOfRequest mState)
+        {
+            if (mState == null)
+            {
+                return new List<Playerscore>();    // return empty list
+            }
+            int pageSize = mState.PageSize;
+            if (pageSize <= 0)
+            {
+                Console.WriteLine("The value of pageSize cannot be less than 0.");
+                return new List<Playerscore>();    // return empty list
+            }
+
+            mState.CurrentPageNo = -100;  // represnt to get all languages
+            List<Playerscore> totalPlayerscores = GetOnePageOfPlayerscores(mState);
+
+            return totalPlayerscores;
+        }
+
+        public List<Playerscore> GetOnePageOfPlayerscores(StateOfRequest mState)
         {
             if (mState == null)
             {
                 return new List<Playerscore>();
             }
-            if (string.IsNullOrEmpty(mState.OrderBy))
+            int pageSize = mState.PageSize;
+            if (pageSize <= 0)
             {
-                mState.OrderBy = "PlayerName";
+                Console.WriteLine("The value of pageSize cannot be less than 0.");
+                return new List<Playerscore>();
             }
 
-            SortedDictionary<int, Playerscore> playerscoresDictionary = await GetDictionaryOfPlayerscores(mState);
+            IQueryable<Playerscore> totalPlayerscores = GetAllPlayerscoresIQueryable(mState);
+            if (totalPlayerscores == null)
+            {
+                return new List<Playerscore>();
+            }
 
             int pageNo = mState.CurrentPageNo;
-            int pageSize = mState.PageSize;
-            int totalRecords = playerscoresDictionary.Count;
-            int totalPages = totalRecords / pageSize;
-            if ((totalPages * pageSize) < totalRecords)
-            {
-                totalPages++;
-            }
+            int[] returnNumbers = GetTotalRecordsAndPages(pageSize);
+            int totalRecords = returnNumbers[0];
+            int totalPages = returnNumbers[1];
 
             bool getAll = false;
             if (pageNo == -1)
@@ -168,7 +146,7 @@ namespace VodManageSystem.Models.Dao
             }
             else if (pageNo == -100)
             {
-                // get all songs
+                // get all playerscores
                 getAll = true;
                 pageNo = 1; // restore pageNo to 1
             }
@@ -184,148 +162,42 @@ namespace VodManageSystem.Models.Dao
                 }
             }
 
-            int recordNo = (pageNo - 1) * pageSize;
+            int recordNum = (pageNo - 1) * pageSize;
 
-            List<Playerscore> playerscores;
+            List<Playerscore> playerscores = new List<Playerscore>();
             if (getAll)
             {
-                playerscores = playerscoresDictionary.Select(m => m.Value).ToList();
-            }
-            else 
-            {
-                playerscores = playerscoresDictionary.Skip(recordNo).Take(pageSize).Select(m => m.Value).ToList();
-            }
-
-            mState.CurrentPageNo = pageNo;
-            mState.PageSize = pageSize;
-            mState.TotalRecords = totalRecords;
-            mState.TotalPages = totalPages;
-
-            Playerscore firstPlayerscore = playerscores.FirstOrDefault();
-            if (firstPlayerscore != null)
-            {
-                mState.FirstId = firstPlayerscore.Id;
+                // get all playerscores
+                playerscores = totalPlayerscores.ToList();
             }
             else
             {
-                mState.OrgId = 0;
-                mState.OrgNo = "";
-                mState.FirstId = 0;
+                playerscores = totalPlayerscores.Skip(recordNum).Take(pageSize).ToList();
             }
+
+            UpdateStateOfRequest(mState, playerscores.FirstOrDefault(), pageNo, pageSize, totalRecords, totalPages);
 
             return playerscores;
         }
 
         /// <summary>
-        /// Finds the one page of playerscores for one playerscore.
+        /// Gets the select list from a SortedDictionary of playerscores.
         /// </summary>
-        /// <returns>The one page of playerscores for one playerscore.</returns>
+        /// <returns>The select list of playerscores.</returns>
         /// <param name="mState">Playerscore state.</param>
-        /// <param name="playerscore">Playerscore.</param>
-        /// <param name="id">Identifier.</param>
-        public async Task<List<Playerscore>> FindOnePageOfPlayerscoresForOnePlayerscore(StateOfRequest mState, Playerscore playerscore, int id)
+        public List<SelectListItem> GetSelectListOfPlayerscores(StateOfRequest mState)
         {
-            if ((mState == null) || (playerscore == null))
+            List<SelectListItem> selectList = new List<SelectListItem>();
+            List<Playerscore> playerscores = GetAllPlayerscores(mState);
+            foreach (Playerscore playerscore in playerscores)
             {
-                return new List<Playerscore>();
-            }
-            if (string.IsNullOrEmpty(mState.OrderBy))
-            {
-                mState.OrderBy = "PlayerName";
-            }
-
-            int pageSize = mState.PageSize;
-
-            List<Playerscore> playerscores = null;
-            KeyValuePair<int, Playerscore> playerscoreWithIndex = new KeyValuePair<int, Playerscore>(-1, null);
-
-            SortedDictionary<int, Playerscore> playerscoresDictionary = await GetDictionaryOfPlayerscores(mState);
-
-            if (id >= 0)
-            {
-                // There was a selected playerscore
-                playerscoreWithIndex = playerscoresDictionary.Where(x => x.Value.Id == id).SingleOrDefault();
-            }
-            else
-            {
-                // No playerscore selected
-                if (mState.OrderBy == "")
+                selectList.Add(new SelectListItem
                 {
-                    int player_id = playerscore.Id;
-                    playerscoreWithIndex = playerscoresDictionary.Where(x => (x.Value.Id >= player_id)).FirstOrDefault();
-                }
-                else if (mState.OrderBy == "PlayerName")
-                {
-                    string playerName = playerscore.PlayerName;
-                    playerscoreWithIndex = playerscoresDictionary.Where(x => (String.Compare(x.Value.PlayerName, playerName) >= 0)).FirstOrDefault();
-                }
-                else if (mState.OrderBy == "Score")
-                {
-                    int score = playerscore.Score;
-                    playerscoreWithIndex = playerscoresDictionary.Where(x =>x.Value.Score >= score).FirstOrDefault();
-                }
-                else
-                {
-                    // not inside range of roder by then return empty lsit
-                    return new List<Playerscore>();
-                }
+                    Text = playerscore.PlayerName,
+                    Value = Convert.ToString(playerscore.Score)
+                });
             }
-
-            if (playerscoreWithIndex.Value == null)
-            {
-                if (playerscoresDictionary.Count == 0)
-                {
-                    // dictionary (playerscore Table) is empty
-                    mState.OrgId = 0;
-                    mState.OrgNo = "";
-                    mState.FirstId = 0;
-                    // return empty list
-                    return new List<Playerscore>();
-                }
-                else
-                {
-                    // go to last page
-                    playerscoreWithIndex = playerscoresDictionary.LastOrDefault();
-                }
-            }
-
-            Playerscore playerscoreFound = playerscoreWithIndex.Value;
-            playerscore.CopyFrom(playerscoreFound);
-
-            int tempCount = playerscoreWithIndex.Key;
-            int pageNo = tempCount / pageSize;
-            if ((pageNo * pageSize) != tempCount)
-            {
-                pageNo++;
-            }
-            int recordNo = (pageNo - 1) * pageSize;
-            playerscores = playerscoresDictionary.Skip(recordNo).Take(pageSize).Select(m => m.Value).ToList();
-
-            int totalRecords = playerscoresDictionary.Count;
-            int totalPages = totalRecords / pageSize;
-            if ((totalPages * pageSize) != totalRecords)
-            {
-                totalPages++;
-            }
-
-            mState.CurrentPageNo = pageNo;
-            mState.PageSize = pageSize;
-            mState.TotalRecords = totalRecords;
-            mState.TotalPages = totalPages;
-            mState.OrgId = playerscore.Id;
-            mState.OrgNo = playerscore.PlayerName;
-
-            Playerscore firstPlayerscore = playerscores.FirstOrDefault();
-            if (firstPlayerscore != null)
-            {
-                mState.FirstId = firstPlayerscore.Id;
-            }
-            else
-            {
-                mState.FirstId = 0;
-            }
-
-            return playerscores;
+            return selectList;
         }
 
         /// <summary>

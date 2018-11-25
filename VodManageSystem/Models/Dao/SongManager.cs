@@ -171,7 +171,6 @@ namespace VodManageSystem.Models.Dao
 
             IQueryable<Song> totalSongs = _context.Song.Include(x => x.Language)
                                           .Include(x => x.Singer1).Include(x => x.Singer2);
-            // .ToList().AsQueryable<Song>(); // removed for testing on 2018-11-23
 
             IQueryable<Song> songs;
             if (mState.OrderBy == "")
@@ -300,25 +299,6 @@ namespace VodManageSystem.Models.Dao
 
             UpdateStateOfRequest(mState, songs.FirstOrDefault(), pageNo, pageSize, totalRecords, totalPages);
 
-            /*
-            mState.CurrentPageNo = pageNo;
-            mState.PageSize = pageSize;
-            mState.TotalRecords = totalRecords;
-            mState.TotalPages = totalPages;
-            Song firstSong = songs.FirstOrDefault();
-            if (firstSong != null)
-            {
-                mState.FirstId = firstSong.Id;
-                mState.OrgId = mState.FirstId;
-            }
-            else
-            {
-                mState.OrgId = 0;
-                mState.OrgNo = "";
-                mState.FirstId = 0;
-            }
-            */
-
             return songs;
         }
 
@@ -437,7 +417,7 @@ namespace VodManageSystem.Models.Dao
                 {
                     // order by Id
                     int song_id = song.Id;
-                    songsTempList = totalSongs.Where(x => (x.Id >= song_id));
+                    songsTempList = totalSongs.Where(x => (x.Id == song_id));
                 }
                 else if (mState.OrderBy == "SongNo")
                 {

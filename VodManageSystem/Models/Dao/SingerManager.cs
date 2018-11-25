@@ -371,7 +371,7 @@ namespace VodManageSystem.Models.Dao
                 if (mState.OrderBy == "")
                 {
                     int sing_id = singer.Id;
-                    singersTempList = totalSingers.Where(x => (x.Id >= sing_id) );
+                    singersTempList = totalSingers.Where(x => (x.Id == sing_id) );
                 }
                 else if (mState.OrderBy == "SingNo")
                 {

@@ -265,7 +265,7 @@ namespace VodManageSystem.Models.Dao
                 if (mState.OrderBy == "")
                 {
                     int area_id = singarea.Id;
-                    singareasTempList = totalSingareas.Where(x => (x.Id >= area_id));
+                    singareasTempList = totalSingareas.Where(x => (x.Id == area_id));
                 }
                 else if (mState.OrderBy == "AreaNo")
                 {

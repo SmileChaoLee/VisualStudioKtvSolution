@@ -49,9 +49,9 @@ namespace VodManageSystem.Controllers
             {
                 gId = gameId.Value;
             }
-            Console.WriteLine("gameId = " + gameId);
-            Console.WriteLine("gId = " + gId);
+
             List<Playerscore> top10List = await _playerscoreManager.GetTop10ScoresList(gId);
+
             return top10List;
         }
 
@@ -64,7 +64,6 @@ namespace VodManageSystem.Controllers
         [HttpPost]
         public async Task<string> AddOneRecordREST(string PlayerscoreJSON) {
             string yn = "0";    // default is failed
-            Console.WriteLine("PlayerscoreJSON = " + PlayerscoreJSON);
             if ( String.IsNullOrEmpty(PlayerscoreJSON) ) {
                 return yn;
             }
@@ -75,10 +74,7 @@ namespace VodManageSystem.Controllers
                 playerscore.PlayerName = (string)json["PlayerName"];
                 playerscore.Score = Convert.ToInt32((string)json["Score"]);
                 playerscore.GameId = Convert.ToInt32((string)json["GameId"]);
-                Console.WriteLine("playercore.PlayerName = " + playerscore.PlayerName);
-                Console.WriteLine("playercore.Score = " + playerscore.Score);
-                Console.WriteLine("playercore.GameId = " + playerscore.GameId);
-
+           
                 int result = await _playerscoreManager.AddOnePlayerscoreToTable(playerscore);
                 if (result == ErrorCodeModel.Succeeded)
                 {

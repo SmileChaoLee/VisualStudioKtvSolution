@@ -89,11 +89,11 @@ namespace VodManageSystem.Controllers
 
         // Get
         [HttpGet, ActionName("Find")]
-        public async Task<IActionResult> Find(string song_state)
+        public IActionResult Find(string song_state)
         {
             if (!LoginUtil.CheckIfLoggedIn(HttpContext)) return View(nameof(Index));
 
-            List<SelectListItem> languageSelectList = await _languageManager.GetSelectListOfLanguages(new StateOfRequest("LangNa"));
+            List<SelectListItem> languageSelectList = _languageManager.GetSelectListOfLanguages(new StateOfRequest("LangNa"));
             List<SelectListItem> singerSelectList = _singerManager.GetSelectListOfSingers(new StateOfRequest("SingNa"));
 
             ViewBag.LanguageList = languageSelectList;
@@ -320,7 +320,7 @@ namespace VodManageSystem.Controllers
 
         // GET: Song/Add
         // the view of adding songs to Song table
-        public async Task<IActionResult> Add(string song_state)
+        public IActionResult Add(string song_state)
         {
             if (!LoginUtil.CheckIfLoggedIn(HttpContext)) return View(nameof(Index));
 
@@ -341,7 +341,7 @@ namespace VodManageSystem.Controllers
                 mState.OrgId = mState.FirstId;
             }
 
-            List<SelectListItem> languageSelectList = await _languageManager.GetSelectListOfLanguages(new StateOfRequest("LangNa"));
+            List<SelectListItem> languageSelectList = _languageManager.GetSelectListOfLanguages(new StateOfRequest("LangNa"));
             List<SelectListItem> singerSelectList = _singerManager.GetSelectListOfSingers(new StateOfRequest("SingNa"));
             ViewBag.LanguageList = languageSelectList;
             ViewBag.SingerList = singerSelectList;
@@ -412,7 +412,7 @@ namespace VodManageSystem.Controllers
                 ViewData["ErrorMessage"] = ErrorCodeModel.GetErrorMessage(ErrorCodeModel.ModelBindingFailed);
             }
 
-            List<SelectListItem> languageSelectList = await _languageManager.GetSelectListOfLanguages(new StateOfRequest("LangNa"));
+            List<SelectListItem> languageSelectList = _languageManager.GetSelectListOfLanguages(new StateOfRequest("LangNa"));
             List<SelectListItem> singerSelectList = _singerManager.GetSelectListOfSingers(new StateOfRequest("SingNa"));
             ViewBag.LanguageList = languageSelectList;
             ViewBag.SingerList = singerSelectList;
@@ -450,7 +450,7 @@ namespace VodManageSystem.Controllers
                 mState.OrgNo = song.SongNo;
                 string temp_state = JsonUtil.SetJsonStringFromObject(mState);
 
-                List<SelectListItem> languageSelectList = await _languageManager.GetSelectListOfLanguages(new StateOfRequest("LangNa"));
+                List<SelectListItem> languageSelectList = _languageManager.GetSelectListOfLanguages(new StateOfRequest("LangNa"));
                 List<SelectListItem> singerSelectList = _singerManager.GetSelectListOfSingers(new StateOfRequest("SingNa"));
                 ViewBag.LanguageList = languageSelectList;
                 ViewBag.SingerList = singerSelectList;
@@ -511,7 +511,7 @@ namespace VodManageSystem.Controllers
                 ViewData["ErrorMessage"] = ErrorCodeModel.GetErrorMessage(ErrorCodeModel.ModelBindingFailed);
             }
 
-            List<SelectListItem> languageSelectList = await _languageManager.GetSelectListOfLanguages(new StateOfRequest("LangNa"));
+            List<SelectListItem> languageSelectList = _languageManager.GetSelectListOfLanguages(new StateOfRequest("LangNa"));
             List<SelectListItem> singerSelectList = _singerManager.GetSelectListOfSingers(new StateOfRequest("SingNa"));
             ViewBag.LanguageList = languageSelectList;
             ViewBag.SingerList = singerSelectList;
@@ -548,7 +548,7 @@ namespace VodManageSystem.Controllers
                 mState.OrgNo = song.SongNo;
                 string temp_state = JsonUtil.SetJsonStringFromObject(mState);
 
-                List<SelectListItem> languageSelectList = await _languageManager.GetSelectListOfLanguages(new StateOfRequest("LangNa"));
+                List<SelectListItem> languageSelectList = _languageManager.GetSelectListOfLanguages(new StateOfRequest("LangNa"));
                 List<SelectListItem> singerSelectList = _singerManager.GetSelectListOfSingers(new StateOfRequest("SingNa"));
 
                 ViewBag.LanguageList = languageSelectList;
@@ -611,7 +611,7 @@ namespace VodManageSystem.Controllers
             }
 
             // failed
-            List<SelectListItem> languageSelectList = await _languageManager.GetSelectListOfLanguages(new StateOfRequest("LangNa"));
+            List<SelectListItem> languageSelectList = _languageManager.GetSelectListOfLanguages(new StateOfRequest("LangNa"));
             List<SelectListItem> singerSelectList = _singerManager.GetSelectListOfSingers(new StateOfRequest("SingNa"));
             ViewBag.LanguageList = languageSelectList;
             ViewBag.SingerList = singerSelectList;
@@ -647,7 +647,7 @@ namespace VodManageSystem.Controllers
                 mState.OrgNo = song.SongNo;
                 string temp_state = JsonUtil.SetJsonStringFromObject(mState);
 
-                List<SelectListItem> languageSelectList = await _languageManager.GetSelectListOfLanguages(new StateOfRequest("LangNa"));
+                List<SelectListItem> languageSelectList = _languageManager.GetSelectListOfLanguages(new StateOfRequest("LangNa"));
                 List<SelectListItem> singerSelectList = _singerManager.GetSelectListOfSingers(new StateOfRequest("SingNa"));
 
                 ViewBag.LanguageList = languageSelectList;

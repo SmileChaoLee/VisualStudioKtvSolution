@@ -52,7 +52,7 @@ namespace VodManageSystem.Controllers
 
         // Get: get method
         [HttpGet, ActionName("LanguagesList")]
-        public async Task<IActionResult> LanguagesList(string language_state)
+        public IActionResult LanguagesList(string language_state)
         {
             StateOfRequest mState;
             if (string.IsNullOrEmpty(language_state))
@@ -63,7 +63,7 @@ namespace VodManageSystem.Controllers
             {
                 mState = JsonUtil.GetObjectFromJsonString<StateOfRequest>(language_state);
             }
-            List<Language> languages = await _languageManager.GetOnePageOfLanguagesDictionary(mState);
+            List<Language> languages = _languageManager.GetOnePageOfLanguages(mState);
 
             ViewBag.LanguageState = JsonUtil.SetJsonStringFromObject(mState);
             return View(languages);
@@ -81,7 +81,7 @@ namespace VodManageSystem.Controllers
 
         // Post
         [HttpPost, ActionName("Find")]
-        public async Task<IActionResult> Find(string lang_no, string lang_na, string search_type, string submitbutton, string language_state)
+        public IActionResult Find(string lang_no, string lang_na, string search_type, string submitbutton, string language_state)
         {
             if (!LoginUtil.CheckIfLoggedIn(HttpContext)) return View(nameof(Index));
 
@@ -137,10 +137,10 @@ namespace VodManageSystem.Controllers
                 return View();
             }
 
-            List<Language> languagesTemp = await _languageManager.FindOnePageOfLanguagesForOneLanguage(mState, language, 0);
+            List<Language> languagesTemp = _languageManager.FindOnePageOfLanguagesForOneLanguage(mState, language, 0);
             temp_state = JsonUtil.SetJsonStringFromObject(mState);
-
             ViewBag.LanguageState = temp_state;
+
             return View(nameof(LanguagesList), languagesTemp);
         }
 
@@ -300,7 +300,7 @@ namespace VodManageSystem.Controllers
             if (sButton == "CANCEL")
             {
                 Language newLanguage = new Language();
-                List<Language> languagesTemp = await _languageManager.FindOnePageOfLanguagesForOneLanguage(mState, newLanguage, orgId);
+                List<Language> languagesTemp = _languageManager.FindOnePageOfLanguagesForOneLanguage(mState, newLanguage, orgId);
                 mState.IsFirstAddRecord = true;
                 temp_state = JsonUtil.SetJsonStringFromObject(mState);
                 ViewBag.LanguageState = temp_state;
@@ -403,7 +403,7 @@ namespace VodManageSystem.Controllers
                 {
                     // succeeded to update
                     Language newLanguage = new Language();
-                    List<Language> languagesTemp = await _languageManager.FindOnePageOfLanguagesForOneLanguage(mState, newLanguage, orgId);
+                    List<Language> languagesTemp = _languageManager.FindOnePageOfLanguagesForOneLanguage(mState, newLanguage, orgId);
                     temp_state = JsonUtil.SetJsonStringFromObject(mState);
 
                     ViewBag.LanguageState = temp_state;
@@ -491,7 +491,7 @@ namespace VodManageSystem.Controllers
                 if (result == ErrorCodeModel.Succeeded)
                 {
                     // succeeded to delete a language
-                    List<Language> languagesTemp = await _languageManager.GetOnePageOfLanguages(mState);
+                    List<Language> languagesTemp = _languageManager.GetOnePageOfLanguages(mState);
                     temp_state = JsonUtil.SetJsonStringFromObject(mState);
                     ViewBag.LanguageState = temp_state;
 
@@ -547,7 +547,7 @@ namespace VodManageSystem.Controllers
 
         // POST:
         [HttpPost, ActionName("Details")]
-        public async Task<IActionResult> DetailsReturn(string language_state)
+        public IActionResult DetailsReturn(string language_state)
         {
             if (!LoginUtil.CheckIfLoggedIn(HttpContext)) return View(nameof(Index));
 
@@ -563,7 +563,7 @@ namespace VodManageSystem.Controllers
             mState.StartTime = DateTime.Now;
 
             int orgId = mState.OrgId;
-            List<Language> languagesTemp = await _languageManager.GetOnePageOfLanguages(mState);
+            List<Language> languagesTemp = _languageManager.GetOnePageOfLanguages(mState);
             string temp_state = JsonUtil.SetJsonStringFromObject(mState);
             ViewBag.LanguageState = temp_state;
 
@@ -572,7 +572,7 @@ namespace VodManageSystem.Controllers
 
         // Get:
         [HttpGet, ActionName("ChangeOrder")]
-        public async Task<IActionResult> ChangeOrder(string language_state)
+        public IActionResult ChangeOrder(string language_state)
         {
             if (!LoginUtil.CheckIfLoggedIn(HttpContext)) return View(nameof(Index));
 
@@ -590,7 +590,7 @@ namespace VodManageSystem.Controllers
             // Added on 2018-11-24
             // start from first page
             mState.CurrentPageNo = 1;
-            List<Language> languagesTemp = await _languageManager.GetOnePageOfLanguages(mState);
+            List<Language> languagesTemp = _languageManager.GetOnePageOfLanguages(mState);
             string temp_state = JsonUtil.SetJsonStringFromObject(mState);
             ViewBag.LanguageState = temp_state;
 
