@@ -162,7 +162,6 @@ namespace VodManageSystem.Models.Dao
             int totalRecords = returnNumbers[0];
             int totalPages = returnNumbers[1];
 
-            bool getAll = false;
             if (pageNo == -1)
             {
                 // get the last page
@@ -171,8 +170,9 @@ namespace VodManageSystem.Models.Dao
             else if (pageNo == -100)
             {
                 // get all languages
-                getAll = true;
                 pageNo = 1; // restore pageNo to 1
+                pageSize = totalRecords;
+                totalPages = 1;
             }
             else
             {
@@ -188,16 +188,7 @@ namespace VodManageSystem.Models.Dao
 
             int recordNum = (pageNo - 1) * pageSize;
 
-            List<Language> languages = new List<Language>();
-            if (getAll)
-            {
-                // get all languages
-                languages = totalLanguages.ToList();
-            }
-            else
-            {
-                languages = totalLanguages.Skip(recordNum).Take(pageSize).ToList();
-            }
+            List<Language> languages = totalLanguages.Skip(recordNum).Take(pageSize).ToList();
 
             UpdateStateOfRequest(mState, languages.FirstOrDefault(), pageNo, pageSize, totalRecords, totalPages);
 
