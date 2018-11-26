@@ -162,7 +162,7 @@ namespace VodManageSystem.Models.Dao
             int[] returnNumbers = GetTotalRecordsAndPages(pageSize);
             int totalRecords = returnNumbers[0];
             int totalPages = returnNumbers[1];
-            bool getAll = false;
+
             if (pageNo == -1)
             {
                 // get the last page
@@ -171,8 +171,9 @@ namespace VodManageSystem.Models.Dao
             else if (pageNo == -100)
             {
                 // get all singareas
-                getAll = true;
                 pageNo = 1; // restore pageNo to 1
+                pageSize = totalRecords;
+                totalPages = 1;
             }
             else
             {
@@ -188,16 +189,7 @@ namespace VodManageSystem.Models.Dao
 
             int recordNum = (pageNo - 1) * pageSize;
 
-            List<Singarea> singareas = new List<Singarea>();
-            if (getAll)
-            {
-                // get all singareas
-                singareas = totalSingareas.ToList();
-            }
-            else
-            {
-                singareas = totalSingareas.Skip(recordNum).Take(pageSize).ToList();
-            }
+            List<Singarea> singareas = totalSingareas.Skip(recordNum).Take(pageSize).ToList();
 
             UpdateStateOfRequest(mState, singareas.FirstOrDefault(), pageNo, pageSize, totalRecords, totalPages);
 
