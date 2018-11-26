@@ -138,7 +138,6 @@ namespace VodManageSystem.Models.Dao
             int totalRecords = returnNumbers[0];
             int totalPages = returnNumbers[1];
 
-            bool getAll = false;
             if (pageNo == -1)
             {
                 // get the last page
@@ -147,8 +146,9 @@ namespace VodManageSystem.Models.Dao
             else if (pageNo == -100)
             {
                 // get all playerscores
-                getAll = true;
                 pageNo = 1; // restore pageNo to 1
+                pageSize = totalRecords;
+                totalPages = 1;
             }
             else
             {
@@ -164,16 +164,7 @@ namespace VodManageSystem.Models.Dao
 
             int recordNum = (pageNo - 1) * pageSize;
 
-            List<Playerscore> playerscores = new List<Playerscore>();
-            if (getAll)
-            {
-                // get all playerscores
-                playerscores = totalPlayerscores.ToList();
-            }
-            else
-            {
-                playerscores = totalPlayerscores.Skip(recordNum).Take(pageSize).ToList();
-            }
+            List<Playerscore> playerscores = totalPlayerscores.Skip(recordNum).Take(pageSize).ToList();
 
             UpdateStateOfRequest(mState, playerscores.FirstOrDefault(), pageNo, pageSize, totalRecords, totalPages);
 
