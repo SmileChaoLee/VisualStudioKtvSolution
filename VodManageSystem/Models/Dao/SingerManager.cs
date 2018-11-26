@@ -187,7 +187,6 @@ namespace VodManageSystem.Models.Dao
             }
             */
 
-            bool getAll = false;
             if (pageNo == -1)
             {
                 // get the last page
@@ -196,8 +195,9 @@ namespace VodManageSystem.Models.Dao
             else if (pageNo == -100)
             {
                 // get all singers
-                getAll = true;
                 pageNo = 1; // restore pageNo to 1
+                pageSize = totalRecords;
+                totalPages = 1;
             }
             else
             {
@@ -213,16 +213,7 @@ namespace VodManageSystem.Models.Dao
 
             int recordNum = (pageNo - 1) * pageSize;
 
-            List<Singer> singers = new List<Singer>();
-            if (getAll)
-            {
-                // get all singers
-                singers = totalSingers.ToList();
-            }
-            else
-            {
-                singers = totalSingers.Skip(recordNum).Take(pageSize).ToList();
-            }
+            List<Singer> singers = totalSingers.Skip(recordNum).Take(pageSize).ToList();
 
             UpdateStateOfRequest(mState, singers.FirstOrDefault(), pageNo, pageSize, totalRecords, totalPages);
 
@@ -265,7 +256,6 @@ namespace VodManageSystem.Models.Dao
                 totalPages++;
             }
 
-            bool getAll = false;
             if (pageNo == -1)
             {
                 // get the last page
@@ -274,8 +264,9 @@ namespace VodManageSystem.Models.Dao
             else if (pageNo == -100)
             {
                 // get all singers
-                getAll = true;
                 pageNo = 1; // restore pageNo to 1
+                pageSize = totalRecords;
+                totalPages = 1;
             }
             else
             {
@@ -294,16 +285,7 @@ namespace VodManageSystem.Models.Dao
 
             int recordNum = (pageNo - 1) * pageSize;
 
-            List<Singer> singers;
-            if (getAll)
-            {
-                // get all singers
-                singers = totalSingers.ToList();
-            }
-            else
-            {
-                singers = totalSingers.Skip(recordNum).Take(pageSize).ToList();
-            }
+            List<Singer> singers = totalSingers.Skip(recordNum).Take(pageSize).ToList();
 
             UpdateStateOfRequest(mState, singers.FirstOrDefault(), pageNo, pageSize, totalRecords, totalPages);
 
