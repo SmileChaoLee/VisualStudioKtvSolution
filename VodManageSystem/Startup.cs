@@ -43,6 +43,7 @@ namespace VodManageSystem
             services.AddDistributedMemoryCache();
             services.AddSession();
 
+            // For pomelo.EntityFrameworkCore.MySql
             services.AddDbContext<KtvSystemDBContext>(options =>
                   options.UseMySql(Configuration.GetConnectionString("MySqlConnection")));
 

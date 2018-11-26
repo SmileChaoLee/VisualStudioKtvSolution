@@ -146,8 +146,24 @@ namespace VodManageSystem.Api.Controllers
             return jObjectForAll.ToString();
         }
 
-        // GET api/values/{id}/songs/10/1
+        // GET api/values/{id}/songs
+        // [Route("{id}/[Action]")]
+        // [HttpGet]
+        // or
+        [HttpGet("{id}/[Action]")]
+        public string Songs(int id)
+        {
+            Console.WriteLine("HttpGet[\"{id}/Songs\")]");
 
+            // pageSize = 1 does not matter
+            // pageNo = -100 for all songs
+            // orderBy = ""
+            JObject jObjectForAll = GetSongsBySingerId(id, 1, -100, "");
+
+            return jObjectForAll.ToString();
+        }
+
+        // GET api/values/{id}/songs/10/1
         // [Route("{id}/[Action]/{pageSize}/{pageNo}")]
         // [HttpGet]
         // or
@@ -156,25 +172,22 @@ namespace VodManageSystem.Api.Controllers
         {
             Console.WriteLine("HttpGet[\"{id}/Songs/{ pageSize}/{ pageNo}\")]");
 
-            StateOfRequest mState = new StateOfRequest("");
-            mState.PageSize = pageSize;
-            mState.CurrentPageNo = pageNo;
+            // orderBy = ""
+            JObject jObjectForAll = GetSongsBySingerId(id, pageSize, pageNo, "");
 
-            List<Song> songs = _songManager.GetOnePageOfSongsBySingerId(mState, id, true);
+            return jObjectForAll.ToString();
+        }
 
-            JObject jObjectForAll = new JObject();
-            jObjectForAll.Add("pageNo", mState.CurrentPageNo);
-            jObjectForAll.Add("pageSize", mState.PageSize);
-            jObjectForAll.Add("totalRecords", mState.TotalRecords);
-            jObjectForAll.Add("totalPages", mState.TotalPages);
-            JObject jObject;
-            JArray jArray = new JArray();
-            foreach (var song in songs)
-            {
-                jObject = JsonUtil.ConvertSongToJsongObject(song);
-                jArray.Add(jObject);
-            }
-            jObjectForAll.Add("songs", jArray);
+        // GET api/values/{id}/songs/10/1/"SongNa"
+        // [Route("{id}/[Action]/{pageSize}/{pageNo}/{orderBy}")]
+        // [HttpGet]
+        // or
+        [HttpGet("{id}/[Action]/{pageSize}/{pageNo}/{orderBy}")]
+        public string Songs(int id, int pageSize, int pageNo, string orderBy)
+        {
+            Console.WriteLine("HttpGet[\"{id}/Songs/{ pageSize}/{ pageNo}/{orderBy}\")]");
+
+            JObject jObjectForAll = GetSongsBySingerId(id, pageSize, pageNo, orderBy);
 
             return jObjectForAll.ToString();
         }
@@ -195,6 +208,69 @@ namespace VodManageSystem.Api.Controllers
         [HttpDelete("{id}")]
         public void Delete(int id)
         {
+        }
+
+        private JObject GetSongsBySingerId(int id, int pageSize, int pageNo, string orderBy)
+        {
+            string orderByParam;
+            if (string.IsNullOrEmpty(orderBy))
+            {
+                orderByParam = "";
+            }
+            else
+            {
+                string orderByTemp = orderBy.ToUpper().Trim();
+                if (orderByTemp == "SONGNO")
+                {
+                    orderByParam = "SongNo";
+                }
+                else if (orderByTemp == "SONGNA")
+                {
+                    orderByParam = "SongNa";
+                }
+                else if (orderByTemp == "VODNO")
+                {
+                    orderByParam = "VodNo";
+                }
+                else if (orderBy == "LANG_SONGNA")
+                {
+                    orderByParam = "LangSongNa";
+                }
+                else if (orderBy == "SINGER1_NA")
+                {
+                    orderByParam = "Singer1Na";
+                }
+                else if (orderBy == "SINGER1_NA")
+                {
+                    orderByParam = "Singer2Na";
+                }
+                else
+                {
+                    orderByParam = "ReturnEmptyList";  // has to return empty list
+                }
+            }
+
+            StateOfRequest mState = new StateOfRequest(orderByParam);
+            mState.PageSize = pageSize;
+            mState.CurrentPageNo = pageNo;
+
+            List<Song> songs = _songManager.GetOnePageOfSongsBySingerId(mState, id, true);
+
+            JObject jObjectForAll = new JObject();
+            jObjectForAll.Add("pageNo", mState.CurrentPageNo);
+            jObjectForAll.Add("pageSize", mState.PageSize);
+            jObjectForAll.Add("totalRecords", mState.TotalRecords);
+            jObjectForAll.Add("totalPages", mState.TotalPages);
+            JObject jObject;
+            JArray jArray = new JArray();
+            foreach (var song in songs)
+            {
+                jObject = JsonUtil.ConvertSongToJsongObject(song);
+                jArray.Add(jObject);
+            }
+            jObjectForAll.Add("songs", jArray);
+
+            return jObjectForAll;
         }
     }
 }
