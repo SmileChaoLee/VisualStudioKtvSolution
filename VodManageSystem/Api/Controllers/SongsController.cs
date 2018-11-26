@@ -87,24 +87,7 @@ namespace VodManageSystem.Api.Controllers
         {
             Console.WriteLine("HttpGet[\"{ pageSize}/{ pageNo}\")]");
 
-            StateOfRequest mState = new StateOfRequest("");
-            mState.PageSize = pageSize;
-            mState.CurrentPageNo = pageNo;
-            List<Song> songs = _songManager.GetOnePageOfSongs(mState);
-
-            JObject jObjectForAll = new JObject();
-            jObjectForAll.Add("pageNo", mState.CurrentPageNo);
-            jObjectForAll.Add("pageSize", mState.PageSize);
-            jObjectForAll.Add("totalRecords", mState.TotalRecords);
-            jObjectForAll.Add("totalPages", mState.TotalPages);
-            JObject jObject;
-            JArray jArray = new JArray();
-            foreach (var song in songs)
-            {
-                jObject = JsonUtil.ConvertSongToJsongObject(song);
-                jArray.Add(jObject);
-            }
-            jObjectForAll.Add("songs", jArray);
+            JObject jObjectForAll = GetSongs(pageSize, pageNo, "");
 
             return jObjectForAll.ToString();
         }
@@ -115,36 +98,67 @@ namespace VodManageSystem.Api.Controllers
         {
             Console.WriteLine("HttpGet[\"{ pageSize}/{ pageNo}/{orderBy}\")]");
 
-            string orderByParam;
+            JObject jObjectForAll = GetSongs(pageSize, pageNo, orderBy);
 
-            string orderByTemp = orderBy.ToUpper().Trim();
-            if (orderByTemp == "SONGNO")
+            return jObjectForAll.ToString();
+        }
+
+        // POST api/values
+        [HttpPost]
+        public void Post([FromBody]string value)
+        {
+        }
+
+        // PUT api/values/5
+        [HttpPut("{id}")]
+        public void Put(int id, [FromBody]string value)
+        {
+        }
+
+        // DELETE api/values/5
+        [HttpDelete("{id}")]
+        public void Delete(int id)
+        {
+        }
+
+        private JObject GetSongs(int pageSize, int pageNo, string orderBy)
+        {
+            string orderByParam;
+            if (string.IsNullOrEmpty(orderBy))
             {
-                orderByParam = "SongNo";
-            }
-            else if (orderByTemp == "SONGNA")
-            {
-                orderByParam = "SongNa";
-            }
-            else if (orderByTemp == "VODNO")
-            {
-                orderByParam = "VodNo";
-            }
-            else if (orderBy == "LANG_SONGNA")
-            {
-                orderByParam = "LangSongNa";
-            }
-            else if (orderBy == "SINGER1_NA")
-            {
-                orderByParam = "Singer1Na";
-            }
-            else if (orderBy == "SINGER1_NA")
-            {
-                orderByParam = "Singer2Na";
+                orderByParam = "";
             }
             else
             {
-                orderByParam = "ReturnEmptyList";  // has to return empty list
+                string orderByTemp = orderBy.ToUpper().Trim();
+                if (orderByTemp == "SONGNO")
+                {
+                    orderByParam = "SongNo";
+                }
+                else if (orderByTemp == "SONGNA")
+                {
+                    orderByParam = "SongNa";
+                }
+                else if (orderByTemp == "VODNO")
+                {
+                    orderByParam = "VodNo";
+                }
+                else if (orderBy == "LANG_SONGNA")
+                {
+                    orderByParam = "LangSongNa";
+                }
+                else if (orderBy == "SINGER1_NA")
+                {
+                    orderByParam = "Singer1Na";
+                }
+                else if (orderBy == "SINGER1_NA")
+                {
+                    orderByParam = "Singer2Na";
+                }
+                else
+                {
+                    orderByParam = "ReturnEmptyList";  // has to return empty list
+                }
             }
 
             StateOfRequest mState = new StateOfRequest(orderByParam);
@@ -166,25 +180,7 @@ namespace VodManageSystem.Api.Controllers
             }
             jObjectForAll.Add("songs", jArray);
 
-            return jObjectForAll.ToString();
-        }
-
-        // POST api/values
-        [HttpPost]
-        public void Post([FromBody]string value)
-        {
-        }
-
-        // PUT api/values/5
-        [HttpPut("{id}")]
-        public void Put(int id, [FromBody]string value)
-        {
-        }
-
-        // DELETE api/values/5
-        [HttpDelete("{id}")]
-        public void Delete(int id)
-        {
+            return jObjectForAll;
         }
     }
 }

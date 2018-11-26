@@ -135,5 +135,29 @@ namespace VodManageSystem.Utilities
 
             return jObject;
         }
+
+        public static JObject ConvertSingareaToJsongObject(Singarea singarea)
+        {
+            JObject jObject = new JObject();
+            if (singarea == null)
+            {
+                return jObject;
+            }
+
+            jObject.Add("id", singarea.Id);
+            jObject.Add("areaNo", singarea.AreaNo);
+            jObject.Add("areaNa", singarea.AreaNa);
+            jObject.Add("areaEn", singarea.AreaEn);
+
+            return jObject;
+        }
+
+        public static JObject ConvertSingerTypeToJsongObject(Singarea singarea, string sex)
+        {
+            JObject jObject = ConvertSingareaToJsongObject(singarea);
+            jObject.Add("sex", sex);
+
+            return jObject;
+        }
     }
 }

@@ -51,7 +51,7 @@ namespace VodManageSystem.Api.Controllers
             JArray jArray = new JArray();
             foreach (var singarea in singareas)
             {
-                jObject = ConvertSingareaToJsongObject(singarea);
+                jObject = JsonUtil.ConvertSingareaToJsongObject(singarea);
                 jArray.Add(jObject);
             }
             jObjectForAll.Add("singareas", jArray);
@@ -80,11 +80,11 @@ namespace VodManageSystem.Api.Controllers
             JArray jArray = new JArray();
             foreach (var singarea in singareas)
             {
-                jObject = ConvertSingerTypeToJsongObject(singarea, "0");
+                jObject = JsonUtil.ConvertSingerTypeToJsongObject(singarea, "0");
                 jArray.Add(jObject);
-                jObject = ConvertSingerTypeToJsongObject(singarea, "1");
+                jObject = JsonUtil.ConvertSingerTypeToJsongObject(singarea, "1");
                 jArray.Add(jObject);
-                jObject = ConvertSingerTypeToJsongObject(singarea, "2");
+                jObject = JsonUtil.ConvertSingerTypeToJsongObject(singarea, "2");
                 jArray.Add(jObject);
             }
             jObjectForAll.Add("singerTypes", jArray);
@@ -98,7 +98,7 @@ namespace VodManageSystem.Api.Controllers
         {
             // get one Singarea
             Singarea singarea = await _singareaManager.FindOneSingareaById(id);
-            JObject jObject = ConvertSingareaToJsongObject(singarea);
+            JObject jObject = JsonUtil.ConvertSingareaToJsongObject(singarea);
 
             JObject returnJSON = new JObject();
             returnJSON.Add("singarea", jObject);
@@ -154,30 +154,6 @@ namespace VodManageSystem.Api.Controllers
         [HttpDelete("{id}")]
         public void Delete(int id)
         {
-        }
-
-        private JObject ConvertSingareaToJsongObject(Singarea singarea)
-        {
-            JObject jObject = new JObject();
-            if (singarea == null)
-            {
-                return jObject;
-            }
-
-            jObject.Add("id", singarea.Id);
-            jObject.Add("areaNo", singarea.AreaNo);
-            jObject.Add("areaNa", singarea.AreaNa);
-            jObject.Add("areaEn", singarea.AreaEn);
-
-            return jObject;
-        }
-
-        private JObject ConvertSingerTypeToJsongObject(Singarea singarea, string sex)
-        {
-            JObject jObject = ConvertSingareaToJsongObject(singarea);
-            jObject.Add("sex", sex);
-
-            return jObject;
         }
 
         private JObject GetSingers(int id, String sex, int pageSize, int pageNo, string orderBy)
