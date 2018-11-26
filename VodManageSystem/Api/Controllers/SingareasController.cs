@@ -163,6 +163,42 @@ namespace VodManageSystem.Api.Controllers
             return jObjectForAll.ToString();
         }
 
+        // Get api/values/5/Singers/1/10/1
+
+        // [Route("{id}/[Action]/{sex}/{pageSize}/{pageNo}")]
+        // [HttpGet]
+        // or
+        [HttpGet("{id}/[Action]/{sex}/{pageSize}/{pageNo}")]
+        public string Singers(int id, String sex, int pageSize, int pageNo)
+        {
+            Console.WriteLine("HttpGet[\"{id}/Singers/{sex}/{ pageSize}/{ pageNo}\")]");
+            Console.WriteLine("id = {0}, sex = {1}, pageSize = {2}, pageNo = {3}", id, sex, pageSize, pageNo);
+
+            // orderBy is either "SingNo" or "SingNa"
+            string orderByParam = "";
+
+            StateOfRequest mState = new StateOfRequest(orderByParam);
+            mState.PageSize = pageSize;
+            mState.CurrentPageNo = pageNo;
+
+            List<Singer> singers = _singerManager.GetOnePageOfSingersByAreaSex(mState, id, sex, true);
+
+            JObject jObjectForAll = new JObject();
+            jObjectForAll.Add("pageNo", mState.CurrentPageNo);
+            jObjectForAll.Add("pageSize", mState.PageSize);
+            jObjectForAll.Add("totalRecords", mState.TotalRecords);
+            jObjectForAll.Add("totalPages", mState.TotalPages);
+            JObject jObject;
+            JArray jArray = new JArray();
+            foreach (var singer in singers)
+            {
+                jObject = JsonUtil.ConvertSingerToJsongObject(singer);
+                jArray.Add(jObject);
+            }
+            jObjectForAll.Add("singers", jArray);
+
+            return jObjectForAll.ToString();
+        }
 
         // POST api/values
         [HttpPost]
