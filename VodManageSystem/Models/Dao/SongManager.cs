@@ -260,7 +260,7 @@ namespace VodManageSystem.Models.Dao
             int totalRecords = returnNumbers[0];
             int totalPages = returnNumbers[1];
 
-            bool getAll = false;
+            // bool getAll = false; // removed on 2018-11-26
             if (pageNo == -1)
             {
                 // get the last page
@@ -269,8 +269,10 @@ namespace VodManageSystem.Models.Dao
             else if (pageNo == -100)
             {
                 // get all songs
-                getAll = true;
+                // getAll = true;   // removed on 2018-11-26
                 pageNo = 1; // restore pageNo to 1
+                pageSize = totalRecords;    // added on 2018-11-26
+                totalPages = 1; //  added on 2018-11-26
             }
             else
             {
@@ -286,6 +288,7 @@ namespace VodManageSystem.Models.Dao
 
             int recordNum = (pageNo - 1) * pageSize;
 
+            /*  // removed on 2018-11-26
             List<Song> songs = new List<Song>();
             if (getAll)
             {
@@ -296,6 +299,10 @@ namespace VodManageSystem.Models.Dao
             {
                 songs = totalSongs.Skip(recordNum).Take(pageSize).ToList();
             }
+            */
+
+            // added on 2018-11-26
+            List<Song> songs = songs = totalSongs.Skip(recordNum).Take(pageSize).ToList();
 
             UpdateStateOfRequest(mState, songs.FirstOrDefault(), pageNo, pageSize, totalRecords, totalPages);
 
@@ -330,7 +337,7 @@ namespace VodManageSystem.Models.Dao
                 totalPages++;
             }
 
-            bool getAll = false;
+            // bool getAll = false; // removed on 2018-11-26
             if (pageNo == -1)
             {
                 // get the last page
@@ -339,8 +346,10 @@ namespace VodManageSystem.Models.Dao
             else if (pageNo == -100)
             {
                 // get all songs
-                getAll = true;
+                // getAll = true;   // removed on 2018-11-26
                 pageNo = 1; // restore pageNo to 1
+                pageSize = totalRecords;    // added on 2018-11-26
+                totalPages = 1; //  added on 2018-11-26
             }
             else
             {
@@ -359,6 +368,7 @@ namespace VodManageSystem.Models.Dao
 
             int recordNum = (pageNo - 1) * pageSize;
 
+            /* Removed on 2018-11-26
             List<Song> songs;
             if (getAll)
             {
@@ -369,6 +379,10 @@ namespace VodManageSystem.Models.Dao
             {
                 songs = totalSongs.Skip(recordNum).Take(pageSize).ToList();
             }
+            */
+
+            // Added on 2018-11-26
+            List<Song> songs = totalSongs.Skip(recordNum).Take(pageSize).ToList();
 
             UpdateStateOfRequest(mState, songs.FirstOrDefault(), pageNo, pageSize, totalRecords, totalPages);
 
