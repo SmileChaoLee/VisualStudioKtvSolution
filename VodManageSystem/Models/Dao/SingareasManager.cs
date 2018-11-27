@@ -394,17 +394,22 @@ namespace VodManageSystem.Models.Dao
                 return result;
             }
 
-            try
+            using (var dbTransaction = _context.Database.BeginTransaction())
             {
-                _context.Add(singarea);
-                await _context.SaveChangesAsync();
-                result = ErrorCodeModel.Succeeded;
-            }
-            catch (DbUpdateException ex)
-            {
-                string errorMsg = ex.ToString();
-                Console.WriteLine("Failed to add one singarea: \n" + errorMsg);
-                result = ErrorCodeModel.DatabaseError;    
+                try
+                {
+                    _context.Add(singarea);
+                    await _context.SaveChangesAsync();
+                    dbTransaction.Commit();
+                    result = ErrorCodeModel.Succeeded;
+                }
+                catch (DbUpdateException ex)
+                {
+                    string errorMsg = ex.ToString();
+                    Console.WriteLine("Failed to add one singarea: \n" + errorMsg);
+                    dbTransaction.Rollback();
+                    result = ErrorCodeModel.DatabaseError;
+                }
             }
 
             return result;
@@ -448,37 +453,43 @@ namespace VodManageSystem.Models.Dao
                 }
             }
 
-            try
+            Singarea orgSingarea = await FindOneSingareaById(id);
+            if (orgSingarea == null)
             {
-                Singarea orgSingarea = await FindOneSingareaById(id);
-                if (orgSingarea == null)
+                // the original singarea does not exist any more
+                result = ErrorCodeModel.OriginalSingareaNotExist;
+                return result;
+            }
+            else
+            {
+                orgSingarea.CopyColumnsFrom(singarea);
+                
+                // check if entry state changed
+                if ( (_context.Entry(orgSingarea).State) == EntityState.Modified)
                 {
-                    // the original singarea does not exist any more
-                    result = ErrorCodeModel.OriginalSingareaNotExist;
-                    return result;
+                    using (var dbTransaction = _context.Database.BeginTransaction())
+                    {
+                        try
+                        {
+                            await _context.SaveChangesAsync();
+                            dbTransaction.Commit();
+                            result = ErrorCodeModel.Succeeded; // succeeded to update
+                        }
+                        catch (DbUpdateException ex)
+                        {
+                            string msg = ex.ToString();
+                            Console.WriteLine("Failed to update singarea table: \n" + msg);
+                            dbTransaction.Rollback();
+                            result = ErrorCodeModel.DatabaseError;
+                        }
+                    }
                 }
                 else
                 {
-                    orgSingarea.CopyColumnsFrom(singarea);
-                    
-                    // check if entry state changed
-                    if ( (_context.Entry(orgSingarea).State) == EntityState.Modified)
-                    {
-                        await _context.SaveChangesAsync();
-                        result = ErrorCodeModel.Succeeded; // succeeded to update
-                    }
-                    else
-                    {
-                        result = ErrorCodeModel.SingareaNotChanged; // no changed
-                    }
+                    result = ErrorCodeModel.SingareaNotChanged; // no changed
                 }
             }
-            catch (DbUpdateException ex)
-            {
-                string msg = ex.ToString();
-                Console.WriteLine("Failed to update singarea table: \n" + msg);
-                result = ErrorCodeModel.DatabaseError;
-            }
+           
             return result;
         }
 
@@ -496,27 +507,34 @@ namespace VodManageSystem.Models.Dao
                 result = ErrorCodeModel.OriginalSingareaNoIsEmpty;
                 return result;
             }
-            try
+
+            Singarea orgSingarea = await FindOneSingareaByAreaNo(area_no);
+            if (orgSingarea == null)
             {
-                Singarea orgSingarea = await FindOneSingareaByAreaNo(area_no);
-                if (orgSingarea == null)
+                // the original singarea does not exist any more
+                result = ErrorCodeModel.OriginalSingareaNotExist;
+            }
+            else
+            {
+                using (var dbTransaction = _context.Database.BeginTransaction())
                 {
-                    // the original singarea does not exist any more
-                    result = ErrorCodeModel.OriginalSingareaNotExist;
-                }
-                else
-                {
-                    _context.Singarea.Remove(orgSingarea);
-                    await _context.SaveChangesAsync();
-                    result = ErrorCodeModel.Succeeded; // succeeded to update
+                    try
+                    {
+                        _context.Singarea.Remove(orgSingarea);
+                        await _context.SaveChangesAsync();
+                        dbTransaction.Commit();
+                        result = ErrorCodeModel.Succeeded; // succeeded to update
+                    }
+                    catch (DbUpdateException ex)
+                    {
+                        string msg = ex.ToString();
+                        Console.WriteLine("Failed to delete one singarea. Please see log file.\n" + msg);
+                        dbTransaction.Rollback();
+                        result = ErrorCodeModel.DatabaseError;
+                    }
                 }
             }
-            catch (DbUpdateException ex)
-            {
-                string msg = ex.ToString();
-                Console.WriteLine("Failed to delete one singarea. Please see log file.\n" + msg);
-                result = ErrorCodeModel.DatabaseError;
-            }
+
             return result;
         }
 
@@ -534,27 +552,34 @@ namespace VodManageSystem.Models.Dao
                 result = ErrorCodeModel.ErrorBecauseBugs;
                 return result;
             }
-            try
+
+            Singarea orgSingarea = await FindOneSingareaById(id);
+            if (orgSingarea == null)
             {
-                Singarea orgSingarea = await FindOneSingareaById(id);
-                if (orgSingarea == null)
+                // the original singarea does not exist any more
+                result = ErrorCodeModel.OriginalSingareaNotExist;
+            }
+            else
+            {
+                using (var dbTransaction = _context.Database.BeginTransaction())
                 {
-                    // the original singarea does not exist any more
-                    result = ErrorCodeModel.OriginalSingareaNotExist;
-                }
-                else
-                {
-                    _context.Singarea.Remove(orgSingarea);
-                    await _context.SaveChangesAsync();
-                    result = ErrorCodeModel.Succeeded; // succeeded to update
+                    try
+                    {
+                        _context.Singarea.Remove(orgSingarea);
+                        await _context.SaveChangesAsync();
+                        dbTransaction.Commit();
+                        result = ErrorCodeModel.Succeeded; // succeeded to update
+                    }
+                    catch (DbUpdateException ex)
+                    {
+                        string msg = ex.ToString();
+                        Console.WriteLine("Failed to delete one singarea. Please see log file.\n" + msg);
+                        dbTransaction.Rollback();
+                        result = ErrorCodeModel.DatabaseError;
+                    }
                 }
             }
-            catch (DbUpdateException ex)
-            {
-                string msg = ex.ToString();
-                Console.WriteLine("Failed to delete one singarea. Please see log file.\n" + msg);
-                result = ErrorCodeModel.DatabaseError;
-            }
+
             return result;
         }
 

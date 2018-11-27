@@ -491,26 +491,30 @@ namespace VodManageSystem.Models.Dao
                 return result;
             }
 
-            try
+            // verifying the validation for singer data
+            int validCode = await VerifySinger(singer);
+            if (validCode != ErrorCodeModel.Succeeded)
             {
-                // verifying the validation for singer data
-                int validCode = await VerifySinger(singer);
-                if (validCode != ErrorCodeModel.Succeeded)
-                {
-                    // data is invalid
-                    result = validCode;
-                    return result;
-                }
-
-                _context.Add(singer);
-                await _context.SaveChangesAsync();
-                result = ErrorCodeModel.Succeeded;
+                // data is invalid
+                result = validCode;
+                return result;
             }
-            catch (DbUpdateException ex)
+            using (var dbTransaction = _context.Database.BeginTransaction())
             {
-                string errorMsg = ex.ToString();
-                Console.WriteLine("Failed to add one singer: \n" + errorMsg);
-                result = ErrorCodeModel.DatabaseError;    
+                try
+                {
+                    _context.Add(singer);
+                    await _context.SaveChangesAsync();
+                    dbTransaction.Commit();
+                    result = ErrorCodeModel.Succeeded;
+                }
+                catch (DbUpdateException ex)
+                {
+                    string errorMsg = ex.ToString();
+                    Console.WriteLine("Failed to add one singer: \n" + errorMsg);
+                    dbTransaction.Rollback();
+                    result = ErrorCodeModel.DatabaseError;
+                }
             }
 
             return result;
@@ -554,46 +558,52 @@ namespace VodManageSystem.Models.Dao
                 }
             }
 
-            try
+            Singer orgSinger = await FindOneSingerById(id);
+            if (orgSinger == null)
             {
-                Singer orgSinger = await FindOneSingerById(id);
-                if (orgSinger == null)
+                // the original singer does not exist any more
+                result = ErrorCodeModel.OriginalSingerNotExist;
+                return result;
+            }
+            else
+            {
+                orgSinger.CopyColumnsFrom(singer);
+
+                // verifying the validation for Singer data
+                int validCode = await VerifySinger(orgSinger);
+                if (validCode != ErrorCodeModel.Succeeded)
                 {
-                    // the original singer does not exist any more
-                    result = ErrorCodeModel.OriginalSingerNotExist;
+                    // data is invalid
+                    result = validCode;
                     return result;
+                }
+                 
+                // check if entry state changed
+                if ( (_context.Entry(orgSinger).State) == EntityState.Modified)
+                {
+                    using (var dbTransaction = _context.Database.BeginTransaction())
+                    {
+                        try
+                        {
+                            await _context.SaveChangesAsync();
+                            dbTransaction.Commit();
+                            result = ErrorCodeModel.Succeeded; // succeeded to update
+                        }
+                        catch (DbUpdateException ex)
+                        {
+                            string msg = ex.ToString();
+                            Console.WriteLine("Failed to update singer table: \n" + msg);
+                            dbTransaction.Rollback();
+                            result = ErrorCodeModel.DatabaseError;
+                        }
+                    }
                 }
                 else
                 {
-                    orgSinger.CopyColumnsFrom(singer);
-
-                    // verifying the validation for Singer data
-                    int validCode = await VerifySinger(orgSinger);
-                    if (validCode != ErrorCodeModel.Succeeded)
-                    {
-                        // data is invalid
-                        result = validCode;
-                        return result;
-                    }
-                     
-                    // check if entry state changed
-                    if ( (_context.Entry(orgSinger).State) == EntityState.Modified)
-                    {
-                        await _context.SaveChangesAsync();
-                        result = ErrorCodeModel.Succeeded; // succeeded to update
-                    }
-                    else
-                    {
-                        result = ErrorCodeModel.SingerNotChanged; // no changed
-                    }
+                    result = ErrorCodeModel.SingerNotChanged; // no changed
                 }
             }
-            catch (DbUpdateException ex)
-            {
-                string msg = ex.ToString();
-                Console.WriteLine("Failed to update singer table: \n" + msg);
-                result = ErrorCodeModel.DatabaseError;
-            }
+
             return result;
         }
 
@@ -611,27 +621,34 @@ namespace VodManageSystem.Models.Dao
                 result = ErrorCodeModel.OriginalSingerNoIsEmpty;
                 return result;
             }
-            try
+
+            Singer orgSinger = await FindOneSingerBySingNo(sing_no);
+            if (orgSinger == null)
             {
-                Singer orgSinger = await FindOneSingerBySingNo(sing_no);
-                if (orgSinger == null)
+                // the original singer does not exist any more
+                result = ErrorCodeModel.OriginalSingerNotExist;
+            }
+            else
+            {
+                using (var dbTransaction = _context.Database.BeginTransaction())
                 {
-                    // the original singer does not exist any more
-                    result = ErrorCodeModel.OriginalSingerNotExist;
-                }
-                else
-                {
-                    _context.Singer.Remove(orgSinger);
-                    await _context.SaveChangesAsync();
-                    result = ErrorCodeModel.Succeeded; // succeeded to update
+                    try
+                    {
+                        _context.Singer.Remove(orgSinger);
+                        await _context.SaveChangesAsync();
+                        dbTransaction.Commit();
+                        result = ErrorCodeModel.Succeeded; // succeeded to update
+                    }
+                    catch (DbUpdateException ex)
+                    {
+                        string msg = ex.ToString();
+                        Console.WriteLine("Failed to delete one singer. Please see log file.\n" + msg);
+                        dbTransaction.Rollback();
+                        result = ErrorCodeModel.DatabaseError;
+                    }
                 }
             }
-            catch (DbUpdateException ex)
-            {
-                string msg = ex.ToString();
-                Console.WriteLine("Failed to delete one singer. Please see log file.\n" + msg);
-                result = ErrorCodeModel.DatabaseError;
-            }
+
             return result;
         }
 
@@ -649,27 +666,34 @@ namespace VodManageSystem.Models.Dao
                 result = ErrorCodeModel.ErrorBecauseBugs;
                 return result;
             }
-            try
+
+            Singer orgSinger = await FindOneSingerById(id);
+            if (orgSinger == null)
             {
-                Singer orgSinger = await FindOneSingerById(id);
-                if (orgSinger == null)
+                // the original singer does not exist any more
+                result = ErrorCodeModel.OriginalSingerNotExist;
+            }
+            else
+            {
+                using (var dbTransaction = _context.Database.BeginTransaction())
                 {
-                    // the original singer does not exist any more
-                    result = ErrorCodeModel.OriginalSingerNotExist;
-                }
-                else
-                {
-                    _context.Singer.Remove(orgSinger);
-                    await _context.SaveChangesAsync();
-                    result = ErrorCodeModel.Succeeded; // succeeded to update
+                    try
+                    {
+                        _context.Singer.Remove(orgSinger);
+                        await _context.SaveChangesAsync();
+                        dbTransaction.Commit();
+                        result = ErrorCodeModel.Succeeded; // succeeded to update
+                    }
+                    catch (DbUpdateException ex)
+                    {
+                        string msg = ex.ToString();
+                        Console.WriteLine("Failed to delete one singer. Please see log file.\n" + msg);
+                        dbTransaction.Rollback();
+                        result = ErrorCodeModel.DatabaseError;
+                    }
                 }
             }
-            catch (DbUpdateException ex)
-            {
-                string msg = ex.ToString();
-                Console.WriteLine("Failed to delete one singer. Please see log file.\n" + msg);
-                result = ErrorCodeModel.DatabaseError;
-            }
+
             return result;
         }
 

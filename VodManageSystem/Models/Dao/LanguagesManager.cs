@@ -394,17 +394,22 @@ namespace VodManageSystem.Models.Dao
                 return result;
             }
 
-            try
+            using (var dbTransaction = _context.Database.BeginTransaction())
             {
-                _context.Add(language);
-                await _context.SaveChangesAsync();
-                result = ErrorCodeModel.Succeeded;
-            }
-            catch (DbUpdateException ex)
-            {
-                string errorMsg = ex.ToString();
-                Console.WriteLine("Failed to add one language: \n" + errorMsg);
-                result = ErrorCodeModel.DatabaseError;    
+                try
+                {
+                    _context.Add(language);
+                    await _context.SaveChangesAsync();
+                    dbTransaction.Commit();
+                    result = ErrorCodeModel.Succeeded;
+                }
+                catch (DbUpdateException ex)
+                {
+                    string errorMsg = ex.ToString();
+                    Console.WriteLine("Failed to add one language: \n" + errorMsg);
+                    dbTransaction.Rollback();
+                    result = ErrorCodeModel.DatabaseError;
+                }
             }
 
             return result;
@@ -448,37 +453,43 @@ namespace VodManageSystem.Models.Dao
                 }
             }
 
-            try
+            Language orgLanguage = await FindOneLanguageById(id);
+            if (orgLanguage == null)
             {
-                Language orgLanguage = await FindOneLanguageById(id);
-                if (orgLanguage == null)
+                // the original language does not exist any more
+                result = ErrorCodeModel.OriginalLanguageNotExist;
+                return result;
+            }
+            else
+            {
+                orgLanguage.CopyColumnsFrom(language);
+                
+                // check if entry state changed
+                if ( (_context.Entry(orgLanguage).State) == EntityState.Modified)
                 {
-                    // the original language does not exist any more
-                    result = ErrorCodeModel.OriginalLanguageNotExist;
-                    return result;
+                    using (var dbTransaction = _context.Database.BeginTransaction())
+                    {
+                        try
+                        {
+                            await _context.SaveChangesAsync();
+                            dbTransaction.Commit();
+                            result = ErrorCodeModel.Succeeded; // succeeded to update
+                        }
+                        catch (DbUpdateException ex)
+                        {
+                            string msg = ex.ToString();
+                            Console.WriteLine("Failed to update language table: \n" + msg);
+                            dbTransaction.Rollback();
+                            result = ErrorCodeModel.DatabaseError;
+                        }
+                    }
                 }
                 else
                 {
-                    orgLanguage.CopyColumnsFrom(language);
-                    
-                    // check if entry state changed
-                    if ( (_context.Entry(orgLanguage).State) == EntityState.Modified)
-                    {
-                        await _context.SaveChangesAsync();
-                        result = ErrorCodeModel.Succeeded; // succeeded to update
-                    }
-                    else
-                    {
-                        result = ErrorCodeModel.LanguageNotChanged; // no changed
-                    }
+                    result = ErrorCodeModel.LanguageNotChanged; // no changed
                 }
             }
-            catch (DbUpdateException ex)
-            {
-                string msg = ex.ToString();
-                Console.WriteLine("Failed to update language table: \n" + msg);
-                result = ErrorCodeModel.DatabaseError;
-            }
+
             return result;
         }
 
@@ -496,27 +507,34 @@ namespace VodManageSystem.Models.Dao
                 result = ErrorCodeModel.OriginalLanguageNoIsEmpty;
                 return result;
             }
-            try
+
+            Language orgLanguage = await FindOneLanguageByLangNo(lang_no);
+            if (orgLanguage == null)
             {
-                Language orgLanguage = await FindOneLanguageByLangNo(lang_no);
-                if (orgLanguage == null)
+                // the original language does not exist any more
+                result = ErrorCodeModel.OriginalLanguageNotExist;
+            }
+            else
+            {
+                using (var dbTransaction = _context.Database.BeginTransaction())
                 {
-                    // the original language does not exist any more
-                    result = ErrorCodeModel.OriginalLanguageNotExist;
-                }
-                else
-                {
-                    _context.Language.Remove(orgLanguage);
-                    await _context.SaveChangesAsync();
-                    result = ErrorCodeModel.Succeeded; // succeeded to update
+                    try
+                    {
+                        _context.Language.Remove(orgLanguage);
+                        await _context.SaveChangesAsync();
+                        dbTransaction.Commit();
+                        result = ErrorCodeModel.Succeeded; // succeeded to update
+                    }
+                    catch (DbUpdateException ex)
+                    {
+                        string msg = ex.ToString();
+                        Console.WriteLine("Failed to delete one language. Please see log file.\n" + msg);
+                        dbTransaction.Rollback();
+                        result = ErrorCodeModel.DatabaseError;
+                    }
                 }
             }
-            catch (DbUpdateException ex)
-            {
-                string msg = ex.ToString();
-                Console.WriteLine("Failed to delete one language. Please see log file.\n" + msg);
-                result = ErrorCodeModel.DatabaseError;
-            }
+
             return result;
         }
 
@@ -534,27 +552,34 @@ namespace VodManageSystem.Models.Dao
                 result = ErrorCodeModel.ErrorBecauseBugs;
                 return result;
             }
-            try
+
+            Language orgLanguage = await FindOneLanguageById(id);
+            if (orgLanguage == null)
             {
-                Language orgLanguage = await FindOneLanguageById(id);
-                if (orgLanguage == null)
+                // the original language does not exist any more
+                result = ErrorCodeModel.OriginalLanguageNotExist;
+            }
+            else
+            {
+                using (var dbTransaction = _context.Database.BeginTransaction())
                 {
-                    // the original language does not exist any more
-                    result = ErrorCodeModel.OriginalLanguageNotExist;
-                }
-                else
-                {
-                    _context.Language.Remove(orgLanguage);
-                    await _context.SaveChangesAsync();
-                    result = ErrorCodeModel.Succeeded; // succeeded to update
+                    try
+                    {
+                        _context.Language.Remove(orgLanguage);
+                        await _context.SaveChangesAsync();
+                        dbTransaction.Commit();
+                        result = ErrorCodeModel.Succeeded; // succeeded to update
+                    }
+                    catch (DbUpdateException ex)
+                    {
+                        string msg = ex.ToString();
+                        Console.WriteLine("Failed to delete one language. Please see log file.\n" + msg);
+                        dbTransaction.Rollback();
+                        result = ErrorCodeModel.DatabaseError;
+                    }
                 }
             }
-            catch (DbUpdateException ex)
-            {
-                string msg = ex.ToString();
-                Console.WriteLine("Failed to delete one language. Please see log file.\n" + msg);
-                result = ErrorCodeModel.DatabaseError;
-            }
+
             return result;
         }
 
