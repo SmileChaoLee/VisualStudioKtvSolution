@@ -15,14 +15,14 @@ namespace VodManageSystem.Controllers
     public class SingareasController : Controller
     {
         private readonly KtvSystemDBContext _context;
-        private readonly SingareaManager _singareaManager;
+        private readonly SingareasManager _singareaManager;
 
         /// <summary>
         /// Initializes a new instance of the <see cref="T:VodManageSystem.Controllers.SingareaController"/> class.
         /// </summary>
         /// <param name="context">Context.</param>
         /// <param name="singareaManager">Singarea manager.</param>
-        public SingareasController(KtvSystemDBContext context, SingareaManager singareaManager)
+        public SingareasController(KtvSystemDBContext context, SingareasManager singareaManager)
         {
             _context = context;
             _singareaManager = singareaManager;

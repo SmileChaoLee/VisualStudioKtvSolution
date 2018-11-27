@@ -17,15 +17,15 @@ namespace VodManageSystem.Api.Controllers
     public class SingareasController : Controller
     {
         private readonly KtvSystemDBContext _context;
-        private readonly SingareaManager _singareaManager;
-        private readonly SingerManager _singerManager;
+        private readonly SingareasManager _singareaManager;
+        private readonly SingersManager _singerManager;
 
         /// <summary>
         /// Initializes a new instance of the <see cref="T:VodManageSystem.Controllers.SingareaController"/> class.
         /// </summary>
         /// <param name="context">Context.</param>
         /// <param name="singareaManager">Singarea manager.</param>
-        public SingareasController(KtvSystemDBContext context, SingareaManager singareaManager, SingerManager singerManager)
+        public SingareasController(KtvSystemDBContext context, SingareasManager singareaManager, SingersManager singerManager)
         {
             _context = context;
             _singareaManager = singareaManager;

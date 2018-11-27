@@ -14,7 +14,7 @@ namespace VodManageSystem.Models.Dao
     /// <summary>
     /// a service of Song manager that maintains Song table and its related tables in database
     /// </summary>
-    public class SongManager : IDisposable
+    public class SongsManager : IDisposable
     {
         // private members
         private readonly KtvSystemDBContext _context;
@@ -25,7 +25,7 @@ namespace VodManageSystem.Models.Dao
         /// Initializes a new instance of the <see cref="T:VodManageSystem.DOA.SongManager"/> class.
         /// </summary>
         /// <param name="context">Context.</param>
-        public SongManager(KtvSystemDBContext context)
+        public SongsManager(KtvSystemDBContext context)
         {
             _context = context;
         }

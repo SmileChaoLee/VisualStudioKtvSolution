@@ -17,14 +17,14 @@ namespace VodManageSystem.Controllers
     public class LanguagesController : Controller
     {
         private readonly KtvSystemDBContext _context;
-        private readonly LanguageManager _languageManager;
+        private readonly LanguagesManager _languageManager;
 
         /// <summary>
         /// Initializes a new instance of the <see cref="T:VodManageSystem.Controllers.LanguageController"/> class.
         /// </summary>
         /// <param name="context">Context.</param>
         /// <param name="languageManager">Language manager.</param>
-        public LanguagesController(KtvSystemDBContext context, LanguageManager languageManager)
+        public LanguagesController(KtvSystemDBContext context, LanguagesManager languageManager)
         {
             _context = context;
             _languageManager = languageManager;

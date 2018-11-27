@@ -8,7 +8,7 @@ using VodManageSystem.Models.DataModels;
 
 namespace VodManageSystem.Models.Dao
 {
-    public class SingareaManager : IDisposable
+    public class LanguagesManager : IDisposable
     {
         // private properties
         private readonly KtvSystemDBContext _context;
@@ -18,10 +18,10 @@ namespace VodManageSystem.Models.Dao
         // end of public properties
 
         /// <summary>
-        /// Initializes a new instance of the <see cref="T:VodManageSystem.Models.Dao.SingareaManager"/> class.
+        /// Initializes a new instance of the <see cref="T:VodManageSystem.Models.Dao.LanguageManager"/> class.
         /// </summary>
         /// <param name="context">Context.</param>
-        public SingareaManager(KtvSystemDBContext context)
+        public LanguagesManager(KtvSystemDBContext context)
         {
             _context = context;
         }
@@ -29,22 +29,22 @@ namespace VodManageSystem.Models.Dao
         // private methods
 
         /// <summary>
-        /// Gets the total page of singarea table.
+        /// Gets the total page of language table.
         /// </summary>
-        /// <returns>The total page of singarea table.</returns>
+        /// <returns>The total page of language table.</returns>
         private int[] GetTotalRecordsAndPages(int pageSize)    // by condition
         {
             int[] result = new int[2] { 0, 0 };
 
             if (pageSize <= 0)
             {
-                Console.WriteLine("the value of pageSize cannot be less than 0.");
+                Console.WriteLine("The value of pageSize cannot be less than 0.");
                 return result;
             }
             // have to define queryCondition
             // queryCondition has not been used for now
 
-            int count = _context.Singarea.Count();
+            int count = _context.Language.Count();
             int totalPages = count / pageSize;
             if ((totalPages * pageSize) != count)
             {
@@ -57,15 +57,15 @@ namespace VodManageSystem.Models.Dao
             return result;
         }
 
-        private void UpdateStateOfRequest(StateOfRequest mState, Singarea firstSingarea, int pageNo, int pageSize, int totalRecords, int totalPages, bool isFind = false)
+        void UpdateStateOfRequest(StateOfRequest mState, Language firstLanguage, int pageNo, int pageSize, int totalRecords, int totalPages, bool isFind = false)
         {
             mState.CurrentPageNo = pageNo;
             mState.PageSize = pageSize;
             mState.TotalRecords = totalRecords;
             mState.TotalPages = totalPages;
-            if (firstSingarea != null)
+            if (firstLanguage != null)
             {
-                mState.FirstId = firstSingarea.Id;
+                mState.FirstId = firstLanguage.Id;
                 if (!isFind)
                 {
                     // mState.OrgId = mState.FirstId;
@@ -79,7 +79,7 @@ namespace VodManageSystem.Models.Dao
             }
         }
 
-        private IQueryable<Singarea> GetAllSingareasIQueryable(StateOfRequest mState)
+        private IQueryable<Language> GetAllLanguagesIQueryable(StateOfRequest mState)
         {
             if (mState == null)
             {
@@ -92,70 +92,69 @@ namespace VodManageSystem.Models.Dao
                 return null;
             }
 
-            IQueryable<Singarea> totalSingareas = _context.Singarea;
+            IQueryable<Language> totalLanguages = _context.Language;
 
-            IQueryable<Singarea> singareas;
+            IQueryable<Language> languages;
             if (mState.OrderBy == "")
             {
-                singareas = totalSingareas;
+                languages = totalLanguages;
             }
-            else if (mState.OrderBy == "AreaNo")
+            else if (mState.OrderBy == "LangNo")
             {
-                singareas = totalSingareas.OrderBy(x => x.AreaNo);
+                languages = totalLanguages.OrderBy(x => x.LangNo);
             }
-            else if (mState.OrderBy == "AreaNa")
+            else if (mState.OrderBy == "LangNa")
             {
-                singareas = totalSingareas.OrderBy(x => x.AreaNa);
+                languages = totalLanguages.OrderBy(x => x.LangNa);
             }
             else
             {
                 // not inside range of roder by
-                singareas = null;   // empty lsit
+                languages = null;   // empty lsit
             }
 
-            return singareas;
+            return languages;
         }
 
         // end of private methods
 
-
         // public methods
-        public List<Singarea> GetAllSingareas(StateOfRequest mState) {
-
-            if (mState == null)
-            {
-                return new List<Singarea>();    // return empty list
-            }
-            int pageSize = mState.PageSize;
-            if (pageSize <= 0)
-            {
-                Console.WriteLine("The value of pageSize cannot be less than 0.");
-                return new List<Singarea>();
-            }
-
-            mState.CurrentPageNo = -100; // present to all Singareas
-            List<Singarea> totalSingareas = GetOnePageOfSingareas(mState);
-
-            return totalSingareas;
-        }
-
-        public List<Singarea> GetOnePageOfSingareas(StateOfRequest mState)
+        public List<Language> GetAllLanguages(StateOfRequest mState)
         {
             if (mState == null)
             {
-                return new List<Singarea>();
+                return new List<Language>();    // return empty list
             }
             int pageSize = mState.PageSize;
             if (pageSize <= 0)
             {
                 Console.WriteLine("The value of pageSize cannot be less than 0.");
-                return new List<Singarea>();
+                return new List<Language>();
             }
 
-            IQueryable<Singarea> totalSingareas = GetAllSingareasIQueryable(mState);
-            if (totalSingareas == null)
+            mState.CurrentPageNo = -100;  // represnt to get all languages
+            List<Language> totalLanguages = GetOnePageOfLanguages(mState);
+
+            return totalLanguages;
+        }
+
+        public List<Language> GetOnePageOfLanguages(StateOfRequest mState)
+        {
+            if (mState == null)
             {
-                return new List<Singarea>();
+                return new List<Language>();
+            }
+            int pageSize = mState.PageSize;
+            if (pageSize <= 0)
+            {
+                Console.WriteLine("The value of pageSize cannot be less than 0.");
+                return new List<Language>();
+            }
+
+            IQueryable<Language> totalLanguages = GetAllLanguagesIQueryable(mState);
+            if (totalLanguages == null)
+            {
+                return new List<Language>();
             }
 
             int pageNo = mState.CurrentPageNo;
@@ -170,7 +169,7 @@ namespace VodManageSystem.Models.Dao
             }
             else if (pageNo == -100)
             {
-                // get all singareas
+                // get all languages
                 pageNo = 1; // restore pageNo to 1
                 pageSize = totalRecords;
                 totalPages = 1;
@@ -189,124 +188,125 @@ namespace VodManageSystem.Models.Dao
 
             int recordNum = (pageNo - 1) * pageSize;
 
-            List<Singarea> singareas = totalSingareas.Skip(recordNum).Take(pageSize).ToList();
+            List<Language> languages = totalLanguages.Skip(recordNum).Take(pageSize).ToList();
 
-            UpdateStateOfRequest(mState, singareas.FirstOrDefault(), pageNo, pageSize, totalRecords, totalPages);
+            UpdateStateOfRequest(mState, languages.FirstOrDefault(), pageNo, pageSize, totalRecords, totalPages);
 
-            return singareas;
+            return languages;
         }
 
         /// <summary>
-        /// Gets the select list from a SortedDictionary of singareas.
+        /// Gets the select list from a SortedDictionary of languages.
         /// </summary>
-        /// <returns>The select list of singareas.</returns>
-        /// <param name="mState">Singarea state.</param>
-        public List<SelectListItem> GetSelectListOfSingareas(StateOfRequest mState)
+        /// <returns>The select list of languages.</returns>
+        /// <param name="mState">Language state.</param>
+        public List<SelectListItem> GetSelectListOfLanguages(StateOfRequest mState)
         {
             List<SelectListItem> selectList = new List<SelectListItem>();
-            List<Singarea> singareas = GetAllSingareas(mState);
-            foreach (Singarea area in singareas)
+            List<Language> languages = GetAllLanguages(mState);
+            foreach (Language lang in languages)
             {
                 selectList.Add(new SelectListItem
                 {
-                    Text = area.AreaNa,
-                    Value = Convert.ToString(area.Id)
+                    Text = lang.LangNa,
+                    Value = Convert.ToString(lang.Id)
                 });
             }
             return selectList;
         }
 
         /// <summary>
-        /// Finds the one page of singareas for one singarea.
+        /// Finds the one page of languages for one language.
         /// </summary>
-        /// <returns>The one page of singareas for one singarea.</returns>
-        /// <param name="mState">Singarea state.</param>
-        /// <param name="singarea">Singarea.</param>
+        /// <returns>The one page of languages for one language.</returns>
+        /// <param name="mState">Language state.</param>
+        /// <param name="language">Language.</param>
         /// <param name="id">Identifier.</param>
-        public List<Singarea> FindOnePageOfSingareasForOneSingarea(StateOfRequest mState, Singarea singarea, int id)
+        public List<Language> FindOnePageOfLanguagesForOneLanguage(StateOfRequest mState, Language language, int id)
         {
-            if ( (mState == null) || (singarea == null) )
+            if ( (mState == null) || (language == null) )
             {
-                return new List<Singarea>();
+                return new List<Language>();
             }
             int pageSize = mState.PageSize;
             if (pageSize <= 0)
             {
                 Console.WriteLine("The value of pageSize cannot be less than 0.");
-                return new List<Singarea>();
+                return new List<Language>();
             }
 
-            IQueryable<Singarea> totalSingareas = GetAllSingareasIQueryable(mState);
-            if (totalSingareas == null)
+            IQueryable<Language> totalLanguages = GetAllLanguagesIQueryable(mState);
+            if (totalLanguages == null)
             {
-                return new List<Singarea>();
+                return new List<Language>();
             }
 
-            List<Singarea> singareas = null;
-            Singarea singareaWithIndex = null;
-            IQueryable<Singarea> singareasTempList = null;
+            List<Language> languages = null;
+            Language languageWithIndex = null;
+            IQueryable<Language> languagesTempList = null;
 
             if (id >= 0)
             {
-                // There was a selected singarea
-                singareasTempList = totalSingareas.Where(x => x.Id == id);
+                // There was a language selected
+                languagesTempList = totalLanguages.Where(x => x.Id == id);
             }
             else
             {
-                // No singarea selected
+                // No language selected
                 if (mState.OrderBy == "")
                 {
-                    int area_id = singarea.Id;
-                    singareasTempList = totalSingareas.Where(x => (x.Id == area_id));
+                    // order by Id
+                    int lang_id = language.Id;
+                    languagesTempList = totalLanguages.Where(x => (x.Id == lang_id));
                 }
-                else if (mState.OrderBy == "AreaNo")
+                else if (mState.OrderBy == "LangNo")
                 {
-                    string area_no = singarea.AreaNo.Trim();
-                    int len = area_no.Length;
-                    singareasTempList = totalSingareas.Where(x => x.AreaNo.Trim().Substring(0, len) == area_no);
+                    string lang_no = language.LangNo.Trim();
+                    int len = lang_no.Length;
+                    languagesTempList = totalLanguages.Where(x => x.LangNo.Trim().Substring(0, len) == lang_no);
                 }
-                else if (mState.OrderBy == "AreaNa")
+                else if (mState.OrderBy == "LangNa")
                 {
-                    string area_na = singarea.AreaNa.Trim();
-                    int len = area_na.Length;
-                    singareasTempList = totalSingareas.Where(x => x.AreaNa.Trim().Substring(0, len) == area_na);
+                    string lang_na = language.LangNa.Trim();
+                    int len = lang_na.Length;
+                    languagesTempList = totalLanguages.Where(x => x.LangNa.Trim().Substring(0, len) == lang_na);
                 }
                 else
                 {
                     // not inside range of roder by then return empty lsit
-                    return new List<Singarea>(); 
+                    return new List<Language>();
                 }
             }
 
-            int totalRecords = totalSingareas.Count();  // the whole singarea table
+            int totalRecords = totalLanguages.Count();  // the whole language table
 
             bool isFound = true;
-            singareaWithIndex = singareasTempList.FirstOrDefault(); // the first one found
-            if (singareaWithIndex == null)
+            languageWithIndex = languagesTempList.FirstOrDefault(); // the first one found
+            if (languageWithIndex == null)
             {
-                isFound = false;    // singarea that was assigned is not found
+                isFound = false;    // language that was assigned is not found
                 if (totalRecords == 0)
                 {
-                    // Singarea Table is empty
-                    UpdateStateOfRequest(mState, singareaWithIndex, mState.CurrentPageNo, pageSize, 0, 0, true);
+                    // Language Table is empty
+                    UpdateStateOfRequest(mState, languageWithIndex, mState.CurrentPageNo, pageSize, 0, 0, true);
                     // return empty list
-                    return new List<Singarea>();
+                    return new List<Language>();
                 }
                 else
                 {
                     // go to last page
-                    singareaWithIndex = totalSingareas.LastOrDefault();
+                    languageWithIndex = totalLanguages.LastOrDefault();
                 }
             }
 
-            singarea.CopyFrom(singareaWithIndex);
+            language.CopyFrom(languageWithIndex);
 
-            // find the row number of singareaWithIndex
+            // find the row number of languageWithIndex
             int tempCount = 0;
-            foreach (var singareaVar in totalSingareas)
+            foreach (var languageVar in totalLanguages)
             {
                 ++tempCount;    // first row number is 1
-                if (singareaVar.Id == singareaWithIndex.Id)
+                if (languageVar.Id == languageWithIndex.Id)
                 {
                     break;
                 }
@@ -319,7 +319,7 @@ namespace VodManageSystem.Models.Dao
 
             int recordNo = (pageNo - 1) * pageSize;
 
-            singareas = totalSingareas.Skip(recordNo).Take(pageSize).ToList();
+            languages = totalLanguages.Skip(recordNo).Take(pageSize).ToList();
 
             int totalPages = totalRecords / pageSize;
             if ((totalPages * pageSize) != totalRecords)
@@ -330,80 +330,80 @@ namespace VodManageSystem.Models.Dao
             if (isFound)
             {
                 // found
-                mState.OrgId = singarea.Id; // chnaged OrgId to the singarea id found
+                mState.OrgId = language.Id; // chnaged OrgId to the language id found
             }
             else
             {
                 // not found, then it is last page and last record
-                mState.OrgId = 0;   // no singarea is selected
+                mState.OrgId = 0;   // no language is selected
             }
-            UpdateStateOfRequest(mState, singareas.FirstOrDefault(), pageNo, pageSize, totalRecords, totalPages, true);
+            UpdateStateOfRequest(mState, languages.FirstOrDefault(), pageNo, pageSize, totalRecords, totalPages, true);
 
-            return singareas;
+            return languages;
         }
 
         /// <summary>
-        /// Finds the one singarea by singarea no.
+        /// Finds the one language by language no.
         /// </summary>
-        /// <returns>The one singarea by singarea no.</returns>
-        /// <param name="area_no">Singarea no.</param>
-        public async Task<Singarea> FindOneSingareaByAreaNo(string area_no)
+        /// <returns>The one language by language no.</returns>
+        /// <param name="lang_no">Language no.</param>
+        public async Task<Language> FindOneLanguageByLangNo(string lang_no)
         {
-            Singarea singarea = await _context.Singarea.Where(x=>x.AreaNo == area_no).SingleOrDefaultAsync();
+            Language language = await _context.Language.Where(x=>x.LangNo == lang_no).SingleOrDefaultAsync();
 
-            return singarea;
+            return language;
         }
 
         /// <summary>
-        /// Finds the one singarea by identifier.
+        /// Finds the one language by identifier.
         /// </summary>
-        /// <returns>The one singarea by identifier (Singarea.Id).</returns>
-        /// <param name="id">the id of the singarea.</param>
-        public async Task<Singarea> FindOneSingareaById(int id)
+        /// <returns>The one language by identifier (Language.Id).</returns>
+        /// <param name="id">the id of the language.</param>
+        public async Task<Language> FindOneLanguageById(int id)
         {
-            Singarea singarea = await _context.Singarea.Where(x=>x.Id == id).SingleOrDefaultAsync();
+            Language language = await _context.Language.Where(x=>x.Id == id).SingleOrDefaultAsync();
 
-            return singarea;
+            return language;
         }
 
         /// <summary>
-        /// Adds the one singarea to table.
+        /// Adds the one language to table.
         /// </summary>
         /// <returns>Return the error code.</returns>
-        /// <param name="singarea">Singarea.</param>
-        public async Task<int> AddOneSingareaToTable(Singarea singarea)
+        /// <param name="language">Language.</param>
+        public async Task<int> AddOneLanguageToTable(Language language)
         {
             int result = ErrorCodeModel.ErrorBecauseBugs;
-            if (singarea == null)
+            if (language == null)
             {
                 // the data for updating is empty
-                result = ErrorCodeModel.SingareaIsNull;
+                result = ErrorCodeModel.LanguageIsNull;
                 return result;
             }
-            if (string.IsNullOrEmpty(singarea.AreaNo))
+            if (string.IsNullOrEmpty(language.LangNo))
             {
-                // the singarea no that input by user is empty
-                result = ErrorCodeModel.SingareaNoIsEmpty;
+                // the language no that input by user is empty
+                result = ErrorCodeModel.LanguageNoIsEmpty;
                 return result;
             }
-            Singarea oldSingarea = await FindOneSingareaByAreaNo(singarea.AreaNo);
-            if (oldSingarea != null)
+            Language oldLanguage = await FindOneLanguageByLangNo(language.LangNo);
+            if (oldLanguage != null)
             {
-                // singarea_no is duplicate
-                result = ErrorCodeModel.SingareaNoDuplicate;
+                // language_no is duplicate
+                result = ErrorCodeModel.LanguageNoDuplicate;
                 return result;
             }
 
             try
             {
-                _context.Add(singarea);
+                _context.Add(language);
                 await _context.SaveChangesAsync();
                 result = ErrorCodeModel.Succeeded;
             }
             catch (DbUpdateException ex)
             {
                 string errorMsg = ex.ToString();
-                Console.WriteLine("Failed to add one singarea: \n" + errorMsg);
+                Console.WriteLine("Failed to add one language: \n" + errorMsg);
                 result = ErrorCodeModel.DatabaseError;    
             }
 
@@ -411,102 +411,102 @@ namespace VodManageSystem.Models.Dao
         }
 
         /// <summary>
-        /// Updates the one singarea by identifier.
+        /// Updates the one language by identifier.
         /// </summary>
         /// <returns>Return the error code</returns>
         /// <param name="id">Identifier.</param>
-        /// <param name="singarea">Singarea.</param>
-        public async Task<int> UpdateOneSingareaById(int id, Singarea singarea)
+        /// <param name="language">Language.</param>
+        public async Task<int> UpdateOneLanguageById(int id, Language language)
         {
             int result = ErrorCodeModel.ErrorBecauseBugs;
             if (id == 0)
             {
-                // its a bug, id of singarea cannot be 0
+                // its a bug, id of language cannot be 0
                 result = ErrorCodeModel.ErrorBecauseBugs;
                 return result;
             }
-            if (singarea == null)
+            if (language == null)
             {
                 // the data for updating is empty
-                result = ErrorCodeModel.SingareaIsNull;
+                result = ErrorCodeModel.LanguageIsNull;
                 return result;
             }
-            if (string.IsNullOrEmpty(singarea.AreaNo))
+            if (string.IsNullOrEmpty(language.LangNo))
             {
-                // the singarea no that input by user is empty
-                result = ErrorCodeModel.SingareaNoIsEmpty;
+                // the language no that input by user is empty
+                result = ErrorCodeModel.LanguageNoIsEmpty;
                 return result;
             }
-            Singarea newSingarea = await FindOneSingareaByAreaNo(singarea.AreaNo);
-            if (newSingarea != null)
+            Language newLanguage = await FindOneLanguageByLangNo(language.LangNo);
+            if (newLanguage != null)
             {
-                if (newSingarea.Id != id)
+                if (newLanguage.Id != id)
                 {
-                    // singarea no is duplicate
-                    result = ErrorCodeModel.SingareaNoDuplicate;
+                    // language no is duplicate
+                    result = ErrorCodeModel.LanguageNoDuplicate;
                     return result;
                 }
             }
 
             try
             {
-                Singarea orgSingarea = await FindOneSingareaById(id);
-                if (orgSingarea == null)
+                Language orgLanguage = await FindOneLanguageById(id);
+                if (orgLanguage == null)
                 {
-                    // the original singarea does not exist any more
-                    result = ErrorCodeModel.OriginalSingareaNotExist;
+                    // the original language does not exist any more
+                    result = ErrorCodeModel.OriginalLanguageNotExist;
                     return result;
                 }
                 else
                 {
-                    orgSingarea.CopyColumnsFrom(singarea);
+                    orgLanguage.CopyColumnsFrom(language);
                     
                     // check if entry state changed
-                    if ( (_context.Entry(orgSingarea).State) == EntityState.Modified)
+                    if ( (_context.Entry(orgLanguage).State) == EntityState.Modified)
                     {
                         await _context.SaveChangesAsync();
                         result = ErrorCodeModel.Succeeded; // succeeded to update
                     }
                     else
                     {
-                        result = ErrorCodeModel.SingareaNotChanged; // no changed
+                        result = ErrorCodeModel.LanguageNotChanged; // no changed
                     }
                 }
             }
             catch (DbUpdateException ex)
             {
                 string msg = ex.ToString();
-                Console.WriteLine("Failed to update singarea table: \n" + msg);
+                Console.WriteLine("Failed to update language table: \n" + msg);
                 result = ErrorCodeModel.DatabaseError;
             }
             return result;
         }
 
         /// <summary>
-        /// Deletes the one singarea by singarea no.
+        /// Deletes the one language by language no.
         /// </summary>
         /// <returns>Return the error code.</returns>
-        /// <param name="area_no">Singarea no.</param>
-        public async Task<int> DeleteOneSingareaByAreaNo(string area_no)
+        /// <param name="lang_no">Language no.</param>
+        public async Task<int> DeleteOneLanguageByLangNo(string lang_no)
         {
             int result = ErrorCodeModel.ErrorBecauseBugs;
-            if (string.IsNullOrEmpty(area_no))
+            if (string.IsNullOrEmpty(lang_no))
             {
-                // its a bug, the original singarea no is empty
-                result = ErrorCodeModel.OriginalSingareaNoIsEmpty;
+                // its a bug, the original language no is empty
+                result = ErrorCodeModel.OriginalLanguageNoIsEmpty;
                 return result;
             }
             try
             {
-                Singarea orgSingarea = await FindOneSingareaByAreaNo(area_no);
-                if (orgSingarea == null)
+                Language orgLanguage = await FindOneLanguageByLangNo(lang_no);
+                if (orgLanguage == null)
                 {
-                    // the original singarea does not exist any more
-                    result = ErrorCodeModel.OriginalSingareaNotExist;
+                    // the original language does not exist any more
+                    result = ErrorCodeModel.OriginalLanguageNotExist;
                 }
                 else
                 {
-                    _context.Singarea.Remove(orgSingarea);
+                    _context.Language.Remove(orgLanguage);
                     await _context.SaveChangesAsync();
                     result = ErrorCodeModel.Succeeded; // succeeded to update
                 }
@@ -514,37 +514,37 @@ namespace VodManageSystem.Models.Dao
             catch (DbUpdateException ex)
             {
                 string msg = ex.ToString();
-                Console.WriteLine("Failed to delete one singarea. Please see log file.\n" + msg);
+                Console.WriteLine("Failed to delete one language. Please see log file.\n" + msg);
                 result = ErrorCodeModel.DatabaseError;
             }
             return result;
         }
 
         /// <summary>
-        /// Deletes the one singarea by identifier.
+        /// Deletes the one language by identifier.
         /// </summary>
         /// <returns>Return the error code.</returns>
         /// <param name="id">Identifier.</param>
-        public async Task<int> DeleteOneSingareaById(int id)
+        public async Task<int> DeleteOneLanguageById(int id)
         {
             int result = ErrorCodeModel.ErrorBecauseBugs;
             if (id == 0)
             {
-                // its a bug, the id of singarea cannot be 0
+                // its a bug, the id of language cannot be 0
                 result = ErrorCodeModel.ErrorBecauseBugs;
                 return result;
             }
             try
             {
-                Singarea orgSingarea = await FindOneSingareaById(id);
-                if (orgSingarea == null)
+                Language orgLanguage = await FindOneLanguageById(id);
+                if (orgLanguage == null)
                 {
-                    // the original singarea does not exist any more
-                    result = ErrorCodeModel.OriginalSingareaNotExist;
+                    // the original language does not exist any more
+                    result = ErrorCodeModel.OriginalLanguageNotExist;
                 }
                 else
                 {
-                    _context.Singarea.Remove(orgSingarea);
+                    _context.Language.Remove(orgLanguage);
                     await _context.SaveChangesAsync();
                     result = ErrorCodeModel.Succeeded; // succeeded to update
                 }
@@ -552,7 +552,7 @@ namespace VodManageSystem.Models.Dao
             catch (DbUpdateException ex)
             {
                 string msg = ex.ToString();
-                Console.WriteLine("Failed to delete one singarea. Please see log file.\n" + msg);
+                Console.WriteLine("Failed to delete one language. Please see log file.\n" + msg);
                 result = ErrorCodeModel.DatabaseError;
             }
             return result;
@@ -581,7 +581,7 @@ namespace VodManageSystem.Models.Dao
         }
 
         // TODO: override a finalizer only if Dispose(bool disposing) above has code to free unmanaged resources.
-        // ~SingareaManager() {
+        // ~LanguageManager() {
         //   // Do not change this code. Put cleanup code in Dispose(bool disposing) above.
         //   Dispose(false);
         // }

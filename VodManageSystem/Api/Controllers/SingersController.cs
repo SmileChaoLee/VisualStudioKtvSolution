@@ -17,9 +17,9 @@ namespace VodManageSystem.Api.Controllers
     public class SingersController : Controller
     {
         private readonly KtvSystemDBContext _context;
-        private readonly SingerManager _singerManager;
-        private readonly SingareaManager _singareaManager;
-        private readonly SongManager _songManager;
+        private readonly SingersManager _singerManager;
+        private readonly SingareasManager _singareaManager;
+        private readonly SongsManager _songManager;
 
         /// <summary>
         /// Initializes a new instance of the <see cref="T:VodManageSystem.Controllers.SingerController"/> class.
@@ -27,7 +27,7 @@ namespace VodManageSystem.Api.Controllers
         /// <param name="context">Context.</param>
         /// <param name="singerManager">Singer manager.</param>
         /// <param name="singareaManager">Singer Area manager.</param>
-        public SingersController(KtvSystemDBContext context, SingerManager singerManager, SingareaManager singareaManager, SongManager songManager)
+        public SingersController(KtvSystemDBContext context, SingersManager singerManager, SingareasManager singareaManager, SongsManager songManager)
         {
             _context = context;
             _singerManager = singerManager;

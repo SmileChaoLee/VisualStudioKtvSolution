@@ -26,9 +26,9 @@ namespace VodManageSystem.Controllers
     public class SongsController : Controller
     {
         private readonly KtvSystemDBContext _context;
-        private readonly SongManager _songManager;
-        private readonly LanguageManager _languageManager;
-        private readonly SingerManager _singerManager;
+        private readonly SongsManager _songManager;
+        private readonly LanguagesManager _languageManager;
+        private readonly SingersManager _singerManager;
 
         /// <summary>
         /// Initializes a new instance of the <see cref="T:VodManageSystem.Controllers.SongController"/> class.
@@ -37,7 +37,7 @@ namespace VodManageSystem.Controllers
         /// <param name="songManager">Song manager.</param>
         /// <param name="languagemanager">Languagemanager.</param>
         /// <param name="singerManager">Singer manager.</param>
-        public SongsController(KtvSystemDBContext context, SongManager songManager, LanguageManager languagemanager, SingerManager singerManager)
+        public SongsController(KtvSystemDBContext context, SongsManager songManager, LanguagesManager languagemanager, SingersManager singerManager)
         {
             _context = context;
             _songManager = songManager;

@@ -9,7 +9,7 @@ using VodManageSystem.Models.DataModels;
 
 namespace VodManageSystem.Models.Dao
 {
-    public class SingerManager : IDisposable
+    public class SingersManager : IDisposable
     {
         // private properties
         private readonly KtvSystemDBContext _context;
@@ -22,7 +22,7 @@ namespace VodManageSystem.Models.Dao
         /// Initializes a new instance of the <see cref="T:VodManageSystem.Models.Dao.SingerManager"/> class.
         /// </summary>
         /// <param name="context">Context.</param>
-        public SingerManager(KtvSystemDBContext context)
+        public SingersManager(KtvSystemDBContext context)
         {
             _context = context;
         }
