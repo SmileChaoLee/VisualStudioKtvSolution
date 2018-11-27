@@ -17,19 +17,14 @@ namespace VodManageSystem.Api.Controllers
     public class SingareasController : Controller
     {
         private readonly KtvSystemDBContext _context;
-        private readonly SingareasManager _singareaManager;
-        private readonly SingersManager _singerManager;
+        private readonly SingareasManager _singareasManager;
+        private readonly SingersManager _singersManager;
 
-        /// <summary>
-        /// Initializes a new instance of the <see cref="T:VodManageSystem.Controllers.SingareaController"/> class.
-        /// </summary>
-        /// <param name="context">Context.</param>
-        /// <param name="singareaManager">Singarea manager.</param>
-        public SingareasController(KtvSystemDBContext context, SingareasManager singareaManager, SingersManager singerManager)
+        public SingareasController(KtvSystemDBContext context, SingareasManager singareasManager, SingersManager singersManager)
         {
             _context = context;
-            _singareaManager = singareaManager;
-            _singerManager = singerManager;
+            _singareasManager = singareasManager;
+            _singersManager = singersManager;
 
         }
 
@@ -39,7 +34,7 @@ namespace VodManageSystem.Api.Controllers
         {
             // get all singarea
             StateOfRequest mState = new StateOfRequest("AreaNo");
-            List<Singarea> singareas = _singareaManager.GetAllSingareas(mState);
+            List<Singarea> singareas = _singareasManager.GetAllSingareas(mState);
 
             // Convert List<Singarea> to JSON array
             JObject jObjectForAll = new JObject();
@@ -69,7 +64,7 @@ namespace VodManageSystem.Api.Controllers
         {
             // get all singarea
             StateOfRequest mState = new StateOfRequest("AreaNo");
-            List<Singarea> singareas = _singareaManager.GetAllSingareas(mState);
+            List<Singarea> singareas = _singareasManager.GetAllSingareas(mState);
             // Convert List<Singarea> to JSON array
             JObject jObjectForAll = new JObject();
             jObjectForAll.Add("pageNo", mState.CurrentPageNo);
@@ -97,7 +92,7 @@ namespace VodManageSystem.Api.Controllers
         public async Task<string> Get(int id)
         {
             // get one Singarea
-            Singarea singarea = await _singareaManager.FindOneSingareaById(id);
+            Singarea singarea = await _singareasManager.FindOneSingareaById(id);
             JObject jObject = JsonUtil.ConvertSingareaToJsongObject(singarea);
 
             JObject returnJSON = new JObject();
@@ -106,24 +101,7 @@ namespace VodManageSystem.Api.Controllers
             return returnJSON.ToString();
         }
 
-        // Get api/values/5/Singers/1/10/1/"SingNa"
-
-        // [Route("{id}/[Action]/{sex}/{pageSize}/{pageNo}/{orderBy}")]
-        // [HttpGet]
-        // or
-        [HttpGet("{id}/[Action]/{sex}/{pageSize}/{pageNo}/{orderBy}")]
-        public string Singers(int id, String sex, int pageSize, int pageNo, string orderBy)
-        {
-            Console.WriteLine("HttpGet[\"{id}/Singers/{sex}/{ pageSize}/{ pageNo}/{orderBy}\")]");
-            Console.WriteLine("id = {0}, sex = {1}, pageSize = {2}, pageNo = {3}, orderBy = {4}", id, sex, pageSize, pageNo, orderBy);
-
-            JObject jObjectForAll = GetSingers(id, sex, pageSize, pageNo, orderBy);
-
-            return jObjectForAll.ToString();
-        }
-
         // Get api/values/5/Singers/1/10/1
-
         // [Route("{id}/[Action]/{sex}/{pageSize}/{pageNo}")]
         // [HttpGet]
         // or
@@ -133,7 +111,22 @@ namespace VodManageSystem.Api.Controllers
             Console.WriteLine("HttpGet[\"{id}/Singers/{sex}/{ pageSize}/{ pageNo}\")]");
             Console.WriteLine("id = {0}, sex = {1}, pageSize = {2}, pageNo = {3}", id, sex, pageSize, pageNo);
 
-            JObject jObjectForAll = GetSingers(id, sex, pageSize, pageNo, "");
+            JObject jObjectForAll = GetSingersBySingerTypeId(id, sex, pageSize, pageNo, "");
+
+            return jObjectForAll.ToString();
+        }
+
+        // Get api/values/5/Singers/1/10/1/"SingNa"
+        // [Route("{id}/[Action]/{sex}/{pageSize}/{pageNo}/{orderBy}")]
+        // [HttpGet]
+        // or
+        [HttpGet("{id}/[Action]/{sex}/{pageSize}/{pageNo}/{orderBy}")]
+        public string Singers(int id, String sex, int pageSize, int pageNo, string orderBy)
+        {
+            Console.WriteLine("HttpGet[\"{id}/Singers/{sex}/{ pageSize}/{ pageNo}/{orderBy}\")]");
+            Console.WriteLine("id = {0}, sex = {1}, pageSize = {2}, pageNo = {3}, orderBy = {4}", id, sex, pageSize, pageNo, orderBy);
+
+            JObject jObjectForAll = GetSingersBySingerTypeId(id, sex, pageSize, pageNo, orderBy);
 
             return jObjectForAll.ToString();
         }
@@ -156,7 +149,7 @@ namespace VodManageSystem.Api.Controllers
         {
         }
 
-        private JObject GetSingers(int id, String sex, int pageSize, int pageNo, string orderBy)
+        private JObject GetSingersBySingerTypeId(int id, String sex, int pageSize, int pageNo, string orderBy)
         {
             // orderBy is either "", or "SingNo", or "SingNa"
             string orderByParam;
@@ -185,7 +178,7 @@ namespace VodManageSystem.Api.Controllers
             mState.PageSize = pageSize;
             mState.CurrentPageNo = pageNo;
 
-            List<Singer> singers = _singerManager.GetOnePageOfSingersByAreaSex(mState, id, sex, true);
+            List<Singer> singers = _singersManager.GetOnePageOfSingersByAreaSex(mState, id, sex, true);
 
             JObject jObjectForAll = new JObject();
             jObjectForAll.Add("pageNo", mState.CurrentPageNo);

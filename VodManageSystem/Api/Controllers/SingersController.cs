@@ -17,22 +17,16 @@ namespace VodManageSystem.Api.Controllers
     public class SingersController : Controller
     {
         private readonly KtvSystemDBContext _context;
-        private readonly SingersManager _singerManager;
-        private readonly SingareasManager _singareaManager;
-        private readonly SongsManager _songManager;
+        private readonly SingersManager _singersManager;
+        private readonly SingareasManager _singareasManager;
+        private readonly SongsManager _songsManager;
 
-        /// <summary>
-        /// Initializes a new instance of the <see cref="T:VodManageSystem.Controllers.SingerController"/> class.
-        /// </summary>
-        /// <param name="context">Context.</param>
-        /// <param name="singerManager">Singer manager.</param>
-        /// <param name="singareaManager">Singer Area manager.</param>
-        public SingersController(KtvSystemDBContext context, SingersManager singerManager, SingareasManager singareaManager, SongsManager songManager)
+        public SingersController(KtvSystemDBContext context, SingersManager singersManager, SingareasManager singareasManager, SongsManager songsManager)
         {
             _context = context;
-            _singerManager = singerManager;
-            _singareaManager = singareaManager;
-            _songManager = songManager;
+            _singersManager = singersManager;
+            _singareasManager = singareasManager;
+            _songsManager = songsManager;
         }
 
         // GET: api/values
@@ -43,7 +37,7 @@ namespace VodManageSystem.Api.Controllers
 
             StateOfRequest mState = new StateOfRequest("SingNo");
 
-            List<Singer> singers = _singerManager.GetAllSingers(mState);
+            List<Singer> singers = _singersManager.GetAllSingers(mState);
 
             JObject jObjectForAll = new JObject();
             jObjectForAll.Add("pageNo", mState.CurrentPageNo);
@@ -67,7 +61,7 @@ namespace VodManageSystem.Api.Controllers
         public async Task<string> Get(int id)
         {
             // get one singer
-            Singer singer = await _singerManager.FindOneSingerById(id);
+            Singer singer = await _singersManager.FindOneSingerById(id);
             JObject jObject = JsonUtil.ConvertSingerToJsongObject(singer);
             JObject returnJSON = new JObject();
             returnJSON.Add("singer", jObject);
@@ -84,7 +78,7 @@ namespace VodManageSystem.Api.Controllers
             StateOfRequest mState = new StateOfRequest("");
             mState.PageSize = pageSize;
             mState.CurrentPageNo = pageNo;
-            List<Singer> singers = _singerManager.GetOnePageOfSingers(mState);
+            List<Singer> singers = _singersManager.GetOnePageOfSingers(mState);
 
             JObject jObjectForAll = new JObject();
             jObjectForAll.Add("pageNo", mState.CurrentPageNo);
@@ -127,7 +121,7 @@ namespace VodManageSystem.Api.Controllers
             StateOfRequest mState = new StateOfRequest(orderByParam);
             mState.PageSize = pageSize;
             mState.CurrentPageNo = pageNo;
-            List<Singer> singers = _singerManager.GetOnePageOfSingers(mState);
+            List<Singer> singers = _singersManager.GetOnePageOfSingers(mState);
 
             JObject jObjectForAll = new JObject();
             jObjectForAll.Add("pageNo", mState.CurrentPageNo);
@@ -146,7 +140,7 @@ namespace VodManageSystem.Api.Controllers
             return jObjectForAll.ToString();
         }
 
-        // GET api/values/{id}/songs
+        // GET api/values/5/songs
         // [Route("{id}/[Action]")]
         // [HttpGet]
         // or
@@ -163,7 +157,7 @@ namespace VodManageSystem.Api.Controllers
             return jObjectForAll.ToString();
         }
 
-        // GET api/values/{id}/songs/10/1
+        // GET api/values/5/songs/10/1
         // [Route("{id}/[Action]/{pageSize}/{pageNo}")]
         // [HttpGet]
         // or
@@ -178,7 +172,7 @@ namespace VodManageSystem.Api.Controllers
             return jObjectForAll.ToString();
         }
 
-        // GET api/values/{id}/songs/10/1/"SongNa"
+        // GET: api/values/5/songs/10/1/"SongNa"
         // [Route("{id}/[Action]/{pageSize}/{pageNo}/{orderBy}")]
         // [HttpGet]
         // or
@@ -254,7 +248,7 @@ namespace VodManageSystem.Api.Controllers
             mState.PageSize = pageSize;
             mState.CurrentPageNo = pageNo;
 
-            List<Song> songs = _songManager.GetOnePageOfSongsBySingerId(mState, id, true);
+            List<Song> songs = _songsManager.GetOnePageOfSongsBySingerId(mState, id, true);
 
             JObject jObjectForAll = new JObject();
             jObjectForAll.Add("pageNo", mState.CurrentPageNo);

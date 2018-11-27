@@ -136,6 +136,22 @@ namespace VodManageSystem.Utilities
             return jObject;
         }
 
+        public static JObject ConvertlanguageToJsongObject(Language language)
+        {
+            JObject jObject = new JObject();
+            if (language == null)
+            {
+                return jObject;
+            }
+
+            jObject.Add("id", language.Id);
+            jObject.Add("langNo", language.LangNo);
+            jObject.Add("langNa", language.LangNa);
+            jObject.Add("langEn", language.LangEn);
+
+            return jObject;
+        }
+
         public static JObject ConvertSingareaToJsongObject(Singarea singarea)
         {
             JObject jObject = new JObject();

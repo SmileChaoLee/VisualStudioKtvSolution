@@ -17,17 +17,12 @@ namespace VodManageSystem.Controllers
     public class LanguagesController : Controller
     {
         private readonly KtvSystemDBContext _context;
-        private readonly LanguagesManager _languageManager;
+        private readonly LanguagesManager _languagesManager;
 
-        /// <summary>
-        /// Initializes a new instance of the <see cref="T:VodManageSystem.Controllers.LanguageController"/> class.
-        /// </summary>
-        /// <param name="context">Context.</param>
-        /// <param name="languageManager">Language manager.</param>
-        public LanguagesController(KtvSystemDBContext context, LanguagesManager languageManager)
+        public LanguagesController(KtvSystemDBContext context, LanguagesManager languagesManager)
         {
             _context = context;
-            _languageManager = languageManager;
+            _languagesManager = languagesManager;
         }
 
         // GET: /<controller>/
@@ -65,7 +60,7 @@ namespace VodManageSystem.Controllers
             {
                 mState = JsonUtil.GetObjectFromJsonString<StateOfRequest>(language_state);
             }
-            List<Language> languages = _languageManager.GetOnePageOfLanguages(mState);
+            List<Language> languages = _languagesManager.GetOnePageOfLanguages(mState);
 
             ViewBag.LanguageState = JsonUtil.SetJsonStringFromObject(mState);
             return View(languages);
@@ -139,7 +134,7 @@ namespace VodManageSystem.Controllers
                 return View();
             }
 
-            List<Language> languagesTemp = _languageManager.FindOnePageOfLanguagesForOneLanguage(mState, language, 0);
+            List<Language> languagesTemp = _languagesManager.FindOnePageOfLanguagesForOneLanguage(mState, language, 0);
             temp_state = JsonUtil.SetJsonStringFromObject(mState);
             ViewBag.LanguageState = temp_state;
 
@@ -302,7 +297,7 @@ namespace VodManageSystem.Controllers
             if (sButton == "CANCEL")
             {
                 Language newLanguage = new Language();
-                List<Language> languagesTemp = _languageManager.FindOnePageOfLanguagesForOneLanguage(mState, newLanguage, orgId);
+                List<Language> languagesTemp = _languagesManager.FindOnePageOfLanguagesForOneLanguage(mState, newLanguage, orgId);
                 mState.IsFirstAddRecord = true;
                 temp_state = JsonUtil.SetJsonStringFromObject(mState);
                 ViewBag.LanguageState = temp_state;
@@ -311,7 +306,7 @@ namespace VodManageSystem.Controllers
             }
             if (ModelState.IsValid)
             {
-                int result = await _languageManager.AddOneLanguageToTable(language);
+                int result = await _languagesManager.AddOneLanguageToTable(language);
                 if (result == ErrorCodeModel.Succeeded)
                 {
                     // succeeded to add the language
@@ -353,7 +348,7 @@ namespace VodManageSystem.Controllers
             }
 
             int id = mState.OrgId;
-            Language language = await _languageManager.FindOneLanguageById(id);
+            Language language = await _languagesManager.FindOneLanguageById(id);
 
             if (language == null)
             {
@@ -400,12 +395,12 @@ namespace VodManageSystem.Controllers
             if (ModelState.IsValid)
             {
                 // start updating table
-                int result = await _languageManager.UpdateOneLanguageById(orgId, language);
+                int result = await _languagesManager.UpdateOneLanguageById(orgId, language);
                 if (result == ErrorCodeModel.Succeeded)
                 {
                     // succeeded to update
                     Language newLanguage = new Language();
-                    List<Language> languagesTemp = _languageManager.FindOnePageOfLanguagesForOneLanguage(mState, newLanguage, orgId);
+                    List<Language> languagesTemp = _languagesManager.FindOnePageOfLanguagesForOneLanguage(mState, newLanguage, orgId);
                     temp_state = JsonUtil.SetJsonStringFromObject(mState);
 
                     ViewBag.LanguageState = temp_state;
@@ -441,7 +436,7 @@ namespace VodManageSystem.Controllers
                 mState = JsonUtil.GetObjectFromJsonString<StateOfRequest>(language_state);
             }
             int id = mState.OrgId;
-            Language language = await _languageManager.FindOneLanguageById(id);
+            Language language = await _languagesManager.FindOneLanguageById(id);
 
             if (language == null)
             {
@@ -489,11 +484,11 @@ namespace VodManageSystem.Controllers
             if (ModelState.IsValid)
             {
                 // start deleting the language from table
-                int result = await _languageManager.DeleteOneLanguageById(orgId);
+                int result = await _languagesManager.DeleteOneLanguageById(orgId);
                 if (result == ErrorCodeModel.Succeeded)
                 {
                     // succeeded to delete a language
-                    List<Language> languagesTemp = _languageManager.GetOnePageOfLanguages(mState);
+                    List<Language> languagesTemp = _languagesManager.GetOnePageOfLanguages(mState);
                     temp_state = JsonUtil.SetJsonStringFromObject(mState);
                     ViewBag.LanguageState = temp_state;
 
@@ -529,7 +524,7 @@ namespace VodManageSystem.Controllers
             {
                 mState = JsonUtil.GetObjectFromJsonString<StateOfRequest>(language_state);
             }
-            Language language = await _languageManager.FindOneLanguageById(mState.OrgId);
+            Language language = await _languagesManager.FindOneLanguageById(mState.OrgId);
 
             if (language == null)
             {
@@ -565,7 +560,7 @@ namespace VodManageSystem.Controllers
             mState.StartTime = DateTime.Now;
 
             int orgId = mState.OrgId;
-            List<Language> languagesTemp = _languageManager.GetOnePageOfLanguages(mState);
+            List<Language> languagesTemp = _languagesManager.GetOnePageOfLanguages(mState);
             string temp_state = JsonUtil.SetJsonStringFromObject(mState);
             ViewBag.LanguageState = temp_state;
 
@@ -592,7 +587,7 @@ namespace VodManageSystem.Controllers
             // Added on 2018-11-24
             // start from first page
             mState.CurrentPageNo = 1;
-            List<Language> languagesTemp = _languageManager.GetOnePageOfLanguages(mState);
+            List<Language> languagesTemp = _languagesManager.GetOnePageOfLanguages(mState);
             string temp_state = JsonUtil.SetJsonStringFromObject(mState);
             ViewBag.LanguageState = temp_state;
 
@@ -614,7 +609,7 @@ namespace VodManageSystem.Controllers
             if (orgId != 0)
             {
                 Language language = new Language();
-                List<Language> languagesTemp = await _languageManager.FindOnePageOfLanguagesForOneLanguage(mState, language, orgId);
+                List<Language> languagesTemp = await _languagesManager.FindOnePageOfLanguagesForOneLanguage(mState, language, orgId);
                 string temp_state = JsonUtil.SetJsonStringFromObject(mState);
 
                 ViewBag.LanguageState = temp_state;

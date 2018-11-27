@@ -17,23 +17,23 @@ namespace VodManageSystem.Api.Controllers
     public class SongsController : Controller
     {
         private readonly KtvSystemDBContext _context;
-        private readonly SongsManager _songManager;
-        private readonly LanguagesManager _languageManager;
-        private readonly SingersManager _singerManager;
+        private readonly SongsManager _songsManager;
+        private readonly LanguagesManager _languagesManager;
+        private readonly SingersManager _singersManager;
 
         /// <summary>
         /// Initializes a new instance of the <see cref="T:VodManageSystem.Controllers.SongController"/> class.
         /// </summary>
         /// <param name="context">Context.</param>
-        /// <param name="songManager">Song manager.</param>
-        /// <param name="languagemanager">Languagemanager.</param>
-        /// <param name="singerManager">Singer manager.</param>
-        public SongsController(KtvSystemDBContext context, SongsManager songManager, LanguagesManager languagemanager, SingersManager singerManager)
+        /// <param name="songsManager">Song manager.</param>
+        /// <param name="languagesManager">Language manager.</param>
+        /// <param name="singersManager">Singer manager.</param>
+        public SongsController(KtvSystemDBContext context, SongsManager songsManager, LanguagesManager languagesManager, SingersManager singersManager)
         {
             _context = context;
-            _songManager = songManager;
-            _languageManager = languagemanager;
-            _singerManager = singerManager;
+            _songsManager = songsManager;
+            _languagesManager = languagesManager;
+            _singersManager = singersManager;
         }
 
         // GET: api/values
@@ -46,9 +46,9 @@ namespace VodManageSystem.Api.Controllers
             mState.CurrentPageNo = 1;
             mState.PageSize = 50;
 
-            // List<Song> songs = await _songManager.GetAllSongs(mState);
+            // List<Song> songs = await _songsManager.GetAllSongs(mState);
             // get the first 50 songs
-            List<Song> songs = _songManager.GetOnePageOfSongs(mState);
+            List<Song> songs = _songsManager.GetOnePageOfSongs(mState);
 
             JObject jObjectForAll = new JObject();
             jObjectForAll.Add("pageNo", mState.CurrentPageNo);
@@ -73,7 +73,7 @@ namespace VodManageSystem.Api.Controllers
         public async Task<string> Get(int id)
         {
             // get one song
-            Song song = await _songManager.FindOneSongById(id);
+            Song song = await _songsManager.FindOneSongById(id);
             JObject jObject = JsonUtil.ConvertSongToJsongObject(song);
             JObject returnJSON = new JObject();
             returnJSON.Add("song", jObject);
@@ -164,7 +164,7 @@ namespace VodManageSystem.Api.Controllers
             StateOfRequest mState = new StateOfRequest(orderByParam);
             mState.PageSize = pageSize;
             mState.CurrentPageNo = pageNo;
-            List<Song> songs = _songManager.GetOnePageOfSongs(mState);
+            List<Song> songs = _songsManager.GetOnePageOfSongs(mState);
 
             JObject jObjectForAll = new JObject();
             jObjectForAll.Add("pageNo", mState.CurrentPageNo);
