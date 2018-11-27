@@ -54,6 +54,8 @@ namespace VodManageSystem.Controllers
         [HttpGet, ActionName("SingareasList")]
         public IActionResult SingareasList(string singarea_state)
         {
+            if (!LoginUtil.CheckIfLoggedIn(HttpContext)) return View(nameof(Index));
+
             StateOfRequest mState;
             if (string.IsNullOrEmpty(singarea_state))
             {

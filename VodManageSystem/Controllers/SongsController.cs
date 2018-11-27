@@ -70,6 +70,8 @@ namespace VodManageSystem.Controllers
         [HttpGet, ActionName("SongsList")]
         public IActionResult SongsList(string song_state)
         {
+            if (!LoginUtil.CheckIfLoggedIn(HttpContext)) return View(nameof(Index));
+
             StateOfRequest mState;
             if (string.IsNullOrEmpty(song_state))
             {

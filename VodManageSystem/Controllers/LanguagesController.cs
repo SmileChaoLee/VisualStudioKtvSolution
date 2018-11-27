@@ -54,6 +54,8 @@ namespace VodManageSystem.Controllers
         [HttpGet, ActionName("LanguagesList")]
         public IActionResult LanguagesList(string language_state)
         {
+            if (!LoginUtil.CheckIfLoggedIn(HttpContext)) return View(nameof(Index));
+
             StateOfRequest mState;
             if (string.IsNullOrEmpty(language_state))
             {
