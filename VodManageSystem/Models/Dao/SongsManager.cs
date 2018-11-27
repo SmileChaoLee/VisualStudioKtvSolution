@@ -8,6 +8,7 @@ using Microsoft.EntityFrameworkCore;
 using VodManageSystem.Models;
 using VodManageSystem.Models.DataModels;
 using System.Xml.Linq;
+using Microsoft.EntityFrameworkCore.Storage;
 
 namespace VodManageSystem.Models.Dao
 {
@@ -603,26 +604,31 @@ namespace VodManageSystem.Models.Dao
                 return result;
             }
 
-            try
+            // verifying the validation for song data
+            int validCode = await VerifySong(song);
+            if (validCode != ErrorCodeModel.Succeeded)
             {
-                // verifying the validation for song data
-                int validCode = await VerifySong(song);
-                if (validCode != ErrorCodeModel.Succeeded)
-                {
-                    // data is invalid
-                    result = validCode;
-                    return result;
-                }
-
-                _context.Add(song);
-                await _context.SaveChangesAsync();
-                result = ErrorCodeModel.Succeeded;
+                // data is invalid
+                result = validCode;
+                return result;
             }
-            catch (DbUpdateException ex)
+
+            using (var dbTransaction = _context.Database.BeginTransaction())
             {
-                string errorMsg = ex.ToString();
-                Console.WriteLine("Failed to add one song: \n" + errorMsg);
-                result = ErrorCodeModel.DatabaseError;    
+                try
+                {
+                    _context.Add(song);
+                    await _context.SaveChangesAsync();
+                    dbTransaction.Commit();
+                    result = ErrorCodeModel.Succeeded;
+                }
+                catch (DbUpdateException ex)
+                {
+                    string errorMsg = ex.ToString();
+                    Console.WriteLine("Failed to add one song: \n" + errorMsg);
+                    dbTransaction.Rollback();
+                    result = ErrorCodeModel.DatabaseError;
+                }
             }
 
             return result;
@@ -666,46 +672,52 @@ namespace VodManageSystem.Models.Dao
                 }
             }
 
-            try
+            Song orgSong = await FindOneSongById(id);
+            if (orgSong == null)
             {
-                Song orgSong = await FindOneSongById(id);
-                if (orgSong == null)
+                // the original song does not exist any more
+                result = ErrorCodeModel.OriginalSongNotExist;
+                return result;
+            }
+            else
+            {
+                orgSong.CopyColumnsFrom(song);
+                
+                // verifying the validation for Song data
+                int validCode = await VerifySong(orgSong);
+                if (validCode != ErrorCodeModel.Succeeded)
                 {
-                    // the original song does not exist any more
-                    result = ErrorCodeModel.OriginalSongNotExist;
+                    // data is invalid
+                    result = validCode;
                     return result;
+                }
+                
+                // check if entry state changed
+                if ( (_context.Entry(orgSong).State) == EntityState.Modified)
+                {
+                    using (var dbTransaction = _context.Database.BeginTransaction())
+                    {
+                        try 
+                        {
+                            await _context.SaveChangesAsync();
+                            dbTransaction.Commit();
+                            result = ErrorCodeModel.Succeeded; // succeeded to update
+                        }
+                        catch (DbUpdateException ex)
+                        {
+                            string msg = ex.ToString();
+                            Console.WriteLine("Failed to update song table: \n" + msg);
+                            dbTransaction.Rollback();
+                            result = ErrorCodeModel.DatabaseError;
+                        }
+                    }
                 }
                 else
                 {
-                    orgSong.CopyColumnsFrom(song);
-                    
-                    // verifying the validation for Song data
-                    int validCode = await VerifySong(orgSong);
-                    if (validCode != ErrorCodeModel.Succeeded)
-                    {
-                        // data is invalid
-                        result = validCode;
-                        return result;
-                    }
-                    
-                    // check if entry state changed
-                    if ( (_context.Entry(orgSong).State) == EntityState.Modified)
-                    {
-                        await _context.SaveChangesAsync();
-                        result = ErrorCodeModel.Succeeded; // succeeded to update
-                    }
-                    else
-                    {
-                        result = ErrorCodeModel.SongNotChanged; // no changed
-                    }
+                    result = ErrorCodeModel.SongNotChanged; // no changed
                 }
             }
-            catch (DbUpdateException ex)
-            {
-                string msg = ex.ToString();
-                Console.WriteLine("Failed to update song table: \n" + msg);
-                result = ErrorCodeModel.DatabaseError;
-            }
+
             return result;
         }
 
@@ -723,27 +735,34 @@ namespace VodManageSystem.Models.Dao
                 result = ErrorCodeModel.OriginalSongNoIsEmpty;
                 return result;
             }
-            try
+
+            Song orgSong = await FindOneSongBySongNo(song_no);
+            if (orgSong == null)
             {
-                Song orgSong = await FindOneSongBySongNo(song_no);
-                if (orgSong == null)
+                // the original song does not exist any more
+                result = ErrorCodeModel.OriginalSongNotExist;
+            }
+            else
+            {
+                using (var dbTransaction = _context.Database.BeginTransaction())
                 {
-                    // the original song does not exist any more
-                    result = ErrorCodeModel.OriginalSongNotExist;
-                }
-                else
-                {
-                    _context.Song.Remove(orgSong);
-                    await _context.SaveChangesAsync();
-                    result = ErrorCodeModel.Succeeded; // succeeded to update
+                    try
+                    {
+                        _context.Song.Remove(orgSong);
+                        await _context.SaveChangesAsync();
+                        dbTransaction.Commit();
+                        result = ErrorCodeModel.Succeeded; // succeeded to update
+                    }
+                    catch (DbUpdateException ex)
+                    {
+                        string msg = ex.ToString();
+                        Console.WriteLine("Failed to delete one song. Please see log file.\n" + msg);
+                        dbTransaction.Rollback();
+                        result = ErrorCodeModel.DatabaseError;
+                    }
                 }
             }
-            catch (DbUpdateException ex)
-            {
-                string msg = ex.ToString();
-                Console.WriteLine("Failed to delete one song. Please see log file.\n" + msg);
-                result = ErrorCodeModel.DatabaseError;
-            }
+
             return result;
         }
 
@@ -761,27 +780,34 @@ namespace VodManageSystem.Models.Dao
                 result = ErrorCodeModel.ErrorBecauseBugs;
                 return result;
             }
-            try
+
+            Song orgSong = await FindOneSongById(id);
+            if (orgSong == null)
             {
-                Song orgSong = await FindOneSongById(id);
-                if (orgSong == null)
+                // the original song does not exist any more
+                result = ErrorCodeModel.OriginalSongNotExist;
+            }
+            else
+            {
+                using (var dbTransaction = _context.Database.BeginTransaction())
                 {
-                    // the original song does not exist any more
-                    result = ErrorCodeModel.OriginalSongNotExist;
-                }
-                else
-                {
-                    _context.Song.Remove(orgSong);
-                    await _context.SaveChangesAsync();
-                    result = ErrorCodeModel.Succeeded; // succeeded to update
+                    try
+                    {
+                        _context.Song.Remove(orgSong);
+                        await _context.SaveChangesAsync();
+                        dbTransaction.Commit();
+                        result = ErrorCodeModel.Succeeded; // succeeded to update
+                    }
+                    catch (DbUpdateException ex)
+                    {
+                        string msg = ex.ToString();
+                        Console.WriteLine("Failed to delete one song. Please see log file.\n" + msg);
+                        dbTransaction.Rollback();
+                        result = ErrorCodeModel.DatabaseError;
+                    }
                 }
             }
-            catch (DbUpdateException ex)
-            {
-                string msg = ex.ToString();
-                Console.WriteLine("Failed to delete one song. Please see log file.\n" + msg);
-                result = ErrorCodeModel.DatabaseError;
-            }
+
             return result;
         }
 
