@@ -1,0 +1,18 @@
+@model VodManageSystem.Models.DataModels.Language
+
+@{
+    ViewData["Title"] = "Language Details";
+    ViewBag.Action = "Details";
+}
+
+<h3 style="text-align:center;">@ViewData["Title"]</h3>
+
+@section Scripts {
+    @{
+        await Html.RenderPartialAsync("~/Views/Languages/_LanguageValidationScriptsPartial.cshtml");
+    }
+}
+
+@await Html.PartialAsync("_LanguageOneRecordForm.cshtml", Model)
+
+@* or await Html.PartialAsync("_LanguageOneRecordForm.cshtml") *@

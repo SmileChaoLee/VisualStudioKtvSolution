@@ -1,0 +1,142 @@
+
+@model VodManageSystem.Models.DataModels.Song
+
+@using System
+@using Microsoft.AspNetCore.Html
+
+<link rel="stylesheet" style="text/css" href="~/css/OneRecordStyle.css" />
+
+<form id="OneSongForm" asp-controller="Songs" asp-action="@ViewBag.Action" method="post">
+    <div asp-validation-summary="ModelOnly" class="text-danger"></div>
+    <table>
+        <tr>
+            <td class="labelname" colspan="4">
+                <span class="errorMsg" style="color:blue">Error Message:</span>
+                <span class="errorMsg" style="color:red">@ViewData["ErrorMessage"]</span>
+            </td>
+        </tr>
+        <tr>
+            <td class="labelname">Song No.</td>
+            <td>
+                <!-- input type="text" id="SongNo" name="SongNo" maxlength="6" value="@Html.DisplayFor(model=>model.SongNo)" / -->
+                <input asp-for="SongNo" maxlength="6" />
+                <span asp-validation-for="SongNo" class="text-danger"></span>
+            </td>
+            <td class="labelname">Song Title</td>
+            <td>
+                <!-- input type="text" id="SongNa" name="SongNa" maxlength="36" value="@Html.DisplayFor(model=>model.SongNa)" / -->
+                <input asp-for="SongNa" maxlength="36"/>
+                <span asp-validation-for="SongNa" class="text-danger"></span>
+            </td>
+        </tr>
+        <tr>
+            <td class="labelname">Language</td>
+            <td>
+                <select asp-for="LanguageId" asp-items="@ViewBag.LanguageList"></select>
+            </td>
+            <td class="labelname">Num_Of_word</td>
+            <td>
+                <input type="number" asp-for="SNumWord" maxlength="2" style="width:100px;"/>
+                <span asp-validation-for="SNumWord" class="text-danger"></span>
+            </td>
+        </tr>
+        <tr>
+            <td class="labelname">Num_fw</td>
+            <td>
+                <input type="number" asp-for="NumFw" maxlength="2" style="width:100px;"/>
+                <span asp-validation-for="NumFw" class="text-danger"></span>
+            </td>
+            <td class="labelname">Num_pw</td>
+            <td>
+                <input asp-for="NumPw" pattern="[A-Z]" maxlength="1" style="width:100px;" />
+                <span asp-validation-for="NumPw" class="text-danger"></span>
+            </td>
+        </tr>
+        <tr>
+            <td class="labelname">Singer1 No.</td>
+            <td>
+                <select asp-for="Singer1Id" asp-items="@ViewBag.SingerList"></select>
+            </td>
+            <td class="labelname">Singer 2</td>
+            <td>
+                <select asp-for="Singer2Id" asp-items="@ViewBag.SingerList"></select>
+            </td>
+        </tr>
+        <tr>
+            <td class="labelname">Chor</td>
+            <td>
+                <select asp-for="Chor">
+                    <option value="N">No</option>
+                    <option value="Y">Yes</option>
+                </select>
+                <span asp-validation-for="Chor" class="text-danger"></span>
+            </td>
+            <td class="labelname">Vod_yn</td>
+            <td>
+                <select asp-for="VodYn">
+                    <option value="Y">Yes</option>
+                    <option value="N">No</option>
+                </select>
+                <span asp-validation-for="VodYn" class="text-danger"></span>
+            </td>
+        </tr>
+        <tr>
+            <td class="labelname">Music_track</td>
+            <td>
+                <input asp-for="NMpeg" maxlength="2" style="width:100px;" />
+                <span asp-validation-for="NMpeg" class="text-danger"></span>
+            </td>
+            <td class="labelname">Vocal_Track</td>
+            <td>
+                <input asp-for="MMpeg" maxlength="2" style="width:100px;" />
+                <span asp-validation-for="MMpeg" class="text-danger"></span>
+            </td>
+        </tr>
+        <tr>
+            <td class="labelname">Vod_no</td>
+            <td>
+                <input asp-for="VodNo" maxlength="6" />
+                <span asp-validation-for="VodNo" class="text-danger"></span>
+            </td>
+            <td class="labelname">PathName</td>
+            <td>
+                <input asp-for="Pathname" maxlength="6" />
+                <span asp-validation-for="Pathname" class="text-danger"></span>
+            </td>
+        </tr>
+        <tr>
+            <td class="labelname">In_Date</td>
+            <td>
+                <input type="date" asp-for="InDate"/>
+                <span asp-validation-for="InDate" class="text-danger"></span>
+            </td>
+            <td colspan="2"></td>
+        </tr>
+        <tr>
+            <td class="labelname"></td>
+            <td style="text-align:center" colspan="3">
+                @{
+                    string _action = ((string)ViewBag.Action).Trim();
+                    if (_action != "Details")
+                    {
+                        string inputStr = "";
+                        if ( (_action == "Add") || (_action == "Edit") )
+                        {
+                            inputStr = "<input class='submit' type='submit' name='submitbutton' value='Submit' />";
+
+                        } else if (_action == "Delete")
+                        {
+                            inputStr = "<input formnovalidate='formnovalidate' class='submit' type='submit' name='submitbutton' value='Submit' />";
+                        }
+                    inputStr += "&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;";
+                    ViewData["InputButton"] = new HtmlString(inputStr);
+                    }
+                }       
+                @ViewData["InputButton"]
+                <input formnovalidate="formnovalidate" class="submit" type="submit" name="submitbutton" value="Cancel"/>
+            </td>
+        </tr>
+    </table>
+    <input type="hidden" name="song_state" value="@ViewBag.SongState" />
+    @Html.HiddenFor(model=>model.Id)
+</form>

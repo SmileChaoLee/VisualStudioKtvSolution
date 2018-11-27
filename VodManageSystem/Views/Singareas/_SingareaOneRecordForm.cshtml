@@ -1,0 +1,66 @@
+
+@model VodManageSystem.Models.DataModels.Singarea
+
+@using System
+@using Microsoft.AspNetCore.Html
+
+<link rel="stylesheet" style="text/css" href="~/css/OneRecordStyle.css" />
+
+<form id="OneSingareaForm" asp-controller="Singareas" asp-action="@ViewBag.Action" method="post">
+    <div asp-validation-summary="ModelOnly" class="text-danger"></div>
+    <table style="width:60%">
+        <tr>
+            <td class="labelname" colspan="2">
+                <span class="errorMsg" style="color:blue">Error Message:</span>
+                <span class="errorMsg" style="color:red">@ViewData["ErrorMessage"]</span>
+            </td>
+        </tr>
+        <tr>
+            <td class="labelname">Singer Area No.</td>
+            <td>
+                <input asp-for="AreaNo" maxlength="2" />
+                <span asp-validation-for="AreaNo" class="text-danger"></span>
+            </td>
+        </tr>
+        <tr>
+            <td class="labelname">Singer Area Name</td>
+            <td>
+                <input asp-for="AreaNa" maxlength="32"/>
+                <span asp-validation-for="AreaNa" class="text-danger"></span>
+            </td>
+        </tr>
+        <tr>
+            <td class="labelname">English Name of the Singer Area</td>
+            <td>
+                <input asp-for="AreaEn" maxlength="32"/>
+                <span asp-validation-for="AreaEn" class="text-danger"></span>
+            </td>
+        </tr>
+        <tr>
+            <td class="labelname"></td>
+            <td style="text-align:center">
+                @{
+                    string _action = ((string)ViewBag.Action).Trim();
+                    if (_action != "Details")
+                    {
+                        string inputStr = "";
+                        if ( (_action == "Add") || (_action == "Edit") )
+                        {
+                            inputStr = "<input class='submit' type='submit' name='submitbutton' value='Submit' />";
+
+                        } else if (_action == "Delete")
+                        {
+                            inputStr = "<input formnovalidate='formnovalidate' class='submit' type='submit' name='submitbutton' value='Submit' />";
+                        }
+                        inputStr += "&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;";
+                        ViewData["InputButton"] = new HtmlString(inputStr);
+                    }
+                }       
+                @ViewData["InputButton"]
+                <input formnovalidate="formnovalidate" class="submit" type="submit" name="submitbutton" value="Cancel"/>
+            </td>
+        </tr>
+    </table>
+    <input type="hidden" name="singarea_state" value="@ViewBag.SingareaState" />
+    @Html.HiddenFor(model=>model.Id)
+</form>

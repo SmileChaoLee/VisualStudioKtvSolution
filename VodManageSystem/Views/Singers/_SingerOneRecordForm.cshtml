@@ -1,0 +1,113 @@
+
+@model VodManageSystem.Models.DataModels.Singer
+
+@using System
+@using Microsoft.AspNetCore.Html
+
+<link rel="stylesheet" style="text/css" href="~/css/OneRecordStyle.css" />
+
+<form id="OneSingerForm" asp-controller="Singers" asp-action="@ViewBag.Action" method="post">
+    <div asp-validation-summary="ModelOnly" class="text-danger"></div>
+    <table>
+        <tr>
+            <td class="labelname" colspan="4">
+                <span class="errorMsg" style="color:blue">Error Message:</span>
+                <span class="errorMsg" style="color:red">@ViewData["ErrorMessage"]</span>
+            </td>
+        </tr>
+        <tr>
+            <td class="labelname">Singer No.</td>
+            <td>
+                <input asp-for="SingNo" maxlength="5" />
+                <span asp-validation-for="SingNo" class="text-danger"></span>
+            </td>
+            <td class="labelname">Singer Name</td>
+            <td>
+                <input asp-for="SingNa" maxlength="30"/>
+                <span asp-validation-for="SingNa" class="text-danger"></span>
+            </td>
+        </tr>
+        <tr>
+            <td class="labelname">Num_fw</td>
+            <td>
+                <input type="number" asp-for="NumFw" maxlength="2" style="width:100px;"/>
+                <span asp-validation-for="NumFw" class="text-danger"></span>
+            </td>
+            <td class="labelname">Num_pw</td>
+            <td>
+                <input asp-for="NumPw" maxlength="1" style="width:100px;" />
+                <span asp-validation-for="NumPw" class="text-danger"></span>
+            </td>
+        </tr>
+        <tr>
+            <td class="labelname">Singer Area</td>
+            <td>
+                <select asp-for="AreaId" asp-items="@ViewBag.SingareaList"></select>
+            </td>
+            <td class="labelname">Sex</td>
+            <td>
+                <select asp-for="Sex">
+                    <option value="1">Male</option>
+                    <option value="2">Female</option>
+                </select>
+                <span asp-validation-for="Sex" class="text-danger"></span>
+            </td>
+        </tr>
+        <tr>
+            <td class="labelname">Chor</td>
+            <td>
+                <select asp-for="Chor">
+                    <option value="N">No</option>
+                    <option value="Y">Yes</option>
+                </select>
+                <span asp-validation-for="Chor" class="text-danger"></span>
+            </td>
+            <td class="labelname">Hot</td>
+            <td>
+                <select asp-for="Hot">
+                    <option value="N">Yes</option>
+                    <option value="Y">No</option>
+                </select>
+                <span asp-validation-for="Hot" class="text-danger"></span>
+            </td>
+        </tr>
+        <tr>
+            <td class="labelname">Picture File Name</td>
+            <td>
+                <input asp-for="PicFile" maxlength="5" />
+                <span asp-validation-for="PicFile" class="text-danger"></span>
+            </td>
+            <td></td>
+            <td></td>
+        </tr>
+        <tr>
+            <td class="labelname"></td>
+            <td style="text-align:center" colspan="3">
+                @{
+                    string _action = ((string)ViewBag.Action).Trim();
+                    if (_action != "Details")
+                    {
+                        string inputStr = "";
+                        if ( (_action == "Add") || (_action == "Edit") )
+                        {
+                            inputStr = "<input class='submit' type='submit' name='submitbutton' value='Submit' />";
+
+                        } else if (_action == "Delete")
+                        {
+                            inputStr = "<input formnovalidate='formnovalidate' class='submit' type='submit' name='submitbutton' value='Submit' />";
+                        }
+                        inputStr += "&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;";
+                        ViewData["InputButton"] = new HtmlString(inputStr);
+                    }
+                }
+                @ViewData["InputButton"]
+                <input formnovalidate='formnovalidate' class='submit' type='submit' name='submitbutton' value='Cancel'/>
+            </td>
+        </tr>
+    </table>
+    <input type="hidden" name="singer_state" value="@ViewBag.SingerState" />
+    
+    <input type="hidden" id="Id" name="Id" value="@Model.Id" />
+    <!-- or use the following Aap.Net Core Html helper-->
+    <!-- @Html.HiddenFor(model=>model.Id) -->
+</form>

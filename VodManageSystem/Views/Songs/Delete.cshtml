@@ -1,0 +1,18 @@
+@model VodManageSystem.Models.DataModels.Song
+
+@{
+    ViewData["Title"] = "Delete Song";
+    ViewBag.Action = "Delete";
+}
+
+<h3 style="text-align:center">@ViewData["Title"]</h3>
+
+@section Scripts {
+    @{
+        await Html.RenderPartialAsync("~/Views/Songs/_SongValidationScriptsPartial.cshtml");
+    }
+}
+
+@await Html.PartialAsync("_SongOneRecordForm.cshtml", Model)
+
+@* or await Html.PartialAsync("_SongOneRecordForm.cshtml") *@

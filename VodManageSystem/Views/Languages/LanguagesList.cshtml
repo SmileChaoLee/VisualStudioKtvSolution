@@ -1,0 +1,162 @@
+﻿@using VodManageSystem.Utilities
+@using VodManageSystem.Models
+@using System
+
+@model IEnumerable<VodManageSystem.Models.DataModels.Language>
+
+@{
+    StateOfRequest languageState = JsonUtil.GetObjectFromJsonString<StateOfRequest>(ViewBag.LanguageState as string);
+    DateTime endTime = DateTime.Now;
+    double diff = ( (TimeSpan)(endTime - languageState.StartTime) ).TotalMilliseconds;
+    ViewData["Title"] = "Languages Management ---- elapsed time = " + diff;
+}
+
+@section Scripts
+{
+    <script type="text/javascript">
+
+        // use jQuery
+        function toSubmit(action, sId, sNo) {
+            var form = '#bodyForm';
+            if ( ($(form).length) && (action !== undefined) ) {
+                // if form with id="bodyForm" exist. jQuery the length is greater than 0.
+                if ( (action==='/Languages/Edit') || (action==='/Languages/Delete') || (action==='/Languages/Details') ) {
+                    if ((sId !== undefined) && (sId !== 0) ) {
+                        var language_state = getLanguageStateValue();
+                        language_state.OrgId = sId;
+                        language_state.OrgLangNo = sNo;
+                        $('input[name="language_state"]').val(JSON.stringify(language_state));
+                    } else {
+                        // Edit, Delete, Details
+                        alert("Please select one language!");
+                        return false;   // cancel submit
+                    }
+                }
+                $(form).attr('action', action);
+                $(form).submit();
+                return true;
+            }
+            else {
+                return false;   // cancel submit
+            }
+        }
+
+        function orderBySubmit(orderBy) {
+            if (orderBy !== undefined) {
+                var form = '#bodyForm';
+                $(form).attr('action', '/Languages/ChangeOrder');
+                var language_state = getLanguageStateValue();
+                language_state.OrderBy = orderBy;
+                $('input[name="language_state"]').val(JSON.stringify(language_state));
+                $(form).submit();
+                return true;
+            } else {
+                return false;
+            }
+        }
+
+        // highlight item
+        var selectedItem = "selectedItem";
+        var $items = $('tr.row_item').click(function(event) {
+            event.preventDefault();
+            $items.removeClass(selectedItem);
+            $(this).addClass(selectedItem);
+
+            // get data of this row. It is an array
+            var trData = $(this).children('td').map(function() {
+                return $(this).text();
+            }).get();
+
+            var language_state = getLanguageStateValue();
+            language_state.OrgId = trData[0];      // reset the oringinal id of language
+            language_state.OrgLangNo = trData[1];  // reset the original lang_no
+            // reset the value of language_state
+            $('input[name="language_state"]').val(JSON.stringify(language_state));
+        })
+
+        function getLanguageStateValue() {
+            // var language_state = $('#bodyForm').find('input[name="language_state"]').val();
+            var language_state = $('input[name="language_state"]').val();
+            return JSON.parse(language_state);
+        }
+        
+    </script>
+}
+
+<link rel="stylesheet" style="text/css" href="~/css/DataManageTableStyle.css" />
+
+<h3 style="text-align:center;">@ViewData["Title"]</h3>
+
+<form id="bodyForm" asp-area="" asp-controller="" asp-action="" method="get">
+    <input type="hidden" name="language_state" value="@ViewBag.LanguageState" />
+    <p>
+        <button class="aboveTable" onclick="return toSubmit('/Languages/Find');">Find</button>&nbsp;
+        <button class="aboveTable" onclick="return toSubmit('/Languages/Print');">Print</button>&nbsp;  
+        <button class="aboveTable" onclick="return toSubmit('/Languages/FirstPage');">First Page</button>&nbsp;
+        <button class="aboveTable" onclick="return toSubmit('/Languages/LastPage');">Last Page</button>&nbsp; 
+        <button class="aboveTable" onclick="return toSubmit('/Languages/PreviousPage');">Previous Page</button>&nbsp;
+        <button class="aboveTable" onclick="return toSubmit('/Languages/NextPage');">Next Page</button>
+    </p>
+    <table style="margin-top:10px;"> <!-- class="table" -->
+        <thead>
+            <tr>
+                <th style="display:none;">
+                    @Html.DisplayNameFor(model => model.Id)
+                </th>
+                <th>Language No.</th>
+                <th>Language Name</th>
+                <th>English Name of the Language</th>
+                <th/>
+                <th/>
+                <th style="text-align:center;">
+                    <button class="crud" style="background-color:orange;" onclick="return toSubmit('/Languages/Add');">Add</button>&nbsp;
+                </th>
+            </tr>
+        </thead>
+        <tbody>
+            @foreach (var item in Model) {
+
+                string selectedItem = "";
+                if (item.Id == languageState.OrgId)
+                {
+                    selectedItem = "selectedItem";
+                }
+
+                <tr class="row_item @selectedItem">
+                    <td style="display:none;">
+                        @Html.DisplayFor(modelItem => item.Id)
+                    </td>
+                    <td>
+                        @Html.DisplayFor(modelItem => item.LangNo)
+                    </td>
+                    <td>
+                        @Html.DisplayFor(modelItem => item.LangNa)
+                    </td>
+                    <td>
+                        @Html.DisplayFor(modelItem => item.LangEn)
+                    </td>
+
+                    <td style="text-align:center;width:100px;">
+                        <button class="crud" onclick="return toSubmit('/Languages/Edit','@item.Id','@item.LangNo');">Edit</button>
+                    </td>
+
+                    <td style="text-align:center;width:100px">
+                        <button class="crud" onclick="toSubmit('/Languages/Details','@item.Id','@item.LangNo')">Details</button>
+                    </td>
+
+                    <td style="text-align:center;width:100px;">
+                        <button class="crud" onclick="return toSubmit('/Languages/Delete','@item.Id','@item.LangNo');">Delete</button>
+                    </td>
+           
+                </tr>
+            }
+        </tbody>
+    </table>
+    
+    <p style="margin-top:10px;">
+        <label style="color:brown; font-size:18px;">Order By:</label>
+        <button class="underTable" onclick="return orderBySubmit('LangNo');" >Language No.</button>&nbsp;
+        <button class="underTable" onclick="return orderBySubmit('LangNa');" >Language Name</button>&nbsp;  
+    </p>
+    
+</form>

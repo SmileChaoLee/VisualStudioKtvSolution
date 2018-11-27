@@ -23,15 +23,15 @@
   <ItemGroup>
     <Folder Include="Models\DataModels\" />
     <Folder Include="Views\Authenticate\" />
-    <Folder Include="Views\Song\" />
+    <Folder Include="Views\Songs\" />
     <Folder Include="Views\Shared\DisplayTemplates\" />
     <Folder Include="ExtensionMethods\" />
     <Folder Include="Utilities\" />
     <Folder Include="Models\Dao\" />
     <Folder Include="wwwroot\lib\propper\" />
-    <Folder Include="Views\Language\" />
-    <Folder Include="Views\Singarea\" />
-    <Folder Include="Views\Singer\" />
+    <Folder Include="Views\Languages\" />
+    <Folder Include="Views\Singareas\" />
+    <Folder Include="Views\Singers\" />
     <Folder Include="Views\Playerscore\" />
     <Folder Include="Api\" />
     <Folder Include="Api\Controllers\" />

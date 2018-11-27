@@ -1,0 +1,230 @@
+@using VodManageSystem.Utilities
+@using VodManageSystem.Models
+@using System
+
+@model IEnumerable<VodManageSystem.Models.DataModels.Singer>
+
+@{
+    StateOfRequest singerState = JsonUtil.GetObjectFromJsonString<StateOfRequest>(ViewBag.SingerState as string);
+    DateTime endTime = DateTime.Now;
+    double diff = ( (TimeSpan)(endTime - singerState.StartTime) ).TotalMilliseconds;
+    ViewData["Title"] = "Singers Management ---- elapsed time = " + diff;
+}
+
+@section Scripts
+{
+    <script type="text/javascript">
+
+        // use jQuery
+        function toSubmit(action, sId, sNo) {
+            var form = '#bodyForm';
+            if ( ($(form).length) && (action !== undefined) ) {
+                // if form with id="bodyForm" exist. jQuery the length is greater than 0.
+                if ( (action==='/Singers/Edit') || (action==='/Singers/Delete') || (action==='/Singers/Details') ) {
+                    if ((sId !== undefined) && (sId !== 0) ) {
+                        var singer_state = getSingerStateValue();
+                        singer_state.OrgId = sId;
+                        singer_state.OrgSingNo = sNo;
+                        $('input[name="singer_state"]').val(JSON.stringify(singer_state));
+                    } else {
+                        // Edit, Delete, Details
+                        alert("Please select one singer!");
+                        return false;   // cancel submit
+                    }
+                }
+                $(form).attr('action', action);
+                $(form).submit();
+                return true;
+            }
+            else {
+                return false;   // cancel submit
+            }
+        }
+
+        function orderBySubmit(orderBy) {
+            if (orderBy !== undefined) {
+                var form = '#bodyForm';
+                $(form).attr('action', '/Singers/ChangeOrder');
+                var singer_state = getSingerStateValue();
+                singer_state.OrderBy = orderBy;
+                $('input[name="singer_state"]').val(JSON.stringify(singer_state));
+                $(form).submit();
+                return true;
+            } else {
+                return false;
+            }
+        }
+
+        // use JavaScript
+        /* not used
+        function toSubmitJavaScript(action, sId, sNo) {
+            var form = document.getElementById('bodyForm');
+            if (form !== null ) {
+                // if form with id="bodyForm" exist.
+                // toSubmitBodyForm(form, action, sId, sNo);
+            }
+        }
+        */
+
+        // highlight item
+        var selectedItem = "selectedItem";
+        var $items = $('tr.row_item').click(function(event) {
+            event.preventDefault();
+            $items.removeClass(selectedItem);
+            $(this).addClass(selectedItem);
+
+            // get data of this row. It is an array
+            var trData = $(this).children('td').map(function() {
+                return $(this).text();
+            }).get();
+
+            var singer_state = getSingerStateValue();
+            singer_state.OrgId = trData[0];      // reset the oringinal id of singer
+            singer_state.OrgSingNo = trData[1];  // reset the original sing_no
+            // reset the value of singer_state
+            $('input[name="singer_state"]').val(JSON.stringify(singer_state));
+        })
+
+        function getSingerStateValue() {
+            // var singer_state = $('#bodyForm').find('input[name="singer_state"]').val();
+            var singer_state = $('input[name="singer_state"]').val();
+            return JSON.parse(singer_state);
+        }
+    	
+    </script>
+}
+
+<link rel="stylesheet" style="text/css" href="~/css/DataManageTableStyle.css" />
+
+<h3 style="text-align:center">@ViewData["Title"]</h3>
+
+<form id="bodyForm" asp-area="" asp-controller="" asp-action="" method="get">
+    <input type="hidden" name="singer_state" value="@ViewBag.SingerState" />
+	<p>
+        <button class="aboveTable" onclick="return toSubmit('/Singers/Find');">Find</button>&nbsp;
+        <button class="aboveTable" onclick="return toSubmit('/Singers/Print');">Print</button>&nbsp;  
+        <button class="aboveTable" onclick="return toSubmit('/Singers/FirstPage');">First Page</button>&nbsp;
+        <button class="aboveTable" onclick="return toSubmit('/Singers/LastPage');">Last Page</button>&nbsp; 
+        <button class="aboveTable" onclick="return toSubmit('/Singers/PreviousPage');">Previous Page</button>&nbsp;
+        <button class="aboveTable" onclick="return toSubmit('/Singers/NextPage');">Next Page</button>
+    </p>
+    <table style="margin-top:10px;"> <!-- class="table" -->
+        <thead>
+            <tr>
+                <th style="display:none;">
+                    @Html.DisplayNameFor(model => model.Id)
+                </th>
+                <th>
+                    @Html.DisplayNameFor(model => model.SingNo)
+                </th>
+                <th>
+                    @Html.DisplayNameFor(model => model.SingNa)
+                </th>
+                <th>
+                    @Html.DisplayNameFor(model => model.NumFw)
+                </th>
+                <th>
+                    @Html.DisplayNameFor(model => model.NumPw)
+                </th>
+                <th>
+                    @Html.DisplayNameFor(model => model.Sex)
+                </th>
+                <th>
+                    @Html.DisplayNameFor(model => model.Chor)
+                </th>
+                <th>
+                    @Html.DisplayNameFor(model => model.Hot)
+                </th>
+                <th>
+                    @Html.DisplayNameFor(model => model.Singarea.AreaNa)
+                </th>
+                <th>
+                    @Html.DisplayNameFor(model => model.PicFile)
+                </th>
+                <th/>
+                <th/>
+                <th style="text-align:center;">
+                    <button class="crud" style="background-color:orange;" onclick="return toSubmit('/Singers/Add');">Add</button>&nbsp;
+                </th>
+            </tr>
+        </thead>
+        <tbody>
+        @foreach (var item in Model) {
+
+            string selectedItem = "";
+            if (item.Id == singerState.OrgId)
+            {
+                selectedItem = "selectedItem";
+            }
+
+            <tr class="row_item @selectedItem">
+                <td style="display:none;">
+                    @Html.DisplayFor(modelItem => item.Id)
+                </td>
+                <td>
+                    @Html.DisplayFor(modelItem => item.SingNo)
+                </td>
+                <td>
+                    @Html.DisplayFor(modelItem => item.SingNa)
+                </td>
+                <td>
+                    @Html.DisplayFor(modelItem => item.NumFw)
+                </td>
+                <td>
+                    @Html.DisplayFor(modelItem => item.NumPw)
+                </td>
+                
+                @*
+                <td>
+                    @Html.DisplayFor(modelItem => item.Sex)
+                </td>
+                *@
+                
+                @{
+                    if (item.Sex == "1")
+                    {
+                        <td>Male</td>
+                    }
+                    else
+                    {
+                        <td>Female</td>
+                    }
+                }
+                <td>
+                    @Html.DisplayFor(modelItem => item.Chor)
+                </td>
+                <td>
+                    @Html.DisplayFor(modelItem => item.Hot)
+                </td>
+                <td>
+                    @Html.DisplayFor(modelItem => item.Singarea.AreaNa)
+                </td>
+                <td>
+                    @Html.DisplayFor(modelItem => item.PicFile)
+                </td>
+
+                <td style="text-align:center;width:100px;">
+                    <button class="crud" onclick="return toSubmit('/Singers/Edit','@item.Id','@item.SingNo');">Edit</button>
+                </td>
+
+                <td style="text-align:center;width:100px;">
+                    <button class="crud" onclick="toSubmit('/Singers/Details','@item.Id','@item.SingNo')">Details</button>
+                </td>
+
+                <td style="text-align:center;width:100px;">
+                    <button class="crud" onclick="return toSubmit('/Singers/Delete','@item.Id','@item.SingNo');">Delete</button>
+                </td>
+
+            </tr>
+        }
+        </tbody>
+    </table>
+    
+    <p style="margin-top:10px;">
+        <label style="color:brown; font-size:18px;">Order By:</label>
+        <button class="underTable" onclick="return orderBySubmit('SingNo');"     >Singer No.</button>&nbsp;
+        <button class="underTable" onclick="return orderBySubmit('SingNa');"     >Singer Name</button>&nbsp;
+	</p>
+    
+</form>
+

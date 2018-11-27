@@ -1,0 +1,262 @@
+@using VodManageSystem.Utilities
+@using VodManageSystem.Models
+@using System
+
+@model IEnumerable<VodManageSystem.Models.DataModels.Song>
+
+@{
+    StateOfRequest songState = JsonUtil.GetObjectFromJsonString<StateOfRequest>(ViewBag.SongState as string);
+    DateTime endTime = DateTime.Now;
+    double diff = ( (TimeSpan)(endTime - songState.StartTime) ).TotalMilliseconds;
+    ViewData["Title"] = "Songs Management ---- elapsed time = " + diff;
+}
+
+@section Scripts
+{
+    <script type="text/javascript">
+
+        // use jQuery
+        function toSubmit(action, sId, sNo) {
+            var form = '#bodyForm';
+            if ( ($(form).length) && (action !== undefined) ) {
+                // if form with id="bodyForm" exist. jQuery the length is greater than 0.
+                if ( (action==='/Songs/Edit') || (action==='/Songs/Delete') || (action==='/Songs/Details') ) {
+                    if ((sId !== undefined) && (sId !== 0) ) {
+                        var song_state = getSongStateValue();
+                        song_state.OrgId = sId;
+                        song_state.OrgSongNo = sNo;
+                        $('input[name="song_state"]').val(JSON.stringify(song_state));
+                    } else {
+                        // Edit, Delete, Details
+                        alert("Please select one song!");
+                        return false;   // cancel submit
+                    }
+                }
+                $(form).attr('action', action);
+                $(form).submit();
+                return true;
+            }
+            else {
+                return false;   // cancel submit
+            }
+        }
+
+        function orderBySubmit(orderBy) {
+            if (orderBy !== undefined) {
+                var form = '#bodyForm';
+                $(form).attr('action', '/Songs/ChangeOrder');
+                var song_state = getSongStateValue();
+                song_state.OrderBy = orderBy;
+                $('input[name="song_state"]').val(JSON.stringify(song_state));
+                $(form).submit();
+                return true;
+            } else {
+                return false;
+            }
+        }
+
+        // use JavaScript
+        /* not used
+        function toSubmitJavaScript(action, sId, sNo) {
+            var form = document.getElementById('bodyForm');
+            if (form !== null ) {
+                // if form with id="bodyForm" exist.
+                // toSubmitBodyForm(form, action, sId, sNo);
+            }
+        }
+        */
+
+        // highlight item
+        var selectedItem = "selectedItem";
+        var $items = $('tr.row_item').click(function(event) {
+            event.preventDefault();
+            $items.removeClass(selectedItem);
+            $(this).addClass(selectedItem);
+
+            // get data of this row. It is an array
+            var trData = $(this).children('td').map(function() {
+                return $(this).text();
+            }).get();
+
+            var song_state = getSongStateValue();
+            song_state.OrgId = trData[0];      // reset the oringinal id of song
+            song_state.OrgSongNo = trData[1];  // reset the original song_no
+            // reset the value of song_state
+            $('input[name="song_state"]').val(JSON.stringify(song_state));
+        })
+
+        function getSongStateValue() {
+            // var song_state = $('#bodyForm').find('input[name="song_state"]').val();
+            var song_state = $('input[name="song_state"]').val();
+            return JSON.parse(song_state);
+        }
+    	
+    </script>
+}
+
+<link rel="stylesheet" style="text/css" href="~/css/DataManageTableStyle.css" />
+
+<h3 style="text-align:center">@ViewData["Title"]</h3>
+
+<form id="bodyForm" asp-area="" asp-controller="" asp-action="" method="get">
+    <input type="hidden" name="song_state" value="@ViewBag.SongState" />
+	<p>
+        <button class="aboveTable" onclick="return toSubmit('/Songs/Find');">Find</button>&nbsp;
+        <button class="aboveTable" onclick="return toSubmit('/Songs/Print');">Print</button>&nbsp;  
+        <button class="aboveTable" onclick="return toSubmit('/Songs/FirstPage');">First Page</button>&nbsp;
+        <button class="aboveTable" onclick="return toSubmit('/Songs/LastPage');">Last Page</button>&nbsp; 
+        <button class="aboveTable" onclick="return toSubmit('/Songs/PreviousPage');">Previous Page</button>&nbsp;
+        <button class="aboveTable" onclick="return toSubmit('/Songs/NextPage');">Next Page</button>
+        <!--
+        <button class="aboveTable" onclick="return toSubmit('/Songs/BackToDataManageMenu');">Back</button>
+        -->
+    </p>
+    <table style="margin-top:10px;"> <!-- class="table" -->
+        <thead>
+            <tr>
+                <th style="display:none;">
+                    @Html.DisplayNameFor(model => model.Id)
+                </th>
+                <th>
+                    @Html.DisplayNameFor(model => model.SongNo)
+                </th>
+                <th>
+                    @Html.DisplayNameFor(model => model.SongNa)
+                </th>
+                <th>
+    			    @Html.DisplayNameFor(model => model.Language.LangNa)
+                </th>
+                <th>NW</th>
+                <th>FW</th>
+                <th>PW</th>
+                <th>
+                    @Html.DisplayNameFor(model => model.Singer1.SingNa)
+                </th>
+                <th>
+    			    @Html.DisplayNameFor(model => model.Singer2.SingNa)
+                </th>
+                <th>
+                    @Html.DisplayNameFor(model => model.Chor)
+                </th>
+                <th>NM</th>
+                <th>MM</th>
+                <th>
+                    @Html.DisplayNameFor(model => model.VodYn)
+                </th>
+                <th>
+                    @Html.DisplayNameFor(model => model.VodNo)
+                </th>
+                <th>
+                    @Html.DisplayNameFor(model => model.Pathname)
+                </th>
+                <th>
+                    @Html.DisplayNameFor(model => model.OrdNo)
+                </th>
+                <th>
+                    @Html.DisplayNameFor(model => model.OrderNum)
+                </th>
+                <th>
+                    @Html.DisplayNameFor(model => model.InDate)
+                </th>
+                <th/>
+                <th/>
+                <th style="text-align:center;">
+                    <button class="crud" style="background-color:orange;" onclick="return toSubmit('/Songs/Add');">Add</button>&nbsp;
+                </th>
+            </tr>
+        </thead>
+        <tbody>
+        @foreach (var item in Model) {
+
+            string selectedItem = "";
+            if (item.Id == songState.OrgId)
+            {
+                selectedItem = "selectedItem";
+            }
+
+            <tr class="row_item @selectedItem">
+                <td style="display:none;">
+                    @Html.DisplayFor(modelItem => item.Id)
+                </td>
+                <td>
+                    @Html.DisplayFor(modelItem => item.SongNo)
+                </td>
+                <td>
+                    @Html.DisplayFor(modelItem => item.SongNa)
+                </td>
+                <td>
+                    @Html.DisplayFor(modelItem => item.Language.LangNa)
+                </td>
+                <td>
+                    @Html.DisplayFor(modelItem => item.SNumWord)
+                </td>
+                <td>
+                    @Html.DisplayFor(modelItem => item.NumFw)
+                </td>
+                <td>
+                    @Html.DisplayFor(modelItem => item.NumPw)
+                </td>
+                <td>
+                    @Html.DisplayFor(modelItem => item.Singer1.SingNa)
+                </td>
+                <td>
+                    @Html.DisplayFor(modelItem => item.Singer2.SingNa)
+                </td>
+                <td>
+                    @Html.DisplayFor(modelItem => item.Chor)
+                </td>
+                <td>
+                    @Html.DisplayFor(modelItem => item.NMpeg)
+                </td>
+                <td>
+                    @Html.DisplayFor(modelItem => item.MMpeg)
+                </td>
+                <td>
+                    @Html.DisplayFor(modelItem => item.VodYn)
+                </td>
+                <td>
+                    @Html.DisplayFor(modelItem => item.VodNo)
+                </td>
+                <td>
+                    @Html.DisplayFor(modelItem => item.Pathname)
+                </td>
+                <td>
+                    @Html.DisplayFor(modelItem => item.OrdNo)
+                </td>
+                <td>
+                    @Html.DisplayFor(modelItem => item.OrderNum)
+                </td>
+                <td>
+                    @Html.DisplayFor(modelItem => item.InDate, "ShortDateTime")
+                    <!-- @if (item.InDate!=null) {@Convert.ToDateTime(item.InDate).ToString("yyyy-MM-dd");} -->
+                </td>
+
+                <td style="text-align:center;">
+                    <button class="crud" onclick="return toSubmit('/Songs/Edit','@item.Id','@item.SongNo');">Edit</button>
+                </td>
+
+                <td style="text-align:center;">
+                    <button class="crud" onclick="toSubmit('/Songs/Details','@item.Id','@item.SongNo')">Details</button>
+                </td>
+
+                <td style="text-align:center;">
+                    <button class="crud" onclick="return toSubmit('/Songs/Delete','@item.Id','@item.SongNo');">Delete</button>
+                </td>
+
+            </tr>
+        }
+        </tbody>
+    </table>
+    
+    <p style="margin-top:10px;">
+        <label style="color:brown; font-size:18px;">Order By:</label>
+        <button class="underTable" onclick="return orderBySubmit('SongNo');"     >Song No.</button>&nbsp;
+        <button class="underTable" onclick="return orderBySubmit('SongNa');"     >Song Name</button>&nbsp;  
+        <button class="underTable" onclick="return orderBySubmit('VodNo');"      >VOD No.</button>&nbsp; 
+        <button class="underTable" onclick="return orderBySubmit('LangSongNa');" >Lang+Song Name</button>&nbsp;
+        <button class="underTable" onclick="return orderBySubmit('Singer1Na');"  >Singer1 Name</button>&nbsp;  
+        <button class="underTable" onclick="return orderBySubmit('Singer2Na');"  >Singer2 Name</button>&nbsp;
+	</p>
+    
+</form>
+
