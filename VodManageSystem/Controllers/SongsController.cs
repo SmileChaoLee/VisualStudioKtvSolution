@@ -170,48 +170,26 @@ namespace VodManageSystem.Controllers
                 return RedirectToAction(nameof(SongsList), new { song_state = temp_state });
             }
 
-            string searchType = search_type.Trim().ToUpper();
+            string searchType = search_type.Trim();
+            mState.OrderBy = searchType;
+
             Song song = new Song(); // new object
-            if (searchType == "SongNo".ToUpper())
-            {
-                // find one song by song_no
-                mState.OrderBy = "SongNo";
-                song.SongNo = song_no;
-            }
-            else if (searchType == "SongNa".ToUpper())
-            {
-                // find one song by song_na
-                mState.OrderBy = "SongNa";
-                song.SongNa = song_na;
-            }
-            else if (searchType == "VodNo".ToUpper())
-            {
-                // find one song by vod_no
-                mState.OrderBy = "VodNo";
-                song.VodNo = vod_no;
-            }
-            else if (searchType == "LangSongNa".ToUpper())
-            {
-                // find one song by Language + Song.SongNa
-                mState.OrderBy = "LangSongNa";   // lang_no + song name
-                song.Language = new Language();
-                song.Language.LangNo = lang_no;
-                song.SongNa = song_na;
-            }
-            else if (searchType == "Singer1Na".ToUpper())
-            {
-                // find one song by Singer1Na
-                mState.OrderBy = "Singer1Na";   // the name of first singer
-                song.Singer1 = new Singer();
-                song.Singer1.SingNa = sing_na1;
-            }
-            else if (searchType == "Singer2Na".ToUpper())
-            {
-                // find one song by Singer2Na
-                mState.OrderBy = "Singer2Na";   // the name of second singer
-                song.Singer2 = new Singer();
-                song.Singer2.SingNa = sing_na2;
-            }
+
+            song.SongNo = song_no;  // for order by "SongNo"
+
+            song.SongNa = song_na;  // for order by "SongNa"
+
+            song.VodNo = vod_no;    // for order by "VodNo"
+
+            song.Language = new Language(); // for order by "LangNo" + "SongNa"
+            song.Language.LangNo = lang_no;
+            song.SongNa = song_na;
+
+            song.Singer1 = new Singer();    // for order by "Singer1.SingNa"
+            song.Singer1.SingNa = sing_na1;
+
+            song.Singer2 = new Singer();    // for order by "Singer2.SingNa"
+            song.Singer2.SingNa = sing_na2;
 
             List<Song> songsTemp = _songsManager.FindOnePageOfSongsForOneSong(mState, song, -1);
 

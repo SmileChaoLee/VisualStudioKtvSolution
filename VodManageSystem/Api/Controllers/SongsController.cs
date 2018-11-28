@@ -130,39 +130,7 @@ namespace VodManageSystem.Api.Controllers
             }
             else
             {
-                string orderByTemp = orderBy.ToUpper().Trim();
-                if (orderByTemp == "SongNo".ToUpper())
-                {
-                    orderByParam = "SongNo";
-                }
-                else if (orderByTemp == "SongNa".ToUpper())
-                {
-                    orderByParam = "SongNa";
-                }
-                else if (orderByTemp == "NumWordsSongNa".ToUpper())
-                {
-                    orderByParam = "NumWordsSongNa";
-                }
-                else if (orderByTemp == "VodNo".ToUpper())
-                {
-                    orderByParam = "VodNo";
-                }
-                else if (orderBy == "LangSongNa".ToUpper())
-                {
-                    orderByParam = "LangSongNa";
-                }
-                else if (orderBy == "Singer1Na".ToUpper())
-                {
-                    orderByParam = "Singer1Na";
-                }
-                else if (orderBy == "Singer2Na".ToUpper())
-                {
-                    orderByParam = "Singer2Na";
-                }
-                else
-                {
-                    orderByParam = "ReturnEmptyList";  // has to return empty list
-                }
+                orderByParam = orderBy.Trim();
             }
 
             StateOfRequest mState = new StateOfRequest(orderByParam);

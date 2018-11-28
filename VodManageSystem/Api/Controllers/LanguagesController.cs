@@ -129,6 +129,34 @@ namespace VodManageSystem.Api.Controllers
             return jObjectForAll.ToString();
         }
 
+        // GET: api/values/5/NewSongs/10/1/"NumWordsSongNa"
+        // [Route("{id}/[Action]/{pageSize}/{pageNo}/{orderBy}")]
+        // [HttpGet]
+        // or
+        [HttpGet("{id}/[Action]/{pageSize}/{pageNo}/{orderBy}")]
+        public string NewSongs(int id, int pageSize, int pageNo, string orderBy)
+        {
+            Console.WriteLine("HttpGet[\"{id}/NewSongs/{ pageSize}/{ pageNo}/{orderBy}\")]");
+
+            JObject jObjectForAll = GetSongsByLanguageIdNumOfWords(id, -1, pageSize, pageNo, orderBy);
+
+            return jObjectForAll.ToString();
+        }
+
+        // GET: api/values/5/HotSongs/10/1/"NumWordsSongNa"
+        // [Route("{id}/[Action]/{pageSize}/{pageNo}/{orderBy}")]
+        // [HttpGet]
+        // or
+        [HttpGet("{id}/[Action]/{pageSize}/{pageNo}/{orderBy}")]
+        public string HotSongs(int id, int pageSize, int pageNo, string orderBy)
+        {
+            Console.WriteLine("HttpGet[\"{id}/NewSongs/{ pageSize}/{ pageNo}/{orderBy}\")]");
+
+            JObject jObjectForAll = GetSongsByLanguageIdNumOfWords(id, -1, pageSize, pageNo, orderBy);
+
+            return jObjectForAll.ToString();
+        }
+
         // POST api/values
         [HttpPost]
         public void Post([FromBody]string value)
@@ -156,39 +184,7 @@ namespace VodManageSystem.Api.Controllers
             }
             else
             {
-                string orderByTemp = orderBy.ToUpper().Trim();
-                if (orderByTemp == "SongNo".ToUpper())
-                {
-                    orderByParam = "SongNo";
-                }
-                else if (orderByTemp == "SongNa".ToUpper())
-                {
-                    orderByParam = "SongNa";
-                }
-                else if (orderByTemp == "NumWordsSongNa".ToUpper())
-                {
-                    orderByParam = "NumWordsSongNa";
-                }
-                else if (orderByTemp == "VodNo".ToUpper())
-                {
-                    orderByParam = "VodNo";
-                }
-                else if (orderBy == "LangSongNa".ToUpper())
-                {
-                    orderByParam = "LangSongNa";
-                }
-                else if (orderBy == "Singer1Na".ToUpper())
-                {
-                    orderByParam = "Singer1Na";
-                }
-                else if (orderBy == "Singer2Na".ToUpper())
-                {
-                    orderByParam = "Singer2Na";
-                }
-                else
-                {
-                    orderByParam = "ReturnEmptyList";  // has to return empty list
-                }
+                orderByParam = orderBy.Trim();
             }
 
             StateOfRequest mState = new StateOfRequest(orderByParam);
