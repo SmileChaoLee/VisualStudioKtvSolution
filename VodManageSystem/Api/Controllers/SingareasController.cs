@@ -159,19 +159,7 @@ namespace VodManageSystem.Api.Controllers
             }
             else
             {
-                string orderByTemp = orderBy.ToUpper().Trim();
-                if (orderByTemp == "SingNo".ToUpper())
-                {
-                    orderByParam = "SingNo";
-                }
-                else if (orderByTemp == "SingNa".ToUpper())
-                {
-                    orderByParam = "SingNa";
-                }
-                else
-                {
-                    orderByParam = "ReturnEmptyList";
-                }
+                orderByParam = orderBy.Trim();
             }
 
             StateOfRequest mState = new StateOfRequest(orderByParam);

@@ -103,20 +103,17 @@ namespace VodManageSystem.Api.Controllers
             Console.WriteLine("HttpGet[\"{ pageSize}/{ pageNo}/{orderBy}\")]");
 
             // orderBy is either "SingNo" or "SingNa"
-            string orderByParam;
-            string orderByTemp = orderBy.ToUpper();
-            if (orderByTemp == "SINGNO")
+
+            string orderByParam = orderBy.Trim();
+            if (string.IsNullOrEmpty(orderBy))
             {
-                orderByParam = "SingNo";
-            }
-            else if (orderByTemp == "SINGNA")
-            {
-                orderByParam = "SingNa";
+                orderByParam = "";
             }
             else
             {
-                orderByParam = "ReturnEmptyList";  // has to return empty list
+                orderByParam = orderBy.Trim();
             }
+
 
             StateOfRequest mState = new StateOfRequest(orderByParam);
             mState.PageSize = pageSize;
@@ -213,7 +210,7 @@ namespace VodManageSystem.Api.Controllers
             }
             else
             {
-                orderByParam = orderBy.ToUpper().Trim();
+                orderByParam = orderBy.Trim();
             }
 
             StateOfRequest mState = new StateOfRequest(orderByParam);

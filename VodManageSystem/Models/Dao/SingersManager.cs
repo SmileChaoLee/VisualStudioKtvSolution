@@ -117,15 +117,17 @@ namespace VodManageSystem.Models.Dao
             IQueryable<Singer> totalSingers = _context.Singer.Include(x => x.Singarea);
 
             IQueryable<Singer> singers;
-            if (mState.OrderBy == "")
+
+            string orderByParam = mState.OrderBy.Trim();
+            if (orderByParam == "")
             {
                 singers = totalSingers;
             }
-            else if (mState.OrderBy == "SingNo")
+            else if (orderByParam.Equals("SingNo", StringComparison.OrdinalIgnoreCase))
             {
                 singers = totalSingers.OrderBy(x => x.SingNo);
             }
-            else if (mState.OrderBy == "SingNa")
+            else if (orderByParam.Equals("SingNa", StringComparison.OrdinalIgnoreCase))
             {
                 singers = totalSingers.OrderBy(x => x.SingNa).ThenBy(x => x.SingNo);
             }
@@ -342,6 +344,8 @@ namespace VodManageSystem.Models.Dao
             Singer singerWithIndex = null;
             IQueryable<Singer> singersTempList = null;
 
+            string orderByParam = mState.OrderBy.Trim();
+
             if (id >= 0)
             {
                 // There was a singer selected
@@ -350,18 +354,18 @@ namespace VodManageSystem.Models.Dao
             else
             {
                 // No singer selected
-                if (mState.OrderBy == "")
+                if (orderByParam == "")
                 {
                     int sing_id = singer.Id;
                     singersTempList = totalSingers.Where(x => (x.Id == sing_id) );
                 }
-                else if (mState.OrderBy == "SingNo")
+                else if (orderByParam.Equals("SingNo", StringComparison.OrdinalIgnoreCase))
                 {
                     string sing_no = singer.SingNo.Trim();
                     int len = sing_no.Length;
                     singersTempList = totalSingers.Where(x=>x.SingNo.Trim().Substring(0, len) == sing_no);
                 }
-                else if (mState.OrderBy == "SingNa")
+                else if (orderByParam.Equals("SingNa", StringComparison.OrdinalIgnoreCase))
                 {
                     string sing_na = singer.SingNa.Trim();
                     int len = sing_na.Length;

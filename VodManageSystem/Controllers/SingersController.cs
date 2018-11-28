@@ -116,25 +116,18 @@ namespace VodManageSystem.Controllers
                 return RedirectToAction(nameof(SingersList), new { singer_state = temp_state });
             }
 
-            string searchType = search_type.Trim().ToUpper();
-            Singer singer = new Singer(); // new object
-            if (searchType == "SingNo".ToUpper())
-            {
-                // find one singer by sing_no
-                mState.OrderBy = "SingNo";
-                singer.SingNo = sing_no;
-            }
-            else if (searchType == "SingNa".ToUpper())
-            {
-                // find one singer by sing_na
-                mState.OrderBy = "SingNa";
-                singer.SingNa = sing_na;
-            }
-            else
+            if (string.IsNullOrEmpty(search_type))
             {
                 // search_type not defined
                 return View();
             }
+
+            string searchType = search_type.Trim();
+            mState.OrderBy = searchType;
+
+            Singer singer = new Singer(); // new object
+            singer.SingNo = sing_no;    // for order by "SingNo"
+            singer.SingNa = sing_na;    // for order by "SingNa"
 
             List<Singer> singersTemp = _singersManager.FindOnePageOfSingersForOneSinger(mState, singer, -1);
             temp_state = JsonUtil.SetJsonStringFromObject(mState);
