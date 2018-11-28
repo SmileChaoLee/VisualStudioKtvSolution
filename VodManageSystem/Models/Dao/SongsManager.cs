@@ -106,6 +106,12 @@ namespace VodManageSystem.Models.Dao
                     return result;
                 }
             }
+            if (song.SNumWord <= 0)
+            {
+                // number of words cannot be less than 0 or equal to 0
+                result = ErrorCodeModel.NumOfWordsLessOrEqualToZero;
+            }
+
             return result;
         }
 

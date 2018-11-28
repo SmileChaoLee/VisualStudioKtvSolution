@@ -19,6 +19,7 @@ namespace VodManageSystem.Models
         public const int PathnameOfVodNoIsEmpty = -22;
         public const int Singer1IdIsNotSpecified = -23;
         public const int Singer2IdIsNotSpecified = -24;
+        public const int NumOfWordsLessOrEqualToZero = -25;
 
         public const int LanguageNotChanged = -30;
         public const int LanguageIsNull = -32;
