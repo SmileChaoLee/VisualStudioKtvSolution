@@ -170,6 +170,12 @@ namespace VodManageSystem.Controllers
                 return RedirectToAction(nameof(SongsList), new { song_state = temp_state });
             }
 
+            if (string.IsNullOrEmpty(search_type))
+            {
+                // search_type not defined
+                return View();
+            }
+
             string searchType = search_type.Trim();
             mState.OrderBy = searchType;
 
@@ -192,10 +198,9 @@ namespace VodManageSystem.Controllers
             song.Singer2.SingNa = sing_na2;
 
             List<Song> songsTemp = _songsManager.FindOnePageOfSongsForOneSong(mState, song, -1);
-
             temp_state = JsonUtil.SetJsonStringFromObject(mState);
-
             ViewBag.SongState = temp_state;
+
             return View(nameof(SongsList), songsTemp);
         }
 
