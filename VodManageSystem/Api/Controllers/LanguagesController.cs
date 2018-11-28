@@ -80,7 +80,7 @@ namespace VodManageSystem.Api.Controllers
             // pageSize = 1 does not matter
             // pageNo = -100 for all songs
             // orderBy = ""
-            JObject jObjectForAll = GetSongsByLanguageId(id, 1, -100, "");
+            JObject jObjectForAll = GetSongsByLanguageIdNumOfWords(id, -1, 1, -100, "");
 
             return jObjectForAll.ToString();
         }
@@ -95,7 +95,7 @@ namespace VodManageSystem.Api.Controllers
             Console.WriteLine("HttpGet[\"{id}/Songs/{ pageSize}/{ pageNo}\")]");
 
             // orderBy = ""
-            JObject jObjectForAll = GetSongsByLanguageId(id, pageSize, pageNo, "");
+            JObject jObjectForAll = GetSongsByLanguageIdNumOfWords(id, -1, pageSize, pageNo, "");
 
             return jObjectForAll.ToString();
         }
@@ -109,9 +109,22 @@ namespace VodManageSystem.Api.Controllers
         {
             Console.WriteLine("HttpGet[\"{id}/Songs/{ pageSize}/{ pageNo}/{orderBy}\")]");
 
-            JObject jObjectForAll = GetSongsByLanguageId(id, pageSize, pageNo, orderBy);
+            JObject jObjectForAll = GetSongsByLanguageIdNumOfWords(id, -1, pageSize, pageNo, orderBy);
 
-            Console.WriteLine(jObjectForAll);
+            return jObjectForAll.ToString();
+        }
+
+        // GET: api/values/5/7/Songs/10/1/"SongNa"
+        // [Route("{id}/{numOfWords}/[Action]/{pageSize}/{pageNo}/{orderBy}")]
+        // [HttpGet]
+        // or
+        [HttpGet("{id}/{numOfWords}/[Action]/{pageSize}/{pageNo}/{orderBy}")]
+        public string Songs(int id, int numOfWords, int pageSize, int pageNo, string orderBy)
+        {
+            Console.WriteLine("HttpGet[\"{id}/{numOfWords}/Songs/{ pageSize}/{ pageNo}/{orderBy}\")]");
+            Console.WriteLine("\n\n numOfWrods == " + numOfWords + "\n\n");
+
+            JObject jObjectForAll = GetSongsByLanguageIdNumOfWords(id, numOfWords, pageSize, pageNo, orderBy);
 
             return jObjectForAll.ToString();
         }
@@ -134,7 +147,7 @@ namespace VodManageSystem.Api.Controllers
         {
         }
 
-        private JObject GetSongsByLanguageId(int id, int pageSize, int pageNo, string orderBy)
+        private JObject GetSongsByLanguageIdNumOfWords(int id, int numOfWords, int pageSize, int pageNo, string orderBy)
         {
             string orderByParam;
             if (string.IsNullOrEmpty(orderBy))
@@ -182,7 +195,7 @@ namespace VodManageSystem.Api.Controllers
             mState.PageSize = pageSize;
             mState.CurrentPageNo = pageNo;
 
-            List<Song> songs = _songsManager.GetOnePageOfSongsByLanguageId(mState, id, true);
+            List<Song> songs = _songsManager.GetOnePageOfSongsByLanguageIdNumOfWords(mState, id, numOfWords, true);
 
             JObject jObjectForAll = new JObject();
             jObjectForAll.Add("pageNo", mState.CurrentPageNo);

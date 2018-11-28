@@ -314,7 +314,7 @@ namespace VodManageSystem.Models.Dao
             return songs;
         }
 
-        public List<Song> GetOnePageOfSongsByLanguageId(StateOfRequest mState, int languageId, bool isWebAPI)
+        public List<Song> GetOnePageOfSongsByLanguageIdNumOfWords(StateOfRequest mState, int languageId, int numOfWords, bool isWebAPI)
         {
             if (mState == null)
             {
@@ -333,7 +333,14 @@ namespace VodManageSystem.Models.Dao
                 return new List<Song>();
             }
 
-            totalSongs = totalSongs.Where(x => x.LanguageId == languageId);
+            if (numOfWords > 0)
+            {
+                totalSongs = totalSongs.Where(x => (x.LanguageId == languageId) && (x.SNumWord == numOfWords) );
+            }
+            else
+            {
+                totalSongs = totalSongs.Where(x => x.LanguageId == languageId);
+            }
             int pageNo = mState.CurrentPageNo;
             int totalRecords = totalSongs.Count();
             int totalPages = totalRecords / pageSize;
