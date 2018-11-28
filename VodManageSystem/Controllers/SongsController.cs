@@ -172,25 +172,25 @@ namespace VodManageSystem.Controllers
 
             string searchType = search_type.Trim().ToUpper();
             Song song = new Song(); // new object
-            if (searchType == "SONG_NO")
+            if (searchType == "SongNo".ToUpper())
             {
                 // find one song by song_no
                 mState.OrderBy = "SongNo";
                 song.SongNo = song_no;
             }
-            else if (searchType == "SONG_NA")
+            else if (searchType == "SongNa".ToUpper())
             {
                 // find one song by song_na
                 mState.OrderBy = "SongNa";
                 song.SongNa = song_na;
             }
-            else if (searchType == "VOD_NO")
+            else if (searchType == "VodNo".ToUpper())
             {
                 // find one song by vod_no
                 mState.OrderBy = "VodNo";
                 song.VodNo = vod_no;
             }
-            else if (searchType == "LANG_SONGNA")
+            else if (searchType == "LangSongNa".ToUpper())
             {
                 // find one song by Language + Song.SongNa
                 mState.OrderBy = "LangSongNa";   // lang_no + song name
@@ -198,14 +198,14 @@ namespace VodManageSystem.Controllers
                 song.Language.LangNo = lang_no;
                 song.SongNa = song_na;
             }
-            else if (searchType == "SINGER1_NA")
+            else if (searchType == "Singer1Na".ToUpper())
             {
                 // find one song by Singer1Na
                 mState.OrderBy = "Singer1Na";   // the name of first singer
                 song.Singer1 = new Singer();
                 song.Singer1.SingNa = sing_na1;
             }
-            else if (searchType == "SINGER2_NA")
+            else if (searchType == "Singer2Na".ToUpper())
             {
                 // find one song by Singer2Na
                 mState.OrderBy = "Singer2Na";   // the name of second singer

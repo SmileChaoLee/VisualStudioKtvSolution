@@ -389,7 +389,7 @@ namespace VodManageSystem.Models.Dao
             Language oldLanguage = await FindOneLanguageByLangNo(language.LangNo);
             if (oldLanguage != null)
             {
-                // language_no is duplicate
+                // language no is duplicate
                 result = ErrorCodeModel.LanguageNoDuplicate;
                 return result;
             }

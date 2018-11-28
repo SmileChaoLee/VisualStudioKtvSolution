@@ -70,7 +70,7 @@
 <table class="findTable">
     <tr>
         <td>            
-            <input type="radio" name="search_type" value='song_no'/>
+            <input type="radio" name="search_type" value='songno'/>
             <label class="radio">Song No.</label>
             <form asp-area="" asp-controller="Songs" asp-action="Find" method="POST" data-search='song_no'>
                 <label>Song No.:
@@ -79,7 +79,7 @@
             </form>
         </td>
         <td>
-            <input type="radio" name="search_type" value='vod_no'/>
+            <input type="radio" name="search_type" value='vodno'/>
             <label class="radio">Vod No.</label>
             <form asp-area="" asp-controller="Songs" asp-action="Find" method="POST" data-search='vod_no'>
                 <label>Vod No.:
@@ -90,7 +90,7 @@
     </tr>
     <tr>
         <td>
-            <input type="radio" name="search_type" value='song_na'/>
+            <input type="radio" name="search_type" value='songna'/>
             <label class="radio">Song Name</label>
             <form asp-area="" asp-controller="Songs" asp-action="Find" method="POST" data-search='song_na'>
                 <label>Song Name:
@@ -99,9 +99,9 @@
             </form>
         </td>
         <td>
-            <input type="radio" name="search_type" value='lang_songna'/>
+            <input type="radio" name="search_type" value='langsongna'/>
             <label class="radio">Language+Song Name</label>
-            <form asp-area="" asp-controller="Songs" asp-action="Find" method="POST" data-search='lang_songna'>
+            <form asp-area="" asp-controller="Songs" asp-action="Find" method="POST" data-search='languageId'>
                 <label >Language:
                 <select name="languageId" asp-items="@ViewBag.LanguageList"></select>
                     @*
@@ -125,18 +125,18 @@
     </tr>
     <tr>
         <td>
-            <input type="radio" name="search_type" value='singer1_na'/>
+            <input type="radio" name="search_type" value='singer1na'/>
             <label class="radio">Singer1 Name</label>
-            <form asp-area="" asp-controller="Songs" asp-action="Find" method="POST" data-search='singer1_na'>
+            <form asp-area="" asp-controller="Songs" asp-action="Find" method="POST" data-search='sing_na1'>
                 <label>Singer1 Name:
                     <input name="sing_na1" type="text" maxlength="30" style='width:200px;' value=""/>
                 </label>
             </form>
         </td>            
         <td>
-            <input type="radio" name="search_type" value='singer2_na'/>
+            <input type="radio" name="search_type" value='singer2na'/>
             <label class="radio">Singer2 Name</label>
-            <form asp-area="" asp-controller="Songs" asp-action="Find" method="POST" data-search='singer2_na'>
+            <form asp-area="" asp-controller="Songs" asp-action="Find" method="POST" data-search='sing_na2'>
                 <label>Singer2 Name:
                     <input name="sing_na2" type="text" maxlength="30" style='width:200px;' value=""/>
                 </label>

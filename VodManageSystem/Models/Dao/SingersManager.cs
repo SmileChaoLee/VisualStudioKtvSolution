@@ -486,7 +486,7 @@ namespace VodManageSystem.Models.Dao
             Singer oldSinger = await FindOneSingerBySingNo(singer.SingNo);
             if (oldSinger != null)
             {
-                // singer_no is duplicate
+                // singer no is duplicate
                 result = ErrorCodeModel.SingerNoDuplicate;
                 return result;
             }

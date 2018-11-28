@@ -116,13 +116,13 @@ namespace VodManageSystem.Controllers
 
             string searchType = search_type.Trim().ToUpper();
             Language language = new Language(); // new object
-            if (searchType == "LANGUAGE_NO")
+            if (searchType == "LangNo".ToUpper())
             {
                 // find one language by lang_no
                 mState.OrderBy = "LangNo";
                 language.LangNo = lang_no;
             }
-            else if (searchType == "LANGUAGE_NA")
+            else if (searchType == "LangNa".ToUpper())
             {
                 // find one language by lang_na
                 mState.OrderBy = "LangNa";

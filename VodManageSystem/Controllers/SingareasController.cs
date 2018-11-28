@@ -117,13 +117,13 @@ namespace VodManageSystem.Controllers
 
             string searchType = search_type.Trim().ToUpper();
             Singarea singarea = new Singarea(); // new object
-            if (searchType == "SINGAREA_NO")
+            if (searchType == "AreaNo".ToUpper())
             {
                 // find one singarea by area_no
                 mState.OrderBy = "AreaNo";
                 singarea.AreaNo = area_no;
             }
-            else if (searchType == "SINGAREA_NA")
+            else if (searchType == "AreaNa".ToUpper())
             {
                 // find one singarea by area_na
                 mState.OrderBy = "AreaNa";

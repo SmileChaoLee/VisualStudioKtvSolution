@@ -186,6 +186,10 @@ namespace VodManageSystem.Models.Dao
             {
                 songs = totalSongs.OrderBy(x => x.SongNa).ThenBy(x => x.SongNo);
             }
+            else if (mState.OrderBy == "NumWordsSongNa")
+            {
+                songs = totalSongs.OrderBy(x=>x.SNumWord).ThenBy(x => x.SongNa).ThenBy(x => x.SongNo);
+            }
             else if (mState.OrderBy == "VodNo")
             {
                 songs = totalSongs.OrderBy(x => x.VodNo).ThenBy(x => x.SongNo);

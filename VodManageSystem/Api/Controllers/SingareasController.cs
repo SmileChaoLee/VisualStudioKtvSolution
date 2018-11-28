@@ -160,11 +160,11 @@ namespace VodManageSystem.Api.Controllers
             else
             {
                 string orderByTemp = orderBy.ToUpper().Trim();
-                if (orderByTemp == "SINGNO")
+                if (orderByTemp == "SingNo".ToUpper())
                 {
                     orderByParam = "SingNo";
                 }
-                else if (orderByTemp == "SINGNA")
+                else if (orderByTemp == "SingNa".ToUpper())
                 {
                     orderByParam = "SingNa";
                 }

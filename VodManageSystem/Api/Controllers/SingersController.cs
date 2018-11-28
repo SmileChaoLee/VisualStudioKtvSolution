@@ -214,27 +214,31 @@ namespace VodManageSystem.Api.Controllers
             else
             {
                 string orderByTemp = orderBy.ToUpper().Trim();
-                if (orderByTemp == "SONGNO")
+                if (orderByTemp == "SongNo".ToUpper())
                 {
                     orderByParam = "SongNo";
                 }
-                else if (orderByTemp == "SONGNA")
+                else if (orderByTemp == "SongNa".ToUpper())
                 {
                     orderByParam = "SongNa";
                 }
-                else if (orderByTemp == "VODNO")
+                else if (orderByTemp == "NumWordsSongNa".ToUpper())
+                {
+                    orderByParam = "NumWordsSongNa";
+                }
+                else if (orderByTemp == "VodNo".ToUpper())
                 {
                     orderByParam = "VodNo";
                 }
-                else if (orderBy == "LANG_SONGNA")
+                else if (orderBy == "LangSongNa".ToUpper())
                 {
                     orderByParam = "LangSongNa";
                 }
-                else if (orderBy == "SINGER1_NA")
+                else if (orderBy == "Singer1Na".ToUpper())
                 {
                     orderByParam = "Singer1Na";
                 }
-                else if (orderBy == "SINGER1_NA")
+                else if (orderBy == "Singer2Na".ToUpper())
                 {
                     orderByParam = "Singer2Na";
                 }

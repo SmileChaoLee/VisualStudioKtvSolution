@@ -389,7 +389,7 @@ namespace VodManageSystem.Models.Dao
             Singarea oldSingarea = await FindOneSingareaByAreaNo(singarea.AreaNo);
             if (oldSingarea != null)
             {
-                // singarea_no is duplicate
+                // singarea no is duplicate
                 result = ErrorCodeModel.SingareaNoDuplicate;
                 return result;
             }

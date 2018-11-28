@@ -118,13 +118,13 @@ namespace VodManageSystem.Controllers
 
             string searchType = search_type.Trim().ToUpper();
             Singer singer = new Singer(); // new object
-            if (searchType == "SINGER_NO")
+            if (searchType == "SingNo".ToUpper())
             {
                 // find one singer by sing_no
                 mState.OrderBy = "SingNo";
                 singer.SingNo = sing_no;
             }
-            else if (searchType == "SINGER_NA")
+            else if (searchType == "SingNa".ToUpper())
             {
                 // find one singer by sing_na
                 mState.OrderBy = "SingNa";
