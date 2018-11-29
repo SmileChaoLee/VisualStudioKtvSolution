@@ -126,7 +126,7 @@ namespace VodManageSystem.Controllers
             language.LangNo = lang_no;  // for order by "LangNo"
             language.LangNa = lang_na;  // for order by "LangNa"
 
-            List<Language> languagesTemp = _languagesManager.FindOnePageOfLanguagesForOneLanguage(mState, language, 0);
+            List<Language> languagesTemp = _languagesManager.FindOnePageOfLanguagesForOneLanguage(mState, language, -1);
             temp_state = JsonUtil.SetJsonStringFromObject(mState);
             ViewBag.LanguageState = temp_state;
 
