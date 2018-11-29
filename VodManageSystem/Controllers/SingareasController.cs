@@ -114,26 +114,17 @@ namespace VodManageSystem.Controllers
                 temp_state = JsonUtil.SetJsonStringFromObject(mState);
                 return RedirectToAction(nameof(SingareasList), new { singarea_state = temp_state });
             }
-
-            string searchType = search_type.Trim().ToUpper();
-            Singarea singarea = new Singarea(); // new object
-            if (searchType == "AreaNo".ToUpper())
-            {
-                // find one singarea by area_no
-                mState.OrderBy = "AreaNo";
-                singarea.AreaNo = area_no;
-            }
-            else if (searchType == "AreaNa".ToUpper())
-            {
-                // find one singarea by area_na
-                mState.OrderBy = "AreaNa";
-                singarea.AreaNa = area_na;
-            }
-            else
+            if (string.IsNullOrEmpty(search_type))
             {
                 // search_type not defined
                 return View();
             }
+
+            string searchType = search_type.Trim();
+            mState.OrderBy = searchType;
+            Singarea singarea = new Singarea(); // new object
+            singarea.AreaNo = area_no;  // for order by "AreaNo"
+            singarea.AreaNa = area_na;  // for order by "AreaNa"
 
             List<Singarea> singareasTemp = _singareasManager.FindOnePageOfSingareasForOneSingarea(mState, singarea, -1);
             temp_state = JsonUtil.SetJsonStringFromObject(mState);

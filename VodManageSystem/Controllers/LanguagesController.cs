@@ -114,25 +114,17 @@ namespace VodManageSystem.Controllers
                 return RedirectToAction(nameof(LanguagesList), new { language_state = temp_state });
             }
 
-            string searchType = search_type.Trim().ToUpper();
-            Language language = new Language(); // new object
-            if (searchType == "LangNo".ToUpper())
-            {
-                // find one language by lang_no
-                mState.OrderBy = "LangNo";
-                language.LangNo = lang_no;
-            }
-            else if (searchType == "LangNa".ToUpper())
-            {
-                // find one language by lang_na
-                mState.OrderBy = "LangNa";
-                language.LangNa = lang_na;
-            }
-            else
+            if (string.IsNullOrEmpty(search_type))
             {
                 // search_type not defined
                 return View();
             }
+
+            string searchType = search_type.Trim();
+            mState.OrderBy = searchType;
+            Language language = new Language(); // new object
+            language.LangNo = lang_no;  // for order by "LangNo"
+            language.LangNa = lang_na;  // for order by "LangNa"
 
             List<Language> languagesTemp = _languagesManager.FindOnePageOfLanguagesForOneLanguage(mState, language, 0);
             temp_state = JsonUtil.SetJsonStringFromObject(mState);

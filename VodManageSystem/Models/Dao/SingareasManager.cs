@@ -94,16 +94,18 @@ namespace VodManageSystem.Models.Dao
 
             IQueryable<Singarea> totalSingareas = _context.Singarea;
 
+            string orderByParam = mState.OrderBy.Trim();
+
             IQueryable<Singarea> singareas;
-            if (mState.OrderBy == "")
+            if (orderByParam == "")
             {
                 singareas = totalSingareas;
             }
-            else if (mState.OrderBy == "AreaNo")
+            else if (orderByParam.Equals("AreaNo", StringComparison.OrdinalIgnoreCase))
             {
                 singareas = totalSingareas.OrderBy(x => x.AreaNo);
             }
-            else if (mState.OrderBy == "AreaNa")
+            else if (orderByParam.Equals("AreaNa", StringComparison.OrdinalIgnoreCase))
             {
                 singareas = totalSingareas.OrderBy(x => x.AreaNa);
             }
@@ -246,6 +248,7 @@ namespace VodManageSystem.Models.Dao
             Singarea singareaWithIndex = null;
             IQueryable<Singarea> singareasTempList = null;
 
+            string orderByParam = mState.OrderBy.Trim();
             if (id >= 0)
             {
                 // There was a selected singarea
@@ -254,18 +257,18 @@ namespace VodManageSystem.Models.Dao
             else
             {
                 // No singarea selected
-                if (mState.OrderBy == "")
+                if (orderByParam == "")
                 {
                     int area_id = singarea.Id;
                     singareasTempList = totalSingareas.Where(x => (x.Id == area_id));
                 }
-                else if (mState.OrderBy == "AreaNo")
+                else if (orderByParam.Equals("AreaNo", StringComparison.OrdinalIgnoreCase))
                 {
                     string area_no = singarea.AreaNo.Trim();
                     int len = area_no.Length;
                     singareasTempList = totalSingareas.Where(x => x.AreaNo.Trim().Substring(0, len) == area_no);
                 }
-                else if (mState.OrderBy == "AreaNa")
+                else if (orderByParam.Equals("AreaNa", StringComparison.OrdinalIgnoreCase))
                 {
                     string area_na = singarea.AreaNa.Trim();
                     int len = area_na.Length;

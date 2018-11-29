@@ -95,15 +95,17 @@ namespace VodManageSystem.Models.Dao
             IQueryable<Language> totalLanguages = _context.Language;
 
             IQueryable<Language> languages;
-            if (mState.OrderBy == "")
+
+            string orderByParam = mState.OrderBy.Trim();
+            if (orderByParam == "")
             {
                 languages = totalLanguages;
             }
-            else if (mState.OrderBy == "LangNo")
+            else if (orderByParam.Equals("LangNo", StringComparison.OrdinalIgnoreCase))
             {
                 languages = totalLanguages.OrderBy(x => x.LangNo);
             }
-            else if (mState.OrderBy == "LangNa")
+            else if (orderByParam.Equals("LangNa", StringComparison.OrdinalIgnoreCase))
             {
                 languages = totalLanguages.OrderBy(x => x.LangNa);
             }
@@ -245,6 +247,7 @@ namespace VodManageSystem.Models.Dao
             Language languageWithIndex = null;
             IQueryable<Language> languagesTempList = null;
 
+            string orderByParam = mState.OrderBy.Trim();
             if (id >= 0)
             {
                 // There was a language selected
@@ -253,19 +256,19 @@ namespace VodManageSystem.Models.Dao
             else
             {
                 // No language selected
-                if (mState.OrderBy == "")
+                if (orderByParam == "")
                 {
                     // order by Id
                     int lang_id = language.Id;
                     languagesTempList = totalLanguages.Where(x => (x.Id == lang_id));
                 }
-                else if (mState.OrderBy == "LangNo")
+                else if (orderByParam.Equals("LangNo", StringComparison.OrdinalIgnoreCase))
                 {
                     string lang_no = language.LangNo.Trim();
                     int len = lang_no.Length;
                     languagesTempList = totalLanguages.Where(x => x.LangNo.Trim().Substring(0, len) == lang_no);
                 }
-                else if (mState.OrderBy == "LangNa")
+                else if (orderByParam.Equals("LangNa", StringComparison.OrdinalIgnoreCase))
                 {
                     string lang_na = language.LangNa.Trim();
                     int len = lang_na.Length;
