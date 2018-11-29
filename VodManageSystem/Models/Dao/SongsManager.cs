@@ -445,7 +445,7 @@ namespace VodManageSystem.Models.Dao
             return songs;
         }
 
-        List<Song> GetOnePageOfHotSongByLanguageId(StateOfRequest mState, int languageId, bool isWebAPI)
+        public List<Song> GetOnePageOfHotSongByLanguageId(StateOfRequest mState, int languageId, bool isWebAPI)
         {
             if (mState == null)
             {
