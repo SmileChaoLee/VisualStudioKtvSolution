@@ -231,6 +231,7 @@ namespace VodManageSystem.Api.Controllers
                     break;
                 case NewSong_SongType:
                     // new songs
+                    songs = _songsManager.GetOnePageOfNewSongByLanguageId(mState, id, true);
                     break;
                 case HotSong_SongType:
                     // hot songs

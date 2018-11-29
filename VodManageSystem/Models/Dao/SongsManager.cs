@@ -445,6 +445,72 @@ namespace VodManageSystem.Models.Dao
             return songs;
         }
 
+        public List<Song> GetOnePageOfNewSongByLanguageId(StateOfRequest mState, int languageId, bool isWebAPI)
+        {
+            if (mState == null)
+            {
+                return new List<Song>();
+            }
+            int pageSize = mState.PageSize;
+            if (pageSize <= 0)
+            {
+                Console.WriteLine("The value of pageSize cannot be less than 0.");
+                return new List<Song>();
+            }
+
+            IQueryable<Song> totalSongs = GetAllSongsIQueryable(mState);
+            if (totalSongs == null)
+            {
+                return new List<Song>();
+            }
+
+            // only take 100 songs
+            totalSongs = totalSongs.Where(x => x.LanguageId == languageId).OrderByDescending(x => x.InDate).Take(100);
+
+            int pageNo = mState.CurrentPageNo;
+            int totalRecords = totalSongs.Count();
+            int totalPages = totalRecords / pageSize;
+            if ((totalPages * pageSize) != totalRecords)
+            {
+                totalPages++;
+            }
+
+            if (pageNo == -1)
+            {
+                // get the last page
+                pageNo = totalPages;
+            }
+            else if (pageNo == -100)
+            {
+                // get all songs
+                pageNo = 1; // restore pageNo to 1
+                pageSize = totalRecords;    // added on 2018-11-26
+                totalPages = 1; //  added on 2018-11-26
+            }
+            else
+            {
+                if (!isWebAPI)
+                {
+                    if (pageNo < 1)
+                    {
+                        pageNo = 1;
+                    }
+                    else if (pageNo > totalPages)
+                    {
+                        pageNo = totalPages;
+                    }
+                }
+            }
+
+            int recordNum = (pageNo - 1) * pageSize;
+
+            List<Song> songs = totalSongs.Skip(recordNum).Take(pageSize).ToList();
+
+            UpdateStateOfRequest(mState, songs.FirstOrDefault(), pageNo, pageSize, totalRecords, totalPages);
+
+            return songs;
+        }
+
         public List<Song> GetOnePageOfHotSongByLanguageId(StateOfRequest mState, int languageId, bool isWebAPI)
         {
             if (mState == null)
