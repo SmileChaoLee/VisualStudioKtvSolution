@@ -1,7 +1,5 @@
-﻿@*
-    For more information on enabling MVC for empty projects, visit https://go.microsoft.com/fwlink/?LinkID=397860
-*@
+﻿@using Microsoft.AspNetCore.Html
 @{
+    HtmlString htmlString = new HtmlString(ViewBag.Message);
 }
-
-<h2>Android Development</h2>
+@Html.Raw(htmlString)

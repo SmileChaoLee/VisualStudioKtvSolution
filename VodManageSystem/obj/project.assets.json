@@ -14427,13 +14427,13 @@
       "projectName": "VodManageSystem",
       "projectPath": "/Users/chaolee/VisualStudio/Smile_SoftwareSolution/VodManageSystem/VodManageSystem.csproj",
       "packagesPath": "/Users/chaolee/.nuget/packages/",
-      "outputPath": "/Users/chaolee/VisualStudio/Smile_SoftwareSolution/VodManageSystem/obj",
+      "outputPath": "/Users/chaolee/VisualStudio/Smile_SoftwareSolution/VodManageSystem/obj/",
       "projectStyle": "PackageReference",
       "fallbackFolders": [
         "/usr/local/share/dotnet/sdk/NuGetFallbackFolder"
       ],
       "configFilePaths": [
-        "/Users/chaolee/.config/NuGet/NuGet.Config"
+        "/Users/chaolee/.nuget/NuGet/NuGet.Config"
       ],
       "originalTargetFrameworks": [
         "netcoreapp2.1"
@@ -14458,14 +14458,14 @@
           "Microsoft.AspNetCore.All": {
             "suppressParent": "All",
             "target": "Package",
-            "version": "[2.1.1, )"
+            "version": "[2.1.1, )",
+            "autoReferenced": true
           },
           "Microsoft.AspNetCore.Session": {
             "target": "Package",
             "version": "[2.1.1, )"
           },
           "Microsoft.NETCore.App": {
-            "suppressParent": "All",
             "target": "Package",
             "version": "[2.1.0, )",
             "autoReferenced": true

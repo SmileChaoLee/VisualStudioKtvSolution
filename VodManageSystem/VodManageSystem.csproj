@@ -38,6 +38,10 @@
     <Folder Include="Views\Android\" />
     <Folder Include="Views\AspDotNetCore\" />
     <Folder Include="Views\AWS_EC2\" />
+    <Folder Include="wwwroot\TechDocuments\" />
+    <Folder Include="wwwroot\TechDocuments\AWS_EC2\" />
+    <Folder Include="wwwroot\TechDocuments\Android\" />
+    <Folder Include="wwwroot\TechDocuments\AspDotNetCore\" />
   </ItemGroup>
   <ItemGroup>
     <None Remove="VodManageSystem.tar" />
@@ -46,5 +50,34 @@
   <ItemGroup>
     <Content Remove="Views\Home\About.cshtml" />
     <Content Remove="Views\AWS_EC2\AWS_EC2_Document.cshtml" />
+  </ItemGroup>
+  <ItemGroup>
+    <Content Update="wwwroot\TechDocuments\Index.cshtml">
+      <Pack>$(IncludeRazorContentInPack)</Pack>
+    </Content>
+    <Content Update="wwwroot\TechDocuments\AWS_EC2_Document.html">
+      <Pack>$(IncludeRazorContentInPack)</Pack>
+    </Content>
+    <Content Update="wwwroot\TechDocuments\AWS_EC2_Document %28copy%29.html">
+      <Pack>$(IncludeRazorContentInPack)</Pack>
+    </Content>
+    <Content Update="wwwroot\TechDocuments\Android_Document.html">
+      <Pack>$(IncludeRazorContentInPack)</Pack>
+    </Content>
+    <Content Update="wwwroot\TechDocuments\Android_Document %28copy%29.html">
+      <Pack>$(IncludeRazorContentInPack)</Pack>
+    </Content>
+    <Content Update="wwwroot\TechDocuments\AspDotNetCore_Document.html">
+      <Pack>$(IncludeRazorContentInPack)</Pack>
+    </Content>
+    <Content Update="wwwroot\TechDocuments\AWS_EC2\AWS_EC2_Document.html">
+      <Pack>$(IncludeRazorContentInPack)</Pack>
+    </Content>
+    <Content Update="wwwroot\TechDocuments\Android\Android_Document.html">
+      <Pack>$(IncludeRazorContentInPack)</Pack>
+    </Content>
+    <Content Update="wwwroot\TechDocuments\AspDotNetCore\AspDotNetCore_Document.html">
+      <Pack>$(IncludeRazorContentInPack)</Pack>
+    </Content>
   </ItemGroup>
 </Project>

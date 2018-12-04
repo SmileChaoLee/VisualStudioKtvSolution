@@ -1,59 +1,6 @@
-<!DOCTYPE html PUBLIC "-//W3C//DTD HTML 4.01//EN" "http://www.w3.org/TR/html4/strict.dtd">
-<html>
-  <head>
-    <meta http-equiv="Content-Type" content="text/html; charset=UTF-8">
-    <meta http-equiv="Content-Style-Type" content="text/css">
-    <style type="text/css">
-        p.p1 {
-            margin: 0.0px 0.0px 0.0px 0.0px;
-            font: 12.0px Helvetica
-        }
-    </style>
-  </head>
-  <body>
-    <p></p>
-    <h2><strong>Deploy ASP.NET Core Apps to AWS EC2</strong></h2>
-    <p></p>
-    <p>I have an ASP.NET Core project that is named VodManageSystem in
-      Visual Studio on Mac and I want to deploy it to AWS EC2 then the
-      following steps have to be done.</p>
-    <p><strong>1. Publish VodManageSystem Project</strong><br>
-    </p>
-    <ul>
-      <li>&nbsp;&nbsp;&nbsp; Go to the root directory of VodManageSystem
-        project,
-        /Users/chaolee/VisualStudio/Smile_SoftwareSolution/VodManageSystem</li>
-    </ul>
-    <ul>
-      <li>&nbsp;&nbsp;&nbsp; Key in the following command line then the
-        the project will be published to a folder named
-        /Users/chaolee/VisualStudio/Smile_SoftwareSolution/VodManageSystem/bin/Release/netcoreapp2.1,
-        this folder name is depended on .NET Core version<br>
-      </li>
-    </ul>
-    &nbsp;&nbsp;&nbsp; &nbsp;&nbsp;&nbsp; &nbsp;&nbsp;&nbsp;
-    &nbsp;&nbsp;&nbsp; dotnet publish --configuration Release<br>
-    <p><strong></strong><strong>2. Login to AWS</strong></p>
-    <ul>
-      <li><span>&nbsp;&nbsp;&nbsp; cd
-          /Users/chaolee/AmazonAWS/KeyPairName&nbsp;&nbsp; ---&gt;&nbsp;
-          The folder that the KeyPair from AWS is stored<br>
-        </span></li>
-    </ul>
-    <ul>
-      <li><span>&nbsp;&nbsp;&nbsp; chmod 400 smile.pem&nbsp;&nbsp;
-          ---&gt; Change privileges of the file (smile.pem) of the
-          KeyPair downloaded from AWS<br>
-        </span></li>
-    </ul>
-    <ul>
-      <li><span>&nbsp;&nbsp;&nbsp; ssh -i smile.pem
-          ec2-user@ec2-13-59-195-3.us-east-2.compute.amazonaws.com&nbsp;
-          ---&gt; Login to AWS cloud</span></li>
-    </ul>
-    <span><b>3. </b><b>Copy </b><b>the published VodManageSystem
-        package to AWS</b><br>
-    </span><br>
-    <p></p>
-  </body>
-</html>
+﻿@using Microsoft.AspNetCore.Html
+
+@{
+    HtmlString htmlString = new HtmlString(ViewBag.Message);
+}
+@Html.Raw(htmlString)
