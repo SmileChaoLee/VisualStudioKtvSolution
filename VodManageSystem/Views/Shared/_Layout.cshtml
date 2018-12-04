@@ -32,7 +32,14 @@
                 <ul class="nav navbar-nav">
                     <li><a asp-area="" asp-controller="Home" asp-action="Index">Home</a></li>
                     <li><a asp-area="" asp-controller="Home" asp-action="Contact">Contact</a></li>
-                    <li><a asp-area="" asp-controller="Home" asp-action="Technical_Docs">Tech Docs</a></li>
+                    <li class="dropdown">
+                        <a href="#" class="dropdown-toggle" data-toggle="dropdown" role="button" aria-haspopup="false" aria-expanded="false">Tech Docs<span class="caret"></span></a>
+                        <ul class="nav navbar-nav navbar-inverse dropdown-menu">
+                            <li><a asp-area="" asp-controller="Android" asp-action="index">Android Development</a></li>
+                            <li><a asp-area="" asp-controller="AspDotNetCore" asp-action="index">ASP.NET Core Development</a></li>
+                            <li><a asp-area="" asp-controller="AWS_EC2" asp-action="index">Deploy Apps to AWS EC2</a></li>
+                        </ul>
+                    </li>
                     <li class="dropdown">
                         <a href="#" class="dropdown-toggle" data-toggle="dropdown" role="button" aria-haspopup="false" aria-expanded="false">Data Management<span class="caret"></span></a>
                         <ul class="nav navbar-nav navbar-inverse dropdown-menu">

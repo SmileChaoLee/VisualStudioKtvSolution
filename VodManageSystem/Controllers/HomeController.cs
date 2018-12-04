@@ -20,12 +20,6 @@ namespace VodManageSystem.Controllers
             return View();
         }
 
-        public IActionResult Technical_Docs()
-        {
-
-            return View();
-        }
-
         public IActionResult Contact()
         {
             ViewData["Message"] = "Contact Information";

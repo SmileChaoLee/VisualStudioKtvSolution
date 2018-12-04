@@ -35,11 +35,16 @@
     <Folder Include="Views\Playerscore\" />
     <Folder Include="Api\" />
     <Folder Include="Api\Controllers\" />
+    <Folder Include="Views\Android\" />
+    <Folder Include="Views\AspDotNetCore\" />
+    <Folder Include="Views\AWS_EC2\" />
   </ItemGroup>
   <ItemGroup>
     <None Remove="VodManageSystem.tar" />
+    <None Remove="Documents\AWS_EC2_Document.html" />
   </ItemGroup>
   <ItemGroup>
     <Content Remove="Views\Home\About.cshtml" />
+    <Content Remove="Views\AWS_EC2\AWS_EC2_Document.cshtml" />
   </ItemGroup>
 </Project>
