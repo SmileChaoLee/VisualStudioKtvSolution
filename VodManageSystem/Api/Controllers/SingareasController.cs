@@ -111,7 +111,7 @@ namespace VodManageSystem.Api.Controllers
             Console.WriteLine("HttpGet[\"{id}/Singers/{sex}/{ pageSize}/{ pageNo}\")]");
             Console.WriteLine("id = {0}, sex = {1}, pageSize = {2}, pageNo = {3}", id, sex, pageSize, pageNo);
 
-            JObject jObjectForAll = GetSingersBySingerTypeId(id, sex, pageSize, pageNo, "");
+            JObject jObjectForAll = GetSingersBySingerTypeId(id, sex, pageSize, pageNo, "", "");
 
             return jObjectForAll.ToString();
         }
@@ -126,7 +126,22 @@ namespace VodManageSystem.Api.Controllers
             Console.WriteLine("HttpGet[\"{id}/Singers/{sex}/{ pageSize}/{ pageNo}/{orderBy}\")]");
             Console.WriteLine("id = {0}, sex = {1}, pageSize = {2}, pageNo = {3}, orderBy = {4}", id, sex, pageSize, pageNo, orderBy);
 
-            JObject jObjectForAll = GetSingersBySingerTypeId(id, sex, pageSize, pageNo, orderBy);
+            JObject jObjectForAll = GetSingersBySingerTypeId(id, sex, pageSize, pageNo, orderBy, "");
+
+            return jObjectForAll.ToString();
+        }
+
+        // Get api/values/5/Singers/1/10/1/"SingNa"/"SingNa+陳"
+        // [Route("{id}/[Action]/{sex}/{pageSize}/{pageNo}/{orderBy}/{nameFilter}")]
+        // [HttpGet]
+        // or
+        [HttpGet("{id}/[Action]/{sex}/{pageSize}/{pageNo}/{orderBy}/{filter}")]
+        public string Singers(int id, String sex, int pageSize, int pageNo, string orderBy, string filter)
+        {
+            Console.WriteLine("HttpGet[\"{id}/Singers/{sex}/{ pageSize}/{ pageNo}/{orderBy}/{filter}\")]");
+            Console.WriteLine("id = {0}, sex = {1}, pageSize = {2}, pageNo = {3}, orderBy = {4}, filter = {5}", id, sex, pageSize, pageNo, orderBy, filter);
+
+            JObject jObjectForAll = GetSingersBySingerTypeId(id, sex, pageSize, pageNo, orderBy, filter);
 
             return jObjectForAll.ToString();
         }
@@ -149,7 +164,7 @@ namespace VodManageSystem.Api.Controllers
         {
         }
 
-        private JObject GetSingersBySingerTypeId(int id, String sex, int pageSize, int pageNo, string orderBy)
+        private JObject GetSingersBySingerTypeId(int id, String sex, int pageSize, int pageNo, string orderBy, string filter)
         {
             // orderBy is either "", or "SingNo", or "SingNa"
             string orderByParam;
@@ -161,10 +176,20 @@ namespace VodManageSystem.Api.Controllers
             {
                 orderByParam = orderBy.Trim();
             }
+            string filterParam;
+            if (string.IsNullOrEmpty(filter))
+            {
+                filterParam = "";
+            }
+            else
+            {
+                filterParam = filter.Trim();
+            }
 
             StateOfRequest mState = new StateOfRequest(orderByParam);
             mState.PageSize = pageSize;
             mState.CurrentPageNo = pageNo;
+            mState.QueryCondition = filterParam;
 
             List<Singer> singers = _singersManager.GetOnePageOfSingersByAreaSex(mState, id, sex, true);
 

@@ -136,6 +136,27 @@ namespace VodManageSystem.Models.Dao
                 // not inside range of roder by
                 singers = null;   // empty lsit
             }
+            if (singers != null)
+            {
+                string queryString = mState.QueryCondition;
+                int plusPos = queryString.IndexOf("+", 0, StringComparison.Ordinal);
+                if (plusPos >= 1)
+                {
+                    // the query condition has two parts
+                    // the first one is the field name in singer table
+                    // the second one is the vaue that the field contains
+                    string fieldName = queryString.Substring(0, plusPos).Trim();
+                    string fielsSubValue = queryString.Substring(plusPos + 1).Trim();
+                    if (fieldName.Equals("SingNo", StringComparison.OrdinalIgnoreCase))
+                    {
+                        singers = singers.Where(x=>x.SingNo.Contains(fielsSubValue));
+                    }
+                    else if (fieldName.Equals("SingNa", StringComparison.OrdinalIgnoreCase))
+                    {
+                        singers = singers.Where(x => x.SingNa.Contains(fielsSubValue));
+                    }
+                }
+            }
 
             return singers;
         }
