@@ -223,6 +223,28 @@ namespace VodManageSystem.Models.Dao
                 songs = null;   // empty lsit
             }
 
+            if (songs != null)
+            {
+                string queryString = mState.QueryCondition;
+                int plusPos = queryString.IndexOf("+", 0, StringComparison.Ordinal);
+                if (plusPos >= 1)
+                {
+                    // the query condition has two parts
+                    // the first one is the field name in song table
+                    // the second one is the vaue that the field contains
+                    string fieldName = queryString.Substring(0, plusPos).Trim();
+                    string fielsSubValue = queryString.Substring(plusPos + 1).Trim();
+                    if (fieldName.Equals("SongNo", StringComparison.OrdinalIgnoreCase))
+                    {
+                        songs = songs.Where(x => x.SongNo.Contains(fielsSubValue));
+                    }
+                    else if (fieldName.Equals("SongNa", StringComparison.OrdinalIgnoreCase))
+                    {
+                        songs = songs.Where(x => x.SongNa.Contains(fielsSubValue));
+                    }
+                }
+            }
+
             return songs;
         }
 

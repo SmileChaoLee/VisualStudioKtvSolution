@@ -149,7 +149,7 @@ namespace VodManageSystem.Api.Controllers
             // pageSize = 1 does not matter
             // pageNo = -100 for all songs
             // orderBy = ""
-            JObject jObjectForAll = GetSongsBySingerId(id, 1, -100, "");
+            JObject jObjectForAll = GetSongsBySingerId(id, 1, -100, "", "");
 
             return jObjectForAll.ToString();
         }
@@ -164,7 +164,7 @@ namespace VodManageSystem.Api.Controllers
             Console.WriteLine("HttpGet[\"{id}/Songs/{ pageSize}/{ pageNo}\")]");
 
             // orderBy = ""
-            JObject jObjectForAll = GetSongsBySingerId(id, pageSize, pageNo, "");
+            JObject jObjectForAll = GetSongsBySingerId(id, pageSize, pageNo, "", "");
 
             return jObjectForAll.ToString();
         }
@@ -178,7 +178,21 @@ namespace VodManageSystem.Api.Controllers
         {
             Console.WriteLine("HttpGet[\"{id}/Songs/{ pageSize}/{ pageNo}/{orderBy}\")]");
 
-            JObject jObjectForAll = GetSongsBySingerId(id, pageSize, pageNo, orderBy);
+            JObject jObjectForAll = GetSongsBySingerId(id, pageSize, pageNo, orderBy, "");
+
+            return jObjectForAll.ToString();
+        }
+
+        // GET: api/values/5/songs/10/1/"SongNa"/"SongNa+花心"
+        // [Route("{id}/[Action]/{pageSize}/{pageNo}/{orderBy}/{filter}")]
+        // [HttpGet]
+        // or
+        [HttpGet("{id}/[Action]/{pageSize}/{pageNo}/{orderBy}/{filter}")]
+        public string Songs(int id, int pageSize, int pageNo, string orderBy, string filter)
+        {
+            Console.WriteLine("HttpGet[\"{id}/Songs/{ pageSize}/{ pageNo}/{orderBy}/{filter}\")]");
+
+            JObject jObjectForAll = GetSongsBySingerId(id, pageSize, pageNo, orderBy, filter);
 
             return jObjectForAll.ToString();
         }
@@ -201,7 +215,7 @@ namespace VodManageSystem.Api.Controllers
         {
         }
 
-        private JObject GetSongsBySingerId(int id, int pageSize, int pageNo, string orderBy)
+        private JObject GetSongsBySingerId(int id, int pageSize, int pageNo, string orderBy, string filter)
         {
             string orderByParam;
             if (string.IsNullOrEmpty(orderBy))
@@ -212,10 +226,20 @@ namespace VodManageSystem.Api.Controllers
             {
                 orderByParam = orderBy.Trim();
             }
+            string filterParam;
+            if (string.IsNullOrEmpty(filter))
+            {
+                filterParam = "";
+            }
+            else
+            {
+                filterParam = filter.Trim();
+            }
 
             StateOfRequest mState = new StateOfRequest(orderByParam);
             mState.PageSize = pageSize;
             mState.CurrentPageNo = pageNo;
+            mState.QueryCondition = filterParam;
 
             List<Song> songs = _songsManager.GetOnePageOfSongsBySingerId(mState, id, true);
 

@@ -132,7 +132,7 @@ namespace VodManageSystem.Api.Controllers
         }
 
         // Get api/values/5/Singers/1/10/1/"SingNa"/"SingNa+陳"
-        // [Route("{id}/[Action]/{sex}/{pageSize}/{pageNo}/{orderBy}/{nameFilter}")]
+        // [Route("{id}/[Action]/{sex}/{pageSize}/{pageNo}/{orderBy}/{filter}")]
         // [HttpGet]
         // or
         [HttpGet("{id}/[Action]/{sex}/{pageSize}/{pageNo}/{orderBy}/{filter}")]
