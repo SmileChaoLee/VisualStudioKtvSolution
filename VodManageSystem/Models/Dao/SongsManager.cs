@@ -163,7 +163,7 @@ namespace VodManageSystem.Models.Dao
             }
         }
 
-        private IQueryable<Song> GetAllSongsIQueryable(StateOfRequest mState)
+        private IQueryable<Song> GetAllSongsIQueryable_OLD(StateOfRequest mState)
         {
             if (mState == null)
             {
@@ -223,7 +223,7 @@ namespace VodManageSystem.Models.Dao
                 songs = null;   // empty lsit
             }
 
-            if (songs != null)
+            if ( (songs != null) && (!string.IsNullOrEmpty(mState.QueryCondition)) )
             {
                 string queryString = mState.QueryCondition;
                 int plusPos = queryString.IndexOf("+", 0, StringComparison.Ordinal);
@@ -248,6 +248,104 @@ namespace VodManageSystem.Models.Dao
             return songs;
         }
 
+        private IQueryable<Song> GetAllSongsIQueryable(StateOfRequest mState)
+        {
+            IQueryable<Song> songs = GetAllSongsIQueryableWithoutFilter(mState);
+            songs = GetSongsIQueryableAddFilter(songs, mState.QueryCondition);
+
+            return songs;
+        }
+
+        private IQueryable<Song> GetAllSongsIQueryableWithoutFilter(StateOfRequest mState)
+        {
+            if (mState == null)
+            {
+                return null;
+            }
+            int pageSize = mState.PageSize;
+            if (pageSize <= 0)
+            {
+                Console.WriteLine("The value of pageSize cannot be less than 0.");
+                return null;
+            }
+
+            IQueryable<Song> totalSongs = _context.Song.Include(x => x.Language)
+                                          .Include(x => x.Singer1).Include(x => x.Singer2);
+
+            IQueryable<Song> songs;
+
+            string orderByParam = mState.OrderBy.Trim();
+            if (orderByParam == "")
+            {
+                songs = totalSongs;
+            }
+            else if (orderByParam.Equals("SongNo", StringComparison.OrdinalIgnoreCase))
+            {
+                songs = totalSongs.OrderBy(x => x.SongNo);
+            }
+            else if (orderByParam.Equals("SongNa", StringComparison.OrdinalIgnoreCase))
+            {
+                songs = totalSongs.OrderBy(x => x.SongNa).ThenBy(x => x.SongNo);
+            }
+            else if (orderByParam.Equals("NumWordsSongNa", StringComparison.OrdinalIgnoreCase))
+            {
+                songs = totalSongs.OrderBy(x => x.SNumWord).ThenBy(x => x.SongNa).ThenBy(x => x.SongNo);
+            }
+            else if (orderByParam.Equals("VodNo", StringComparison.OrdinalIgnoreCase))
+            {
+                songs = totalSongs.OrderBy(x => x.VodNo).ThenBy(x => x.SongNo);
+            }
+            else if (orderByParam.Equals("LangSongNa", StringComparison.OrdinalIgnoreCase))
+            {
+                songs = totalSongs.OrderBy(x => x.Language == null)
+                                  .ThenBy(x => x.Language.LangNo + x.SongNa).ThenBy(x => x.SongNo);
+            }
+            else if (orderByParam.Equals("Singer1Na", StringComparison.OrdinalIgnoreCase))
+            {
+                songs = totalSongs.OrderBy(x => x.Singer1 == null)
+                                  .ThenBy(x => x.Singer1.SingNa).ThenBy(x => x.SongNo);
+            }
+            else if (orderByParam.Equals("Singer2Na", StringComparison.OrdinalIgnoreCase))
+            {
+                songs = totalSongs.OrderBy(x => x.Singer2 == null)
+                                  .ThenBy(x => x.Singer2.SingNa).ThenBy(x => x.SongNo);
+            }
+            else
+            {
+                // not inside range of roder by
+                songs = null;   // empty lsit
+            }
+
+            return songs;
+        }
+
+        private IQueryable<Song> GetSongsIQueryableAddFilter(IQueryable<Song> originalSongs, string filter)
+        {
+            IQueryable<Song> songs = originalSongs;
+            if ((originalSongs != null) && (!string.IsNullOrEmpty(filter)))
+            {
+                string queryString = filter.Trim();
+                int plusPos = queryString.IndexOf("+", 0, StringComparison.Ordinal);
+                if (plusPos >= 1)
+                {
+                    // the query condition has two parts
+                    // the first one is the field name in song table
+                    // the second one is the vaue that the field contains
+                    string fieldName = queryString.Substring(0, plusPos).Trim();
+                    string fielsSubValue = queryString.Substring(plusPos + 1).Trim();
+                    if (fieldName.Equals("SongNo", StringComparison.OrdinalIgnoreCase))
+                    {
+                        songs = originalSongs.Where(x => x.SongNo.Contains(fielsSubValue));
+                    }
+                    else if (fieldName.Equals("SongNa", StringComparison.OrdinalIgnoreCase))
+                    {
+                        songs = originalSongs.Where(x => x.SongNa.Contains(fielsSubValue));
+                    }
+                }
+            }
+
+            return songs;
+        }
 
         // end of private methods
 
@@ -480,7 +578,7 @@ namespace VodManageSystem.Models.Dao
                 return new List<Song>();
             }
 
-            IQueryable<Song> totalSongs = GetAllSongsIQueryable(mState);
+            IQueryable<Song> totalSongs = GetAllSongsIQueryableWithoutFilter(mState);
             if (totalSongs == null)
             {
                 return new List<Song>();
@@ -488,6 +586,7 @@ namespace VodManageSystem.Models.Dao
 
             // only take 100 songs
             totalSongs = totalSongs.Where(x => x.LanguageId == languageId).OrderByDescending(x => x.InDate).Take(100);
+            totalSongs = GetSongsIQueryableAddFilter(totalSongs, mState.QueryCondition);
 
             int pageNo = mState.CurrentPageNo;
             int totalRecords = totalSongs.Count();
@@ -526,7 +625,7 @@ namespace VodManageSystem.Models.Dao
 
             int recordNum = (pageNo - 1) * pageSize;
 
-            List<Song> songs = totalSongs.Skip(recordNum).Take(pageSize).ToList();
+            List<Song> songs = totalSongs.ToList().Skip(recordNum).Take(pageSize).ToList();
 
             UpdateStateOfRequest(mState, songs.FirstOrDefault(), pageNo, pageSize, totalRecords, totalPages);
 
@@ -546,7 +645,7 @@ namespace VodManageSystem.Models.Dao
                 return new List<Song>();
             }
 
-            IQueryable<Song> totalSongs = GetAllSongsIQueryable(mState);
+            IQueryable<Song> totalSongs = GetAllSongsIQueryableWithoutFilter(mState);
             if (totalSongs == null)
             {
                 return new List<Song>();
@@ -554,6 +653,7 @@ namespace VodManageSystem.Models.Dao
 
             // only take 100 songs
             totalSongs = totalSongs.Where(x => x.LanguageId == languageId).OrderByDescending(x=>x.OrderNum).Take(100);
+            totalSongs = GetSongsIQueryableAddFilter(totalSongs, mState.QueryCondition);
 
             int pageNo = mState.CurrentPageNo;
             int totalRecords = totalSongs.Count();
@@ -592,7 +692,7 @@ namespace VodManageSystem.Models.Dao
 
             int recordNum = (pageNo - 1) * pageSize;
 
-            List<Song> songs = totalSongs.Skip(recordNum).Take(pageSize).ToList();
+            List<Song> songs = totalSongs.ToList().Skip(recordNum).Take(pageSize).ToList();
 
             UpdateStateOfRequest(mState, songs.FirstOrDefault(), pageNo, pageSize, totalRecords, totalPages);
 

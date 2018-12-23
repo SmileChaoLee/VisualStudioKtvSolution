@@ -136,7 +136,8 @@ namespace VodManageSystem.Models.Dao
                 // not inside range of roder by
                 singers = null;   // empty lsit
             }
-            if (singers != null)
+
+            if ( (singers != null) && (!string.IsNullOrEmpty(mState.QueryCondition)) )
             {
                 string queryString = mState.QueryCondition;
                 int plusPos = queryString.IndexOf("+", 0, StringComparison.Ordinal);

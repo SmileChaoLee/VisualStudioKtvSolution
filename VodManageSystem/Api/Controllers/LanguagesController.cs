@@ -84,7 +84,7 @@ namespace VodManageSystem.Api.Controllers
             // pageSize = 1 does not matter
             // pageNo = -100 for all songs
             // orderBy = ""
-            JObject jObjectForAll = GetSongsByLanguageIdAndSomething(id, -1, 1, -100, "");
+            JObject jObjectForAll = GetSongsByLanguageIdAndSomething(id, -1, 1, -100, "", Normal_SongType, "");
 
             return jObjectForAll.ToString();
         }
@@ -99,7 +99,7 @@ namespace VodManageSystem.Api.Controllers
             Console.WriteLine("HttpGet[\"{id}/Songs/{ pageSize}/{ pageNo}\")]");
 
             // orderBy = ""
-            JObject jObjectForAll = GetSongsByLanguageIdAndSomething(id, -1, pageSize, pageNo, "");
+            JObject jObjectForAll = GetSongsByLanguageIdAndSomething(id, -1, pageSize, pageNo, "", Normal_SongType, "");
 
             return jObjectForAll.ToString();
         }
@@ -113,7 +113,7 @@ namespace VodManageSystem.Api.Controllers
         {
             Console.WriteLine("HttpGet[\"{id}/Songs/{ pageSize}/{ pageNo}/{orderBy}\")]");
 
-            JObject jObjectForAll = GetSongsByLanguageIdAndSomething(id, -1, pageSize, pageNo, orderBy);
+            JObject jObjectForAll = GetSongsByLanguageIdAndSomething(id, -1, pageSize, pageNo, orderBy, Normal_SongType, "");
 
             return jObjectForAll.ToString();
         }
@@ -128,7 +128,7 @@ namespace VodManageSystem.Api.Controllers
             Console.WriteLine("HttpGet[\"{id}/{numOfWords}/Songs/{ pageSize}/{ pageNo}/{orderBy}\")]");
             Console.WriteLine("\n\n numOfWrods == " + numOfWords + "\n\n");
 
-            JObject jObjectForAll = GetSongsByLanguageIdAndSomething(id, numOfWords, pageSize, pageNo, orderBy);
+            JObject jObjectForAll = GetSongsByLanguageIdAndSomething(id, numOfWords, pageSize, pageNo, orderBy, Normal_SongType, "");
 
             return jObjectForAll.ToString();
         }
@@ -140,9 +140,9 @@ namespace VodManageSystem.Api.Controllers
         [HttpGet("{id}/[Action]/{pageSize}/{pageNo}")]
         public string NewSongs(int id, int pageSize, int pageNo)
         {
-            Console.WriteLine("HttpGet[\"{id}/NewSongs/{ pageSize}/{ pageNo}/{orderBy}\")]");
+            Console.WriteLine("HttpGet[\"{id}/NewSongs/{ pageSize}/{ pageNo}\")]");
 
-            JObject jObjectForAll = GetSongsByLanguageIdAndSomething(id, 0, pageSize, pageNo, "", NewSong_SongType);
+            JObject jObjectForAll = GetSongsByLanguageIdAndSomething(id, 0, pageSize, pageNo, "", NewSong_SongType, "");
 
             return jObjectForAll.ToString();
         }
@@ -156,7 +156,7 @@ namespace VodManageSystem.Api.Controllers
         {
             Console.WriteLine("HttpGet[\"{id}/NewSongs/{ pageSize}/{ pageNo}/{orderBy}\")]");
 
-            JObject jObjectForAll = GetSongsByLanguageIdAndSomething(id, 0, pageSize, pageNo, orderBy, NewSong_SongType);
+            JObject jObjectForAll = GetSongsByLanguageIdAndSomething(id, 0, pageSize, pageNo, orderBy, NewSong_SongType, "");
 
             return jObjectForAll.ToString();
         }
@@ -170,7 +170,7 @@ namespace VodManageSystem.Api.Controllers
         {
             Console.WriteLine("HttpGet[\"{id}/HotSongs/{ pageSize}/{ pageNo}\")]");
 
-            JObject jObjectForAll = GetSongsByLanguageIdAndSomething(id, 0, pageSize, pageNo, "", HotSong_SongType);
+            JObject jObjectForAll = GetSongsByLanguageIdAndSomething(id, 0, pageSize, pageNo, "", HotSong_SongType, "");
 
             return jObjectForAll.ToString();
         }
@@ -184,7 +184,21 @@ namespace VodManageSystem.Api.Controllers
         {
             Console.WriteLine("HttpGet[\"{id}/HotSongs/{ pageSize}/{ pageNo}/{orderBy}\")]");
 
-            JObject jObjectForAll = GetSongsByLanguageIdAndSomething(id, 0, pageSize, pageNo, orderBy, HotSong_SongType);
+            JObject jObjectForAll = GetSongsByLanguageIdAndSomething(id, 0, pageSize, pageNo, orderBy, HotSong_SongType, "");
+
+            return jObjectForAll.ToString();
+        }
+
+        // GET: api/values/5/HotSongs/10/1/"NumWordsSongNa"/"SongNa+花心"
+        // [Route("{id}/[Action]/{pageSize}/{pageNo}/{orderBy}/{filter}")]
+        // [HttpGet]
+        // or
+        [HttpGet("{id}/[Action]/{pageSize}/{pageNo}/{orderBy}/{filter}")]
+        public string HotSongs(int id, int pageSize, int pageNo, string orderBy, string filter)
+        {
+            Console.WriteLine("HttpGet[\"{id}/HotSongs/{ pageSize}/{ pageNo}/{orderBy}/{filter}\")]");
+
+            JObject jObjectForAll = GetSongsByLanguageIdAndSomething(id, 0, pageSize, pageNo, orderBy, HotSong_SongType, filter);
 
             return jObjectForAll.ToString();
         }
@@ -207,7 +221,7 @@ namespace VodManageSystem.Api.Controllers
         {
         }
 
-        private JObject GetSongsByLanguageIdAndSomething(int id, int numOfWords, int pageSize, int pageNo, string orderBy, int songType=Normal_SongType)
+        private JObject GetSongsByLanguageIdAndSomething(int id, int numOfWords, int pageSize, int pageNo, string orderBy, int songType, String filter)
         {
             string orderByParam;
             if (string.IsNullOrEmpty(orderBy))
@@ -218,10 +232,20 @@ namespace VodManageSystem.Api.Controllers
             {
                 orderByParam = orderBy.Trim();
             }
+            string filterParam;
+            if (string.IsNullOrEmpty(filter))
+            {
+                filterParam = "";
+            }
+            else
+            {
+                filterParam = filter.Trim();
+            }
 
             StateOfRequest mState = new StateOfRequest(orderByParam);
             mState.PageSize = pageSize;
             mState.CurrentPageNo = pageNo;
+            mState.QueryCondition = filterParam;
 
             List<Song> songs = new List<Song>();
             switch (songType) {
