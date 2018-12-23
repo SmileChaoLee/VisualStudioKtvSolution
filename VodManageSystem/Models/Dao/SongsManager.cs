@@ -248,14 +248,6 @@ namespace VodManageSystem.Models.Dao
             return songs;
         }
 
-        private IQueryable<Song> GetAllSongsIQueryable(StateOfRequest mState)
-        {
-            IQueryable<Song> songs = GetAllSongsIQueryableWithoutFilter(mState);
-            songs = GetSongsIQueryableAddFilter(songs, mState.QueryCondition);
-
-            return songs;
-        }
-
         private IQueryable<Song> GetAllSongsIQueryableWithoutFilter(StateOfRequest mState)
         {
             if (mState == null)
@@ -332,17 +324,28 @@ namespace VodManageSystem.Models.Dao
                     // the first one is the field name in song table
                     // the second one is the vaue that the field contains
                     string fieldName = queryString.Substring(0, plusPos).Trim();
-                    string fielsSubValue = queryString.Substring(plusPos + 1).Trim();
-                    if (fieldName.Equals("SongNo", StringComparison.OrdinalIgnoreCase))
+                    string fieldSubValue = queryString.Substring(plusPos + 1).Trim();
+                    if (!string.IsNullOrEmpty(fieldSubValue))
                     {
-                        songs = originalSongs.Where(x => x.SongNo.Contains(fielsSubValue));
-                    }
-                    else if (fieldName.Equals("SongNa", StringComparison.OrdinalIgnoreCase))
-                    {
-                        songs = originalSongs.Where(x => x.SongNa.Contains(fielsSubValue));
+                        if (fieldName.Equals("SongNo", StringComparison.OrdinalIgnoreCase))
+                        {
+                            songs = originalSongs.Where(x => x.SongNo.Contains(fieldSubValue));
+                        }
+                        else if (fieldName.Equals("SongNa", StringComparison.OrdinalIgnoreCase))
+                        {
+                            songs = originalSongs.Where(x => x.SongNa.Contains(fieldSubValue));
+                        }
                     }
                 }
             }
+
+            return songs;
+        }
+
+        private IQueryable<Song> GetAllSongsIQueryable(StateOfRequest mState)
+        {
+            IQueryable<Song> songs = GetAllSongsIQueryableWithoutFilter(mState);
+            songs = GetSongsIQueryableAddFilter(songs, mState.QueryCondition);
 
             return songs;
         }

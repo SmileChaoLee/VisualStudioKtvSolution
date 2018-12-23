@@ -38,7 +38,7 @@ namespace VodManageSystem.Models.Dao
         {
             // int result = 1; // valid by verification 
             int result = ErrorCodeModel.SingareaNoNotFound;
-            if (singer.AreaId >= 0 )
+            if (singer.AreaId >= 0)
             {
                 Singarea area = await _context.Singarea.Where(x => x.Id == singer.AreaId).SingleOrDefaultAsync();
                 if (area != null)
@@ -101,7 +101,7 @@ namespace VodManageSystem.Models.Dao
             }
         }
 
-        public IQueryable<Singer> GetAllSingersIQueryable(StateOfRequest mState)
+        private IQueryable<Singer> GetAllSingersIQueryableWithoutFilter(StateOfRequest mState)
         {
             if (mState == null)
             {
@@ -137,9 +137,15 @@ namespace VodManageSystem.Models.Dao
                 singers = null;   // empty lsit
             }
 
-            if ( (singers != null) && (!string.IsNullOrEmpty(mState.QueryCondition)) )
+            return singers;
+        }
+
+        private IQueryable<Singer> GetSingersIQueryableAddFilter(IQueryable<Singer> originalSingers, string filter)
+        {
+            IQueryable<Singer> singers = originalSingers;
+            if ((originalSingers != null) && (!string.IsNullOrEmpty(filter)))
             {
-                string queryString = mState.QueryCondition;
+                string queryString = filter.Trim();
                 int plusPos = queryString.IndexOf("+", 0, StringComparison.Ordinal);
                 if (plusPos >= 1)
                 {
@@ -147,17 +153,28 @@ namespace VodManageSystem.Models.Dao
                     // the first one is the field name in singer table
                     // the second one is the vaue that the field contains
                     string fieldName = queryString.Substring(0, plusPos).Trim();
-                    string fielsSubValue = queryString.Substring(plusPos + 1).Trim();
-                    if (fieldName.Equals("SingNo", StringComparison.OrdinalIgnoreCase))
+                    string fieldSubValue = queryString.Substring(plusPos + 1).Trim();
+                    if (!string.IsNullOrEmpty(fieldSubValue))
                     {
-                        singers = singers.Where(x=>x.SingNo.Contains(fielsSubValue));
-                    }
-                    else if (fieldName.Equals("SingNa", StringComparison.OrdinalIgnoreCase))
-                    {
-                        singers = singers.Where(x => x.SingNa.Contains(fielsSubValue));
+                        if (fieldName.Equals("SingNo", StringComparison.OrdinalIgnoreCase))
+                        {
+                            singers = originalSingers.Where(x => x.SingNo.Contains(fieldSubValue));
+                        }
+                        else if (fieldName.Equals("SingNa", StringComparison.OrdinalIgnoreCase))
+                        {
+                            singers = originalSingers.Where(x => x.SingNa.Contains(fieldSubValue));
+                        }
                     }
                 }
             }
+
+            return singers;
+        }
+
+        private IQueryable<Singer> GetAllSingersIQueryable(StateOfRequest mState)
+        {
+            IQueryable<Singer> singers = GetAllSingersIQueryableWithoutFilter(mState);
+            singers = GetSingersIQueryableAddFilter(singers, mState.QueryCondition);
 
             return singers;
         }

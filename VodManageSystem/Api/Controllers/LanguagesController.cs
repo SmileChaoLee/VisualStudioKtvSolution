@@ -147,16 +147,16 @@ namespace VodManageSystem.Api.Controllers
             return jObjectForAll.ToString();
         }
 
-        // GET: api/values/5/NewSongs/10/1/"NumWordsSongNa"
-        // [Route("{id}/[Action]/{pageSize}/{pageNo}/{orderBy}")]
+        // GET: api/values/5/NewSongs/10/1/"SongNa+花心"
+        // [Route("{id}/[Action]/{pageSize}/{pageNo}/{filter}")]
         // [HttpGet]
         // or
-        [HttpGet("{id}/[Action]/{pageSize}/{pageNo}/{orderBy}")]
-        public string NewSongs(int id, int pageSize, int pageNo, string orderBy)
+        [HttpGet("{id}/[Action]/{pageSize}/{pageNo}/{filter}")]
+        public string NewSongs(int id, int pageSize, int pageNo, string filter)
         {
-            Console.WriteLine("HttpGet[\"{id}/NewSongs/{ pageSize}/{ pageNo}/{orderBy}\")]");
+            Console.WriteLine("HttpGet[\"{id}/NewSongs/{ pageSize}/{ pageNo}/{filter}\")]");
 
-            JObject jObjectForAll = GetSongsByLanguageIdAndSomething(id, 0, pageSize, pageNo, orderBy, NewSong_SongType, "");
+            JObject jObjectForAll = GetSongsByLanguageIdAndSomething(id, 0, pageSize, pageNo, "", NewSong_SongType, filter);
 
             return jObjectForAll.ToString();
         }
@@ -175,30 +175,16 @@ namespace VodManageSystem.Api.Controllers
             return jObjectForAll.ToString();
         }
 
-        // GET: api/values/5/HotSongs/10/1/"NumWordsSongNa"
-        // [Route("{id}/[Action]/{pageSize}/{pageNo}/{orderBy}")]
+        // GET: api/values/5/HotSongs/10/1/"SongNa+花心"
+        // [Route("{id}/[Action]/{pageSize}/{pageNo}/{filter}")]
         // [HttpGet]
         // or
-        [HttpGet("{id}/[Action]/{pageSize}/{pageNo}/{orderBy}")]
-        public string HotSongs(int id, int pageSize, int pageNo, string orderBy)
+        [HttpGet("{id}/[Action]/{pageSize}/{pageNo}/{filter}")]
+        public string HotSongs(int id, int pageSize, int pageNo, string filter)
         {
-            Console.WriteLine("HttpGet[\"{id}/HotSongs/{ pageSize}/{ pageNo}/{orderBy}\")]");
+            Console.WriteLine("HttpGet[\"{id}/HotSongs/{ pageSize}/{ pageNo}/{filter}\")]");
 
-            JObject jObjectForAll = GetSongsByLanguageIdAndSomething(id, 0, pageSize, pageNo, orderBy, HotSong_SongType, "");
-
-            return jObjectForAll.ToString();
-        }
-
-        // GET: api/values/5/HotSongs/10/1/"NumWordsSongNa"/"SongNa+花心"
-        // [Route("{id}/[Action]/{pageSize}/{pageNo}/{orderBy}/{filter}")]
-        // [HttpGet]
-        // or
-        [HttpGet("{id}/[Action]/{pageSize}/{pageNo}/{orderBy}/{filter}")]
-        public string HotSongs(int id, int pageSize, int pageNo, string orderBy, string filter)
-        {
-            Console.WriteLine("HttpGet[\"{id}/HotSongs/{ pageSize}/{ pageNo}/{orderBy}/{filter}\")]");
-
-            JObject jObjectForAll = GetSongsByLanguageIdAndSomething(id, 0, pageSize, pageNo, orderBy, HotSong_SongType, filter);
+            JObject jObjectForAll = GetSongsByLanguageIdAndSomething(id, 0, pageSize, pageNo, "", HotSong_SongType, filter);
 
             return jObjectForAll.ToString();
         }
