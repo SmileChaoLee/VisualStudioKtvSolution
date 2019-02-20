@@ -42,6 +42,9 @@
     <Folder Include="wwwroot\TechDocuments\AWS_EC2\" />
     <Folder Include="wwwroot\TechDocuments\Android\" />
     <Folder Include="wwwroot\TechDocuments\AspDotNetCore\" />
+    <Folder Include="Views\Contact\" />
+    <Folder Include="wwwroot\TechDocuments\PrivacyPolicy\" />
+    <Folder Include="Views\PrivacyPolicy\" />
   </ItemGroup>
   <ItemGroup>
     <None Remove="VodManageSystem.tar" />
