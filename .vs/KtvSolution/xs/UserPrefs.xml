@@ -1,0 +1,10 @@
+﻿<Properties StartupConfiguration="{68EEE490-59E8-4AFB-A5E7-98E199788C6F}|Default">
+  <MonoDevelop.Ide.ItemProperties.VodManageSystem PreferredExecutionTarget="MonoDevelop.Default" />
+  <MonoDevelop.Ide.Workbench />
+  <MonoDevelop.Ide.Workspace ActiveConfiguration="Debug" />
+  <MonoDevelop.Ide.DebuggingService.Breakpoints>
+    <BreakpointStore />
+  </MonoDevelop.Ide.DebuggingService.Breakpoints>
+  <MonoDevelop.Ide.DebuggingService.PinnedWatches />
+  <MultiItemStartupConfigurations />
+</Properties>

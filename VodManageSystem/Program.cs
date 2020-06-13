@@ -21,7 +21,7 @@ namespace VodManageSystem
         {
             var host = BuildWebHost(args);
 
-            using (var scope = host.Services.CreateScope()) 
+            using (var scope = host.Services.CreateScope())
             {
                 var services = scope.ServiceProvider;
                 var logger = services.GetRequiredService<ILogger<Program>>();
@@ -30,7 +30,7 @@ namespace VodManageSystem
                     var dbContext = services.GetRequiredService<KtvSystemDBContext>();
                     if (dbContext.Song.Any())
                     {
-                        logger.LogInformation("Program.cs --> Song has records.");   
+                        logger.LogInformation("Program.cs --> Song has records.");
                     }
                     else
                     {
@@ -39,23 +39,19 @@ namespace VodManageSystem
                 }
                 catch (Exception ex)
                 {
-                    logger.LogInformation(ex,"Program.cs --> DbContext error.");   
+                    logger.LogInformation(ex, "Program.cs --> DbContext error.");
                 }
-
             }
 
             host.Run();
         }
 
-        public static IWebHost BuildWebHost(string[] args)
-        {
-            return WebHost.CreateDefaultBuilder(args)
+        public static IWebHost BuildWebHost(string[] args) => WebHost.CreateDefaultBuilder(args)
                            .UseStartup<Startup>()
                            .UseUrls("http://localhost:5000")
                            // .UseUrls("http://127.0.0.1:5000")
                            // .UseUrls("http://192.168.0.16:5000")
                            // .UseUrls("http://10.0.9.191:5000")
                            .Build();
-        }
     }
 }
